@@ -147,11 +147,17 @@
     <Compile Include="Konfigurasi\Konfigurasi.cs" />
     <Compile Include="Konfigurasi\UserSession.cs" />
     <Compile Include="Model\BaseKaryawan.cs" />
+    <Compile Include="Model\DataAbsensi.cs" />
     <Compile Include="Model\KaryawanHarian.cs" />
     <Compile Include="Model\KaryawanKontrak.cs" />
     <Compile Include="Model\KaryawanTetap.cs" />
+    <Compile Include="Model\KomponenGaji.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Absensi_serv.cs" />
+    <Compile Include="Service\Auth_serv.cs" />
+    <Compile Include="Service\Gaji_serv.cs" />
+    <Compile Include="Service\Karyawan_serv.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -175,8 +181,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Service\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
