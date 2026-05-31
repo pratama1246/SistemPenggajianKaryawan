@@ -47,7 +47,6 @@ namespace SistemPenggajianKaryawan
             this.logoPic.Size      = new System.Drawing.Size(90, 90);
             this.logoPic.SizeMode  = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.logoPic.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
-            this.logoPic.Paint    += new System.Windows.Forms.PaintEventHandler(this.logoPic_Paint);
 
             // appName_lbl
             this.appName_lbl.Text      = "Sistem Penggajian Karyawan";

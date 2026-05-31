@@ -14,6 +14,22 @@ namespace SistemPenggajianKaryawan
         public FormLogin()
         {
             InitializeComponent();
+            LoadLogo();
+        }
+
+        private void LoadLogo()
+        {
+            try
+            {
+                using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SistemPenggajianKaryawan.Resources.Politeknik_Negeri_Cilacap.png"))
+                {
+                    if (stream != null)
+                    {
+                        logoPic.Image = new Bitmap(stream);
+                    }
+                }
+            }
+            catch { }
         }
 
         private void FormLogin_Load(object sender, EventArgs e)
@@ -104,40 +120,6 @@ namespace SistemPenggajianKaryawan
             password_txt.Clear();
             error_lbl.Visible = false;
             username_txt.Focus();
-        }
-
-        private void logoPic_Paint(object sender, PaintEventArgs e)
-        {
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            // Draw outer subtle glowing ring matching the primary color #5BC8F5
-            using (var pen = new Pen(Color.FromArgb(91, 200, 245), 1.5f))
-            {
-                e.Graphics.DrawEllipse(pen, 5, 5, 90, 90);
-            }
-
-            // Draw three modern stylized building pillars representing PNC
-            // Left pillar (Blue #5BC8F5)
-            using (var brush = new SolidBrush(Color.FromArgb(91, 200, 245)))
-            {
-                e.Graphics.FillRectangle(brush, 31, 28, 11, 44);
-            }
-            // Middle pillar (Neutral gray #C8C8C8)
-            using (var brush = new SolidBrush(Color.FromArgb(200, 200, 200)))
-            {
-                e.Graphics.FillRectangle(brush, 44, 22, 11, 50);
-            }
-            // Right pillar (Amber #F5A623)
-            using (var brush = new SolidBrush(Color.FromArgb(245, 166, 35)))
-            {
-                e.Graphics.FillRectangle(brush, 57, 34, 11, 38);
-            }
-
-            // Connect pillars at the bottom with a solid base
-            using (var brush = new SolidBrush(Color.FromArgb(91, 200, 245)))
-            {
-                e.Graphics.FillRectangle(brush, 28, 73, 44, 4);
-            }
         }
     }
 }
