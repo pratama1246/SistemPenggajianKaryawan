@@ -33,21 +33,21 @@ Identitas visual dibangun dari tiga warna utama logo PNC:
 
 | Token | Hex | Penggunaan |
 |---|---|---|
-| `bg-base` | `#1E1E1E` | Background utama semua form |
-| `bg-surface` | `#262626` | Panel kiri, groupbox, card area |
-| `bg-elevated` | `#2E2E2E` | Panel kanan, input background saat hover |
-| `bg-input` | `#323232` | Background TextBox, ComboBox |
-| `border` | `#3A3A3A` | Border subtle antar elemen |
-| `neutral` | `#C8C8C8` | Logo gedung tengah PNC, teks sekunder terang |
+| `bg-base` | `#F4F6F9` | Background utama semua form |
+| `bg-surface` | `#FFFFFF` | Panel kiri/sidebar, groupbox, card area, row aktivitas |
+| `bg-elevated` | `#E2E8F0` | Input background saat hover, divider line |
+| `bg-input` | `#FFFFFF` | Background TextBox, ComboBox |
+| `border` | `#CBD5E1` | Border subtle antar elemen |
+| `neutral` | `#718096` | Teks sekunder terang |
 
 ### Text Colors
 
 | Token | Hex | Penggunaan |
 |---|---|---|
-| `text-primary` | `#FFFFFF` | Judul, heading, teks utama |
-| `text-secondary` | `#B0B0B0` | Label field, subtitle, keterangan |
-| `text-muted` | `#707070` | Placeholder, versi, teks tidak aktif |
-| `text-on-primary` | `#1A1A1A` | Teks di atas tombol primary (gelap) |
+| `text-primary` | `#2D3748` | Judul, heading, teks utama |
+| `text-secondary` | `#718096` | Label field, subtitle, keterangan |
+| `text-muted` | `#A0AEC0` | Placeholder, versi, teks tidak aktif |
+| `text-on-primary` | `#1A1A1A` | Teks di atas tombol primary |
 
 ### Semantic Colors
 

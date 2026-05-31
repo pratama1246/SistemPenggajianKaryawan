@@ -79,7 +79,7 @@ namespace SistemPenggajianKaryawan
                     else
                     {
                         btn.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
-                        btn.ForeColor = btn == logout_btn ? Color.FromArgb(205, 92, 92) : Color.FromArgb(160, 160, 160);
+                        btn.ForeColor = btn == logout_btn ? Color.FromArgb(205, 92, 92) : Color.FromArgb(74, 85, 104);
                         btn.BackColor = Color.Transparent;
                     }
                 }

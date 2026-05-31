@@ -177,6 +177,12 @@
     <Compile Include="Service\Auth_serv.cs" />
     <Compile Include="Service\Gaji_serv.cs" />
     <Compile Include="Service\Karyawan_serv.cs" />
+    <EmbeddedResource Include="FormDashboardAdmin.resx">
+      <DependentUpon>FormDashboardAdmin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLogin.resx">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,8 +210,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
