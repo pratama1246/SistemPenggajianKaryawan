@@ -13,62 +13,60 @@ namespace SistemPenggajianKaryawan.Konfigurasi
             {
                 Koneksi server = new Koneksi();
 
-                // 1. Buat tabel tbl_Users jika belum ada
+                // 1. Buat tabel users jika belum ada
                 string createTableQuery = @"
-                    CREATE TABLE IF NOT EXISTS tbl_Users (
+                    CREATE TABLE IF NOT EXISTS users (
                         user_id INT AUTO_INCREMENT PRIMARY KEY,
                         nama VARCHAR(100) NOT NULL,
                         username VARCHAR(50) NOT NULL UNIQUE,
-                        password VARCHAR(256) NOT NULL,
-                        role VARCHAR(20) NOT NULL,
-                        is_aktif TINYINT DEFAULT 1
+                        password VARCHAR(64) NOT NULL,
+                        role ENUM('Admin', 'HRD', 'Karyawan') NOT NULL,
+                        is_active TINYINT(1) NOT NULL DEFAULT 1,
+                        karyawan_id INT DEFAULT NULL,
+                        FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE SET NULL
                     );";
                 server.eksekusiNonQuery(createTableQuery);
 
-                // 2. Cek apakah tabel kosong
-                string checkQuery = "SELECT COUNT(*) FROM tbl_Users";
-                DataTable dt = server.eksekusiQuery(checkQuery);
-                
-                int count = 0;
-                if (dt.Rows.Count > 0 && dt.Columns.Count > 0)
-                {
-                    count = Convert.ToInt32(dt.Rows[0][0]);
-                }
+                // 2. Masukkan data seeder default jika belum ada
+                Auth_serv auth = new Auth_serv();
 
-                // 3. Jika kosong, masukkan data seeder default
-                if (count == 0)
+                // Seed Admin jika belum ada
+                if (!auth.usernameAda("admin"))
                 {
-                    Auth_serv auth = new Auth_serv();
-
-                    // Seed Admin (pass: admin)
-                    string qAdmin = "INSERT INTO tbl_Users (nama, username, password, role, is_aktif) VALUES (@nama, @username, @password, @role, 1)";
+                    string qAdmin = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
                     var pAdmin = new Dictionary<string, object>
                     {
                         { "@nama", "Administrator" },
                         { "@username", "admin" },
-                        { "@password", auth.hashPassword("admin") },
+                        { "@password", auth.hashPassword("admin123") },
                         { "@role", "Admin" }
                     };
                     server.eksekusiNonQueryParam(qAdmin, pAdmin);
+                }
 
-                    // Seed HRD (pass: hrd)
-                    string qHrd = "INSERT INTO tbl_Users (nama, username, password, role, is_aktif) VALUES (@nama, @username, @password, @role, 1)";
+                // Seed HRD jika belum ada
+                if (!auth.usernameAda("hrd"))
+                {
+                    string qHrd = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
                     var pHrd = new Dictionary<string, object>
                     {
                         { "@nama", "HRD Manager" },
                         { "@username", "hrd" },
-                        { "@password", auth.hashPassword("hrd") },
+                        { "@password", auth.hashPassword("hrd123") },
                         { "@role", "HRD" }
                     };
                     server.eksekusiNonQueryParam(qHrd, pHrd);
+                }
 
-                    // Seed Karyawan (pass: karyawan)
-                    string qKaryawan = "INSERT INTO tbl_Users (nama, username, password, role, is_aktif) VALUES (@nama, @username, @password, @role, 1)";
+                // Seed Karyawan jika belum ada
+                if (!auth.usernameAda("karyawan"))
+                {
+                    string qKaryawan = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
                     var pKaryawan = new Dictionary<string, object>
                     {
                         { "@nama", "Karyawan Staff" },
                         { "@username", "karyawan" },
-                        { "@password", auth.hashPassword("karyawan") },
+                        { "@password", auth.hashPassword("karyawan123") },
                         { "@role", "Karyawan" }
                     };
                     server.eksekusiNonQueryParam(qKaryawan, pKaryawan);

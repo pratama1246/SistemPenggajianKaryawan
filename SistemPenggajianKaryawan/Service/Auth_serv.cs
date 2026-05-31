@@ -35,8 +35,8 @@ namespace SistemPenggajianKaryawan.Service
         public DataTable login(string username, string password)
         {
             string hash  = hashPassword(password);
-            Query = "SELECT user_id, nama, username, role FROM tbl_Users " +
-                    "WHERE username = @username AND password = @password AND is_aktif = 1";
+            Query = "SELECT user_id, nama, username, role FROM users " +
+                    "WHERE username = @username AND password = @password AND is_active = 1";
             var param = new Dictionary<string, object>
             {
                 { "@username", username },
@@ -48,7 +48,7 @@ namespace SistemPenggajianKaryawan.Service
         // Cek apakah username sudah ada (untuk validasi tambah user)
         public bool usernameAda(string username)
         {
-            Query = "SELECT user_id FROM tbl_Users WHERE username = @username";
+            Query = "SELECT user_id FROM users WHERE username = @username";
             var param = new Dictionary<string, object> { { "@username", username } };
             return server.eksekusiQueryParam(Query, param).Rows.Count > 0;
         }
