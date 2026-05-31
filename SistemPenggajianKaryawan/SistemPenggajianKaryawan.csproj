@@ -119,6 +119,18 @@
     <Compile Include="FormDashboarHRD.Designer.cs">
       <DependentUpon>FormDashboarHRD.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormManajemenUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormManajemenUser.Designer.cs">
+      <DependentUpon>FormManajemenUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormKomponenGaji.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormKomponenGaji.Designer.cs">
+      <DependentUpon>FormKomponenGaji.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormKaryawan.cs">
       <SubType>Form</SubType>
     </Compile>
