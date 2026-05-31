@@ -361,7 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# Markdown documentation files
-SistemPenggajianKaryawan/AGENTS.md
-SistemPenggajianKaryawan/DESIGN.md
+
