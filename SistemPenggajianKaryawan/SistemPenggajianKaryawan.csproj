@@ -149,6 +149,7 @@
     <Compile Include="FormSlipGaji.Designer.cs">
       <DependentUpon>FormSlipGaji.cs</DependentUpon>
     </Compile>
+    <Compile Include="Konfigurasi\DatabaseSeeder.cs" />
     <Compile Include="Konfigurasi\Koneksi.cs" />
     <Compile Include="Konfigurasi\Konfigurasi.cs" />
     <Compile Include="Konfigurasi\UserSession.cs" />

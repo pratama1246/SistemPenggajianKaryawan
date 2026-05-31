@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SistemPenggajianKaryawan.Konfigurasi;
 
 namespace SistemPenggajianKaryawan
 {
@@ -16,6 +17,10 @@ namespace SistemPenggajianKaryawan
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Seed database tables and sample accounts
+            DatabaseSeeder.Seed();
+
             Application.Run(new FormSplash());
         }
     }
