@@ -61,13 +61,37 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                 // Seed Karyawan jika belum ada
                 if (!auth.usernameAda("karyawan"))
                 {
-                    string qKaryawan = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
+                    object karyawanId = DBNull.Value;
+                    
+                    try
+                    {
+                        DataTable dtKar = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                        if (dtKar.Rows.Count > 0)
+                        {
+                            karyawanId = Convert.ToInt32(dtKar.Rows[0]["karyawan_id"]);
+                        }
+                        else
+                        {
+                            string qInsertKar = "INSERT INTO karyawan (kode_karyawan, nama_karyawan, jabatan, jenis, gaji_pokok, is_aktif) VALUES ('K001', 'Karyawan Staff', 'Staff Administrasi', 'Tetap', 4500000.00, 1)";
+                            server.eksekusiNonQuery(qInsertKar);
+                            
+                            DataTable dtNewKar = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                            if (dtNewKar.Rows.Count > 0)
+                            {
+                                karyawanId = Convert.ToInt32(dtNewKar.Rows[0]["karyawan_id"]);
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+
+                    string qKaryawan = "INSERT INTO users (nama, username, password, role, is_active, karyawan_id) VALUES (@nama, @username, @password, @role, 1, @karyawan_id)";
                     var pKaryawan = new Dictionary<string, object>
                     {
                         { "@nama", "Karyawan Staff" },
                         { "@username", "karyawan" },
                         { "@password", auth.hashPassword("karyawan123") },
-                        { "@role", "Karyawan" }
+                        { "@role", "Karyawan" },
+                        { "@karyawan_id", karyawanId }
                     };
                     server.eksekusiNonQueryParam(qKaryawan, pKaryawan);
                 }

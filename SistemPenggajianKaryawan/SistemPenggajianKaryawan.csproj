@@ -180,6 +180,12 @@
     <EmbeddedResource Include="FormDashboardAdmin.resx">
       <DependentUpon>FormDashboardAdmin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormDashboardKaryawan.resx">
+      <DependentUpon>FormDashboardKaryawan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDashboarHRD.resx">
+      <DependentUpon>FormDashboarHRD.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
