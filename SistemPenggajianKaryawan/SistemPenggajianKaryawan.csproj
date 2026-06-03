@@ -189,6 +189,12 @@
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormProsesGaji.resx">
+      <DependentUpon>FormProsesGaji.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSlipGaji.resx">
+      <DependentUpon>FormSlipGaji.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>

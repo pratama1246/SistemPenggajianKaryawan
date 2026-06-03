@@ -16,5 +16,55 @@ namespace SistemPenggajianKaryawan
         {
             InitializeComponent();
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bg_panel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void judul_lbl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel_body_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void slipgaji_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void penghasilan_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void FormSlipGaji_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
