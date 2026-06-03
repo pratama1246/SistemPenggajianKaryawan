@@ -121,5 +121,10 @@ namespace SistemPenggajianKaryawan
             error_lbl.Visible = false;
             username_txt.Focus();
         }
+
+        private void username_txt_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

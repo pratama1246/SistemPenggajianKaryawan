@@ -131,8 +131,9 @@ namespace SistemPenggajianKaryawan
             this.username_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.username_txt.Location = new System.Drawing.Point(53, 202);
             this.username_txt.Name = "username_txt";
-            this.username_txt.Size = new System.Drawing.Size(360, 25);
+            this.username_txt.Size = new System.Drawing.Size(360, 34);
             this.username_txt.TabIndex = 3;
+            this.username_txt.TextChanged += new System.EventHandler(this.username_txt_TextChanged);
             this.username_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.username_txt_KeyDown);
             // 
             // password_lbl
@@ -154,7 +155,7 @@ namespace SistemPenggajianKaryawan
             this.password_txt.Location = new System.Drawing.Point(53, 270);
             this.password_txt.Name = "password_txt";
             this.password_txt.PasswordChar = '●';
-            this.password_txt.Size = new System.Drawing.Size(360, 25);
+            this.password_txt.Size = new System.Drawing.Size(360, 34);
             this.password_txt.TabIndex = 5;
             this.password_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.password_txt_KeyDown);
             // 
