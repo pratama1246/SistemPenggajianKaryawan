@@ -173,6 +173,7 @@
     <Compile Include="Model\KaryawanKontrak.cs" />
     <Compile Include="Model\KaryawanTetap.cs" />
     <Compile Include="Model\KomponenGaji.cs" />
+    <Compile Include="Model\KonfigurasiAbsensi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Absensi_serv.cs" />

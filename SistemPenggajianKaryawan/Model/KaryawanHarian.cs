@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SistemPenggajianKaryawan.Model
 {
@@ -6,20 +8,29 @@ namespace SistemPenggajianKaryawan.Model
     {
         public override string GetJenis() => "Harian";
 
-        public override decimal HitungGaji(DataAbsensi absensi, List<KomponenGaji> komponen)
+        public override decimal HitungGaji(
+            List<DataAbsensi>  absensiList,
+            List<KomponenGaji> komponen,
+            KonfigurasiAbsensi config)
         {
-            // Gaji pokok di sini = upah per hari
+            // Gaji pokok = upah per hari
             decimal upahPerHari = gaji_pokok;
-            decimal upahPerJam = upahPerHari / 8; // asumsi 8 jam kerja per hari
+            decimal upahPerJam  = upahPerHari / 8;
+            decimal total       = 0;
 
-            // Upah hadir
-            decimal totalHadir = upahPerHari * absensi.hadir;
+            foreach (var absensi in absensiList.Where(a => a.status == "Hadir"))
+            {
+                // Upah hadir per hari
+                total += upahPerHari;
 
-            // Upah lembur = 1.5x upah per jam
-            decimal totalLembur = upahPerJam * 1.5m * absensi.lembur;
+                // Tambahan lembur 1.5x
+                double jamLembur = absensi.jamLembur(config.jam_keluar_normal);
+                if (jamLembur > 0)
+                    total += (decimal)jamLembur * upahPerJam * 1.5m;
+            }
 
-            // Tidak ada tunjangan/potongan tetap untuk harian
-            decimal total = totalHadir + totalLembur;
+            // Harian tidak kena potongan tetap
+            // Alpha = tidak dibayar (sudah tidak masuk hitungan hadir)
 
             return total < 0 ? 0 : total;
         }
