@@ -67,7 +67,8 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                         status        ENUM('Hadir','Izin','Sakit','Alpha') NOT NULL DEFAULT 'Hadir',
                         keterangan    VARCHAR(255) NULL,
                         created_at    DATETIME     DEFAULT NOW(),
-                        FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE CASCADE
+                        FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE CASCADE,
+                        UNIQUE KEY unik_absensi (karyawan_id, tanggal)
                     );";
                 server.eksekusiNonQuery(createAbsensiTable);
 
@@ -101,36 +102,126 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     );";
                 server.eksekusiNonQuery(createKomponenTable);
 
-                // Seed komponen gaji default
-                DataTable dtKomp = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM komponen_gaji");
-                if (dtKomp.Rows.Count > 0 && Convert.ToInt32(dtKomp.Rows[0]["jumlah"]) == 0)
+                // 2. Seed Karyawan secara aman
+                Action<string, string, string, string, decimal> insertKaryawanIfNotExist = (kode, nama, jabatan, jenis, gapok) =>
                 {
-                    string qKomp = "INSERT INTO komponen_gaji (nama_komponen, tipe, jenis_nilai, nilai, berlaku_untuk) VALUES (@nama, @tipe, @jenis, @nilai, @berlaku)";
-                    var seedData = new[]
+                    DataTable dt = server.eksekusiQueryParam("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = @kode", 
+                        new Dictionary<string, object> { { "@kode", kode } });
+                    if (dt.Rows.Count == 0)
                     {
-                        new { nama = "Tunjangan Transport", tipe = "Tambah", jenis = "Nominal", nilai = 400000m, berlaku = "Semua" },
-                        new { nama = "Tunjangan Makan",    tipe = "Tambah", jenis = "Nominal", nilai = 300000m, berlaku = "Tetap" },
-                        new { nama = "BPJS Kesehatan",     tipe = "Potong", jenis = "Persen",  nilai = 5m,      berlaku = "Tetap" },
-                        new { nama = "BPJS Naker",         tipe = "Potong", jenis = "Persen",  nilai = 5m,      berlaku = "Tetap" },
-                    };
-                    foreach (var s in seedData)
+                        server.eksekusiNonQueryParam("INSERT INTO karyawan (kode_karyawan, nama_karyawan, jabatan, jenis, gaji_pokok, is_aktif) VALUES (@kode, @nama, @jabatan, @jenis, @gapok, 1)",
+                            new Dictionary<string, object>
+                            {
+                                { "@kode", kode },
+                                { "@nama", nama },
+                                { "@jabatan", jabatan },
+                                { "@jenis", jenis },
+                                { "@gapok", gapok }
+                            });
+                    }
+                };
+
+                insertKaryawanIfNotExist("K001", "Karyawan Staff", "Staff Administrasi", "Tetap", 4500000.00m);
+                insertKaryawanIfNotExist("K002", "Ahmad H.", "Supervisor", "Tetap", 3500000.00m);
+                insertKaryawanIfNotExist("K003", "Budi S.", "Operator", "Harian", 150000.00m);
+                insertKaryawanIfNotExist("K004", "Citra D.", "Staff IT", "Kontrak", 2800000.00m);
+
+                // 3. Seed Komponen Gaji secara aman
+                Action<string, string, string, decimal, string> insertKomponenIfNotExist = (nama, tipe, jenisNilai, nilai, berlaku) =>
+                {
+                    DataTable dt = server.eksekusiQueryParam("SELECT komponen_id FROM komponen_gaji WHERE nama_komponen = @nama",
+                        new Dictionary<string, object> { { "@nama", nama } });
+                    if (dt.Rows.Count == 0)
                     {
-                        var p = new Dictionary<string, object>
+                        server.eksekusiNonQueryParam("INSERT INTO komponen_gaji (nama_komponen, tipe, jenis_nilai, nilai, berlaku_untuk) VALUES (@nama, @tipe, @jenisNilai, @nilai, @berlaku)",
+                            new Dictionary<string, object>
+                            {
+                                { "@nama", nama },
+                                { "@tipe", tipe },
+                                { "@jenisNilai", jenisNilai },
+                                { "@nilai", nilai },
+                                { "@berlaku", berlaku }
+                            });
+                    }
+                };
+
+                insertKomponenIfNotExist("Tunjangan Jabatan", "Tambah", "Persen", 10.00m, "Semua");
+                insertKomponenIfNotExist("Tunjangan Keluarga", "Tambah", "Persen", 10.00m, "Tetap");
+                insertKomponenIfNotExist("Potongan BPJS", "Potong", "Persen", 5.00m, "Semua");
+                insertKomponenIfNotExist("Potongan Koperasi", "Potong", "Persen", 5.00m, "Tetap");
+
+                // 4. Seed Absensi secara aman (Daily logs untuk Mei 2026 - week days only)
+                Action<string, DateTime, TimeSpan, TimeSpan, string> insertDailyAbsensiIfNotExist = (kodeKar, tanggal, jamMasuk, jamKeluar, status) =>
+                {
+                    DataTable dtKar = server.eksekusiQueryParam("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = @kode",
+                        new Dictionary<string, object> { { "@kode", kodeKar } });
+                    if (dtKar.Rows.Count > 0)
+                    {
+                        int id = Convert.ToInt32(dtKar.Rows[0]["karyawan_id"]);
+                        DataTable dtAbs = server.eksekusiQueryParam("SELECT absensi_id FROM absensi WHERE karyawan_id = @id AND tanggal = @tanggal",
+                            new Dictionary<string, object>
+                            {
+                                { "@id", id },
+                                { "@tanggal", tanggal }
+                            });
+                        if (dtAbs.Rows.Count == 0)
                         {
-                            { "@nama",   s.nama   },
-                            { "@tipe",   s.tipe   },
-                            { "@jenis",  s.jenis  },
-                            { "@nilai",  s.nilai  },
-                            { "@berlaku",s.berlaku }
-                        };
-                        server.eksekusiNonQueryParam(qKomp, p);
+                            server.eksekusiNonQueryParam("INSERT INTO absensi (karyawan_id, tanggal, jam_masuk, jam_keluar, status, keterangan) VALUES (@id, @tanggal, @jamMasuk, @jamKeluar, @status, '')",
+                                new Dictionary<string, object>
+                                {
+                                    { "@id", id },
+                                    { "@tanggal", tanggal },
+                                    { "@jamMasuk", jamMasuk },
+                                    { "@jamKeluar", jamKeluar },
+                                    { "@status", status }
+                                });
+                        }
+                    }
+                };
+
+                try
+                {
+                    DataTable dtAbsCount = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM absensi");
+                    if (dtAbsCount.Rows.Count > 0 && Convert.ToInt32(dtAbsCount.Rows[0]["jumlah"]) == 0)
+                    {
+                        string[] kodes = { "K001", "K002", "K003", "K004" };
+                        for (int day = 1; day <= 31; day++)
+                        {
+                            DateTime dt = new DateTime(2026, 5, day);
+                            if (dt.DayOfWeek != DayOfWeek.Saturday && dt.DayOfWeek != DayOfWeek.Sunday)
+                            {
+                                foreach (var kode in kodes)
+                                {
+                                    TimeSpan masuk = new TimeSpan(8, 0, 0);
+                                    TimeSpan keluar = new TimeSpan(17, 0, 0);
+                                    string status = "Hadir";
+
+                                    if (kode == "K002" && day == 5)
+                                    {
+                                        masuk = new TimeSpan(8, 20, 0); // Late 20 mins
+                                    }
+                                    if (kode == "K003" && day == 10)
+                                    {
+                                        keluar = new TimeSpan(19, 0, 0); // Lembur 2 hours
+                                    }
+                                    if (kode == "K004" && day == 15)
+                                    {
+                                        status = "Izin";
+                                        masuk = TimeSpan.Zero;
+                                        keluar = TimeSpan.Zero;
+                                    }
+
+                                    insertDailyAbsensiIfNotExist(kode, dt, masuk, keluar, status);
+                                }
+                            }
+                        }
                     }
                 }
+                catch (Exception) { }
 
-                // 2. Masukkan data seeder default jika belum ada
+                // 5. Seed Users default
                 Auth_serv auth = new Auth_serv();
 
-                // Seed Admin jika belum ada
                 if (!auth.usernameAda("admin"))
                 {
                     string qAdmin = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
@@ -144,7 +235,6 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     server.eksekusiNonQueryParam(qAdmin, pAdmin);
                 }
 
-                // Seed HRD jika belum ada
                 if (!auth.usernameAda("hrd"))
                 {
                     string qHrd = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
@@ -158,31 +248,14 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     server.eksekusiNonQueryParam(qHrd, pHrd);
                 }
 
-                // Seed Karyawan jika belum ada
                 if (!auth.usernameAda("karyawan"))
                 {
                     object karyawanId = DBNull.Value;
-                    
-                    try
+                    DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                    if (dtStaff.Rows.Count > 0)
                     {
-                        DataTable dtKar = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
-                        if (dtKar.Rows.Count > 0)
-                        {
-                            karyawanId = Convert.ToInt32(dtKar.Rows[0]["karyawan_id"]);
-                        }
-                        else
-                        {
-                            string qInsertKar = "INSERT INTO karyawan (kode_karyawan, nama_karyawan, jabatan, jenis, gaji_pokok, is_aktif) VALUES ('K001', 'Karyawan Staff', 'Staff Administrasi', 'Tetap', 4500000.00, 1)";
-                            server.eksekusiNonQuery(qInsertKar);
-                            
-                            DataTable dtNewKar = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
-                            if (dtNewKar.Rows.Count > 0)
-                            {
-                                karyawanId = Convert.ToInt32(dtNewKar.Rows[0]["karyawan_id"]);
-                            }
-                        }
+                        karyawanId = Convert.ToInt32(dtStaff.Rows[0]["karyawan_id"]);
                     }
-                    catch (Exception) { }
 
                     string qKaryawan = "INSERT INTO users (nama, username, password, role, is_active, karyawan_id) VALUES (@nama, @username, @password, @role, 1, @karyawan_id)";
                     var pKaryawan = new Dictionary<string, object>
@@ -196,9 +269,9 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     server.eksekusiNonQueryParam(qKaryawan, pKaryawan);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Silently ignore if MySQL server is offline or database doesn't exist yet
+                Console.WriteLine("Seed Error: " + ex.Message);
             }
         }
     }
