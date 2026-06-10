@@ -41,20 +41,52 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                 server.eksekusiNonQuery(createTableQuery);
 
                 // 1b. Buat tabel absensi jika belum ada
+                bool isOldSchema = false;
+                try
+                {
+                    DataTable columns = server.eksekusiQuery("SHOW COLUMNS FROM absensi LIKE 'bulan'");
+                    if (columns.Rows.Count > 0)
+                    {
+                        isOldSchema = true;
+                    }
+                }
+                catch (Exception) { }
+
+                if (isOldSchema)
+                {
+                    server.eksekusiNonQuery("DROP TABLE IF EXISTS absensi");
+                }
+
                 string createAbsensiTable = @"
                     CREATE TABLE IF NOT EXISTS absensi (
-                        karyawan_id INT NOT NULL,
-                        bulan INT NOT NULL,
-                        tahun INT NOT NULL,
-                        hadir INT NOT NULL DEFAULT 0,
-                        izin INT NOT NULL DEFAULT 0,
-                        sakit INT NOT NULL DEFAULT 0,
-                        alpha INT NOT NULL DEFAULT 0,
-                        lembur DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-                        PRIMARY KEY (karyawan_id, bulan, tahun),
+                        absensi_id    INT AUTO_INCREMENT PRIMARY KEY,
+                        karyawan_id   INT          NOT NULL,
+                        tanggal       DATE         NOT NULL,
+                        jam_masuk     TIME         NULL,
+                        jam_keluar    TIME         NULL,
+                        status        ENUM('Hadir','Izin','Sakit','Alpha') NOT NULL DEFAULT 'Hadir',
+                        keterangan    VARCHAR(255) NULL,
+                        created_at    DATETIME     DEFAULT NOW(),
                         FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE CASCADE
                     );";
                 server.eksekusiNonQuery(createAbsensiTable);
+
+                // Buat tabel konfigurasi_absensi jika belum ada
+                string createConfigTable = @"
+                    CREATE TABLE IF NOT EXISTS konfigurasi_absensi (
+                        config_id         INT AUTO_INCREMENT PRIMARY KEY,
+                        jam_masuk_normal  TIME NOT NULL DEFAULT '08:00:00',
+                        jam_keluar_normal TIME NOT NULL DEFAULT '17:00:00',
+                        toleransi_menit   INT  NOT NULL DEFAULT 15,
+                        updated_at        DATETIME DEFAULT NOW()
+                    );";
+                server.eksekusiNonQuery(createConfigTable);
+
+                DataTable dtConf = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM konfigurasi_absensi");
+                if (dtConf.Rows.Count > 0 && Convert.ToInt32(dtConf.Rows[0]["jumlah"]) == 0)
+                {
+                    server.eksekusiNonQuery("INSERT INTO konfigurasi_absensi (jam_masuk_normal, jam_keluar_normal, toleransi_menit) VALUES ('08:00:00', '17:00:00', 15)");
+                }
 
                 // 1c. Buat tabel komponen_gaji jika belum ada
                 string createKomponenTable = @"

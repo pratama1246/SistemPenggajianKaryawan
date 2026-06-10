@@ -4,7 +4,6 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using SistemPenggajianKaryawan.Konfigurasi;
-using SistemPenggajianKaryawan.Model;
 using SistemPenggajianKaryawan.Service;
 
 namespace SistemPenggajianKaryawan
@@ -12,8 +11,8 @@ namespace SistemPenggajianKaryawan
     public partial class FormAbsensi : Form
     {
         private Absensi_serv absensi_serv = new Absensi_serv();
-        private bool isCariPlaceholder = true;
-        private string placeholderText = "🔍 Cari karyawan...";
+        private int selectedKaryawanId = 0;
+        private string selectedNama = "";
 
         public FormAbsensi()
         {
@@ -22,351 +21,253 @@ namespace SistemPenggajianKaryawan
 
         private void FormAbsensi_Load(object sender, EventArgs e)
         {
-            // 1. Cek Role Keamanan
-            if (UserSession.role != "HRD" && UserSession.role != "Admin")
-            {
-                MessageBox.Show("Akses ditolak. Form ini hanya untuk Admin atau HRD.", "Error Keamanan", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Close();
-                return;
-            }
+            // Set default date & clock display immediately
+            timer_jam_Tick(null, null);
 
-            // 2. Setup DataGridView Properties
+            // Configure DataGridView
             SetupDataGridView();
 
-            // 3. Set Default Periode (Bulan Ini)
-            bulan_cmb.SelectedIndex = DateTime.Now.Month - 1;
-            tahun_txt.Text = DateTime.Now.Year.ToString();
-
-            // 4. Muat Data
-            muatKaryawanCmb();
-            bersihkan();
+            // Load today's log
             tampilGrid();
+
+            // Focus on barcode scanner input
+            kode_txt.Focus();
         }
 
         private void SetupDataGridView()
         {
-            absensi_dgv.ReadOnly = true;
-            absensi_dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            absensi_dgv.MultiSelect = false;
-            absensi_dgv.AllowUserToAddRows = false;
-            absensi_dgv.AllowUserToDeleteRows = false;
-            absensi_dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            absensi_dgv.EnableHeadersVisualStyles = false;
-            absensi_dgv.BorderStyle = BorderStyle.None;
-            absensi_dgv.RowHeadersVisible = false;
+            log_dgv.ReadOnly = true;
+            log_dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            log_dgv.MultiSelect = false;
+            log_dgv.AllowUserToAddRows = false;
+            log_dgv.AllowUserToDeleteRows = false;
+            log_dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            log_dgv.EnableHeadersVisualStyles = false;
+            log_dgv.BorderStyle = BorderStyle.None;
+            log_dgv.RowHeadersVisible = false;
 
             // Background & Border colors
-            absensi_dgv.BackgroundColor = Color.FromArgb(38, 38, 38);
-            absensi_dgv.GridColor = Color.FromArgb(58, 58, 58);
+            log_dgv.BackgroundColor = Color.FromArgb(38, 38, 38);
+            log_dgv.GridColor = Color.FromArgb(58, 58, 58);
 
             // Headers Styling
-            absensi_dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180); // Steel Blue
-            absensi_dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            absensi_dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            absensi_dgv.ColumnHeadersHeight = 32;
+            log_dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180); // Steel Blue
+            log_dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            log_dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            log_dgv.ColumnHeadersHeight = 32;
 
-            // Row cell margins
-            absensi_dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            log_dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
         }
 
-        private void muatKaryawanCmb()
+        private void tampilGrid()
         {
             try
             {
-                DataTable dt = absensi_serv.getKaryawanAktif();
-                karyawan_cmb.DataSource = dt;
-                karyawan_cmb.DisplayMember = "nama_karyawan";
-                karyawan_cmb.ValueMember = "karyawan_id";
+                DataTable dt = absensi_serv.viewAbsensiHarian(DateTime.Today);
+                log_dgv.DataSource = dt;
+            }
+            catch (Exception) { }
+        }
+
+        private void timer_jam_Tick(object sender, EventArgs e)
+        {
+            jam_lbl.Text = DateTime.Now.ToString("HH:mm:ss");
+            tanggal_lbl.Text = DateTime.Now.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("id-ID"));
+        }
+
+        private void kode_txt_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // suppress default beep sound on Enter
+                string kode = kode_txt.Text.Trim();
+                kode_txt.Clear();
+                prosesAbsensi(kode);
+            }
+        }
+
+        private void prosesAbsensi(string kode)
+        {
+            if (string.IsNullOrEmpty(kode)) return;
+
+            try
+            {
+                Koneksi server = new Koneksi();
+                string q = "SELECT karyawan_id, nama_karyawan, jabatan, jenis FROM karyawan WHERE kode_karyawan = @kode AND is_aktif = 1";
+                var p = new Dictionary<string, object> { { "@kode", kode } };
+                DataTable dt = server.eksekusiQueryParam(q, p);
+
                 if (dt.Rows.Count > 0)
                 {
-                    karyawan_cmb.SelectedIndex = 0;
+                    var row = dt.Rows[0];
+                    int karyawanId = Convert.ToInt32(row["karyawan_id"]);
+                    string nama = row["nama_karyawan"].ToString();
+                    string jabatan = row["jabatan"].ToString();
+                    string jenis = row["jenis"].ToString();
+
+                    selectedKaryawanId = karyawanId;
+                    selectedNama = nama;
+
+                    nama_lbl.Text = nama;
+                    jabatan_lbl.Text = jabatan + " (" + jenis + ")";
+
+                    bool sudahMasuk = absensi_serv.sudahAbsenMasuk(karyawanId);
+                    bool sudahKeluar = absensi_serv.sudahAbsenKeluar(karyawanId);
+
+                    if (!sudahMasuk)
+                    {
+                        if (absensi_serv.simpanAbsenMasuk(karyawanId) > 0)
+                        {
+                            info_lbl.Text = "Halo " + nama + ",\r\nABSEN MASUK berhasil dicatat pada " + DateTime.Now.ToString("HH:mm:ss");
+                            info_lbl.ForeColor = Color.FromArgb(76, 175, 80); // Success green
+                        }
+                        else
+                        {
+                            info_lbl.Text = "Gagal mencatat Absen Masuk.";
+                            info_lbl.ForeColor = Color.IndianRed;
+                        }
+                    }
+                    else if (!sudahKeluar)
+                    {
+                        if (absensi_serv.simpanAbsenKeluar(karyawanId) > 0)
+                        {
+                            info_lbl.Text = "Halo " + nama + ",\r\nABSEN KELUAR berhasil dicatat pada " + DateTime.Now.ToString("HH:mm:ss");
+                            info_lbl.ForeColor = Color.FromArgb(30, 144, 255); // Blue
+                        }
+                        else
+                        {
+                            info_lbl.Text = "Gagal mencatat Absen Keluar.";
+                            info_lbl.ForeColor = Color.IndianRed;
+                        }
+                    }
+                    else
+                    {
+                        info_lbl.Text = "Halo " + nama + ",\r\nAbsensi Anda hari ini sudah lengkap.";
+                        info_lbl.ForeColor = Color.FromArgb(245, 166, 35); // Amber
+                    }
+
+                    // Refresh clock times displayed on UI
+                    updateTampilanWaktu(karyawanId);
+
+                    // Refresh log grid
+                    tampilGrid();
+                }
+                else
+                {
+                    // Reset fields
+                    selectedKaryawanId = 0;
+                    selectedNama = "";
+                    nama_lbl.Text = "—";
+                    jabatan_lbl.Text = "—";
+                    status_masuk_lbl.Text = "Jam Masuk: —";
+                    status_keluar_lbl.Text = "Jam Keluar: —";
+
+                    info_lbl.Text = "Karyawan dengan kode '" + kode + "' tidak ditemukan atau tidak aktif!";
+                    info_lbl.ForeColor = Color.IndianRed;
+                }
+            }
+            catch (Exception ex)
+            {
+                info_lbl.Text = "Terjadi kesalahan: " + ex.Message;
+                info_lbl.ForeColor = Color.IndianRed;
+            }
+        }
+
+        private void updateTampilanWaktu(int karyawanId)
+        {
+            try
+            {
+                Koneksi server = new Koneksi();
+                string q = "SELECT jam_masuk, jam_keluar FROM absensi WHERE karyawan_id = @karyawan_id AND tanggal = CURDATE()";
+                var p = new Dictionary<string, object> { { "@karyawan_id", karyawanId } };
+                DataTable dt = server.eksekusiQueryParam(q, p);
+                if (dt.Rows.Count > 0)
+                {
+                    var row = dt.Rows[0];
+                    string jamMasuk = row["jam_masuk"] == DBNull.Value ? "—" : row["jam_masuk"].ToString();
+                    string jamKeluar = row["jam_keluar"] == DBNull.Value ? "—" : row["jam_keluar"].ToString();
+                    status_masuk_lbl.Text = "Jam Masuk: " + jamMasuk;
+                    status_keluar_lbl.Text = "Jam Keluar: " + jamKeluar;
+                }
+                else
+                {
+                    status_masuk_lbl.Text = "Jam Masuk: —";
+                    status_keluar_lbl.Text = "Jam Keluar: —";
                 }
             }
             catch (Exception) { }
         }
 
-        private void tampilGrid()
+        private void absen_masuk_btn_Click(object sender, EventArgs e)
         {
-            if (bulan_cmb.SelectedIndex == -1) return;
-
-            int bulan = bulan_cmb.SelectedIndex + 1;
-            int tahun;
-            if (!int.TryParse(tahun_txt.Text, out tahun))
+            if (selectedKaryawanId == 0)
             {
-                tahun = DateTime.Now.Year;
+                MessageBox.Show("Silakan scan kartu atau masukkan kode karyawan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            string keyword = (isCariPlaceholder || string.IsNullOrEmpty(cari_txt.Text)) ? "" : cari_txt.Text.Trim();
-
-            DataTable dt;
-            if (string.IsNullOrEmpty(keyword))
+            bool sudahMasuk = absensi_serv.sudahAbsenMasuk(selectedKaryawanId);
+            if (sudahMasuk)
             {
-                dt = absensi_serv.viewAbsensiPeriode(bulan, tahun);
+                MessageBox.Show("Karyawan " + selectedNama + " sudah melakukan absen masuk hari ini.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (absensi_serv.simpanAbsenMasuk(selectedKaryawanId) > 0)
+            {
+                info_lbl.Text = "Halo " + selectedNama + ",\r\nABSEN MASUK berhasil dicatat.";
+                info_lbl.ForeColor = Color.FromArgb(76, 175, 80);
+                updateTampilanWaktu(selectedKaryawanId);
+                tampilGrid();
             }
             else
             {
-                dt = absensi_serv.searchAbsensiPeriode(bulan, tahun, keyword);
+                MessageBox.Show("Gagal menyimpan absen masuk.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void absen_keluar_btn_Click(object sender, EventArgs e)
+        {
+            if (selectedKaryawanId == 0)
+            {
+                MessageBox.Show("Silakan scan kartu atau masukkan kode karyawan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            absensi_dgv.DataSource = dt;
-
-            // Atur Visibilitas Kolom
-            if (absensi_dgv.Columns.Count > 0)
+            bool sudahMasuk = absensi_serv.sudahAbsenMasuk(selectedKaryawanId);
+            if (!sudahMasuk)
             {
-                // Hide ID dan kode karyawan agar rapi seperti mockup
-                if (absensi_dgv.Columns["karyawan_id"] != null) absensi_dgv.Columns["karyawan_id"].Visible = false;
-                if (absensi_dgv.Columns["kode_karyawan"] != null) absensi_dgv.Columns["kode_karyawan"].Visible = false;
-                if (absensi_dgv.Columns["izin"] != null) absensi_dgv.Columns["izin"].Visible = false;
-                if (absensi_dgv.Columns["sakit"] != null) absensi_dgv.Columns["sakit"].Visible = false;
-
-                // Rename headers
-                if (absensi_dgv.Columns["nama_karyawan"] != null) absensi_dgv.Columns["nama_karyawan"].HeaderText = "Nama";
-                if (absensi_dgv.Columns["jenis"] != null) absensi_dgv.Columns["jenis"].HeaderText = "Jenis";
-                if (absensi_dgv.Columns["hadir"] != null) absensi_dgv.Columns["hadir"].HeaderText = "Hadir";
-                if (absensi_dgv.Columns["alpha"] != null) absensi_dgv.Columns["alpha"].HeaderText = "Alpha";
-                if (absensi_dgv.Columns["lembur"] != null) absensi_dgv.Columns["lembur"].HeaderText = "Lembur";
-                if (absensi_dgv.Columns["status"] != null) absensi_dgv.Columns["status"].HeaderText = "Status";
+                MessageBox.Show("Karyawan " + selectedNama + " belum melakukan absen masuk hari ini. Tidak dapat absen keluar.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            // Hitung Belum Input
-            int countPending = 0;
-            foreach (DataRow row in dt.Rows)
+            bool sudahKeluar = absensi_serv.sudahAbsenKeluar(selectedKaryawanId);
+            if (sudahKeluar)
             {
-                if (row["status"].ToString() == "Pending")
-                {
-                    countPending++;
-                }
+                MessageBox.Show("Karyawan " + selectedNama + " sudah melakukan absen keluar hari ini.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
-            belumInput_lbl.Text = "Belum Input: " + countPending;
-            if (countPending > 0)
+            if (absensi_serv.simpanAbsenKeluar(selectedKaryawanId) > 0)
             {
-                belumInput_lbl.BackColor = Color.FromArgb(245, 166, 23); // Orange
-                belumInput_lbl.ForeColor = Color.Black;
+                info_lbl.Text = "Halo " + selectedNama + ",\r\nABSEN KELUAR berhasil dicatat.";
+                info_lbl.ForeColor = Color.FromArgb(30, 144, 255);
+                updateTampilanWaktu(selectedKaryawanId);
+                tampilGrid();
             }
             else
             {
-                belumInput_lbl.BackColor = Color.FromArgb(76, 175, 80); // Green
-                belumInput_lbl.ForeColor = Color.White;
+                MessageBox.Show("Gagal menyimpan absen keluar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void bersihkan()
-        {
-            hadir_txt.Text = "22"; // standard working days default
-            izin_txt.Text = "0";
-            sakit_txt.Text = "0";
-            alpha_txt.Text = "0";
-            lembur_txt.Text = "0";
-
-            if (karyawan_cmb.Items.Count > 0)
-            {
-                karyawan_cmb.SelectedIndex = 0;
-            }
-            absensi_dgv.ClearSelection();
-        }
-
-        private void loadDetailKehadiran(int karyawanId)
-        {
-            foreach (DataGridViewRow row in absensi_dgv.Rows)
-            {
-                if (row.Cells["karyawan_id"].Value != null && Convert.ToInt32(row.Cells["karyawan_id"].Value) == karyawanId)
-                {
-                    object statusObj = row.Cells["status"].Value;
-                    if (statusObj != null && statusObj.ToString() == "Selesai")
-                    {
-                        hadir_txt.Text = row.Cells["hadir"].Value.ToString();
-                        izin_txt.Text = row.Cells["izin"].Value.ToString();
-                        sakit_txt.Text = row.Cells["sakit"].Value.ToString();
-                        alpha_txt.Text = row.Cells["alpha"].Value.ToString();
-                        
-                        decimal lemburVal = Convert.ToDecimal(row.Cells["lembur"].Value);
-                        lembur_txt.Text = lemburVal.ToString("0");
-                    }
-                    else
-                    {
-                        // Reset to defaults for new input
-                        hadir_txt.Text = "22";
-                        izin_txt.Text = "0";
-                        sakit_txt.Text = "0";
-                        alpha_txt.Text = "0";
-                        lembur_txt.Text = "0";
-                    }
-                    break;
-                }
-            }
-        }
-
-        private void absensi_dgv_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > -1)
-            {
-                DataGridViewRow row = absensi_dgv.Rows[e.RowIndex];
-                if (row.Cells["karyawan_id"].Value != null)
-                {
-                    int karyawanId = Convert.ToInt32(row.Cells["karyawan_id"].Value);
-                    karyawan_cmb.SelectedValue = karyawanId;
-                    loadDetailKehadiran(karyawanId);
-                }
-            }
-        }
-
-        private void karyawan_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (karyawan_cmb.SelectedValue != null && karyawan_cmb.SelectedValue is int)
-            {
-                loadDetailKehadiran((int)karyawan_cmb.SelectedValue);
-            }
-        }
-
-        private void bulan_cmb_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            tampilGrid();
-        }
-
-        private void tahun_txt_TextChanged(object sender, EventArgs e)
-        {
-            tampilGrid();
-        }
-
-        private void cari_txt_TextChanged(object sender, EventArgs e)
-        {
-            tampilGrid();
-        }
-
-        private void cari_txt_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (isCariPlaceholder)
-            {
-                cari_txt.Text = "";
-                cari_txt.ForeColor = Color.White;
-                isCariPlaceholder = false;
-            }
-        }
-
-        private void cari_txt_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(cari_txt.Text))
-            {
-                cari_txt.Text = placeholderText;
-                cari_txt.ForeColor = Color.Gray;
-                isCariPlaceholder = true;
-            }
-        }
-
-        private void simpan_btn_Click(object sender, EventArgs e)
-        {
-            if (karyawan_cmb.SelectedValue == null)
-            {
-                MessageBox.Show("Silakan pilih karyawan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int karyawanId = Convert.ToInt32(karyawan_cmb.SelectedValue);
-            int bulan = bulan_cmb.SelectedIndex + 1;
-            int tahun;
-
-            if (!int.TryParse(tahun_txt.Text, out tahun) || tahun < 2000 || tahun > 2100)
-            {
-                MessageBox.Show("Format tahun tidak valid (masukkan angka antara 2000-2100).", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tahun_txt.Focus();
-                return;
-            }
-
-            int hadir, izin, sakit, alpha;
-            decimal lembur;
-
-            if (!int.TryParse(hadir_txt.Text, out hadir) || hadir < 0 || hadir > 31)
-            {
-                MessageBox.Show("Input Hadir harus berupa angka positif (maks 31).", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                hadir_txt.Focus();
-                return;
-            }
-
-            if (!int.TryParse(izin_txt.Text, out izin) || izin < 0 || izin > 31)
-            {
-                MessageBox.Show("Input Izin harus berupa angka positif.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                izin_txt.Focus();
-                return;
-            }
-
-            if (!int.TryParse(sakit_txt.Text, out sakit) || sakit < 0 || sakit > 31)
-            {
-                MessageBox.Show("Input Sakit harus berupa angka positif.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                sakit_txt.Focus();
-                return;
-            }
-
-            if (!int.TryParse(alpha_txt.Text, out alpha) || alpha < 0 || alpha > 31)
-            {
-                MessageBox.Show("Input Alpha harus berupa angka positif.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                alpha_txt.Focus();
-                return;
-            }
-
-            if (!decimal.TryParse(lembur_txt.Text, out lembur) || lembur < 0)
-            {
-                MessageBox.Show("Input Lembur harus berupa angka desimal positif.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                lembur_txt.Focus();
-                return;
-            }
-
-            DataAbsensi abs = new DataAbsensi();
-            abs.karyawan_id = karyawanId;
-            abs.bulan = bulan;
-            abs.tahun = tahun;
-            abs.hadir = hadir;
-            abs.izin = izin;
-            abs.sakit = sakit;
-            abs.alpha = alpha;
-            abs.lembur = lembur;
-
-            bool exists = absensi_serv.jikaAda(karyawanId, bulan, tahun);
-
-            if (exists)
-            {
-                if (MessageBox.Show("Yakin ingin mengubah data absensi untuk karyawan ini pada periode tersebut?", 
-                    "Konfirmasi Perubahan", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    if (absensi_serv.update(abs) > 0)
-                    {
-                        MessageBox.Show("Data absensi berhasil diperbarui.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        bersihkan();
-                        tampilGrid();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Gagal memperbarui data absensi.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-            else
-            {
-                if (absensi_serv.Save(abs) > 0)
-                {
-                    MessageBox.Show("Data absensi berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    bersihkan();
-                    tampilGrid();
-                }
-                else
-                {
-                    MessageBox.Show("Gagal menyimpan data absensi.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void batal_btn_Click(object sender, EventArgs e)
-        {
-            bersihkan();
-        }
-
-        private void absensi_dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void log_dgv_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            string colName = absensi_dgv.Columns[e.ColumnIndex].Name;
+            string colName = log_dgv.Columns[e.ColumnIndex].Name;
 
-            // 1. Format alternating rows dark background
+            // Alternate backgrounds
             if (e.RowIndex % 2 == 0)
             {
                 e.CellStyle.BackColor = Color.FromArgb(43, 43, 43);
@@ -376,77 +277,47 @@ namespace SistemPenggajianKaryawan
                 e.CellStyle.BackColor = Color.FromArgb(50, 50, 50);
             }
             e.CellStyle.ForeColor = Color.White;
-            e.CellStyle.SelectionBackColor = Color.FromArgb(30, 144, 255); // Selection Dodger Blue
+            e.CellStyle.SelectionBackColor = Color.FromArgb(30, 144, 255);
             e.CellStyle.SelectionForeColor = Color.White;
 
-            // 2. Format Badge untuk Kolom Jenis Karyawan
-            if (colName == "jenis" && e.Value != null)
+            // Format status column with color badge
+            if (colName == "Status" && e.Value != null)
             {
-                string val = e.Value.ToString();
-                if (val == "Tetap")
+                string status = e.Value.ToString();
+                if (status == "Hadir")
                 {
-                    e.CellStyle.BackColor = Color.FromArgb(26, 54, 93); // Dark Blue Badge
-                    e.CellStyle.ForeColor = Color.FromArgb(144, 205, 244);
-                }
-                else if (val == "Harian")
-                {
-                    e.CellStyle.BackColor = Color.FromArgb(28, 69, 50); // Dark Green Badge
+                    e.CellStyle.BackColor = Color.FromArgb(28, 69, 50);
                     e.CellStyle.ForeColor = Color.FromArgb(154, 230, 180);
                 }
-                else if (val == "Kontrak")
+                else if (status == "Izin" || status == "Sakit")
                 {
-                    e.CellStyle.BackColor = Color.FromArgb(116, 66, 16); // Dark Orange/Brown Badge
+                    e.CellStyle.BackColor = Color.FromArgb(116, 66, 16);
                     e.CellStyle.ForeColor = Color.FromArgb(254, 215, 170);
                 }
+                else if (status == "Alpha")
+                {
+                    e.CellStyle.BackColor = Color.FromArgb(93, 26, 26);
+                    e.CellStyle.ForeColor = Color.FromArgb(244, 144, 144);
+                }
             }
 
-            // 3. Format Lembur to append " jam" unit
-            if (colName == "lembur" && e.Value != null && e.Value != DBNull.Value)
+            // Display time formats clearly
+            if ((colName == "Jam Masuk" || colName == "Jam Keluar") && e.Value != null && e.Value != DBNull.Value)
             {
-                string valStr = e.Value.ToString();
-                if (valStr == "—" || valStr == "") return;
-                
-                decimal val;
-                if (decimal.TryParse(valStr, out val))
+                if (e.Value is TimeSpan ts)
                 {
-                    e.Value = string.Format("{0:0} jam", val);
-                    e.FormattingApplied = true;
+                    if (ts == TimeSpan.Zero)
+                    {
+                        e.Value = "—";
+                        e.FormattingApplied = true;
+                    }
+                    else
+                    {
+                        e.Value = ts.ToString(@"hh\:mm\:ss");
+                        e.FormattingApplied = true;
+                    }
                 }
             }
-
-            // 4. Format Status Badge
-            if (colName == "status" && e.Value != null)
-            {
-                string val = e.Value.ToString();
-                if (val == "Pending")
-                {
-                    e.CellStyle.BackColor = Color.FromArgb(116, 66, 16); // Dark Orange
-                    e.CellStyle.ForeColor = Color.FromArgb(254, 215, 170);
-                }
-                else if (val == "Selesai")
-                {
-                    e.CellStyle.BackColor = Color.FromArgb(28, 69, 50); // Dark Green
-                    e.CellStyle.ForeColor = Color.FromArgb(154, 230, 180);
-                    e.Value = "✔ Selesai";
-                    e.FormattingApplied = true;
-                }
-            }
-
-            // 5. Ubah DBNull/Null/Empty ke tanda "—" untuk data kehadiran yang pending
-            if (e.Value == null || e.Value == DBNull.Value || string.IsNullOrEmpty(e.Value.ToString()))
-            {
-                if (colName == "hadir" || colName == "alpha" || colName == "lembur")
-                {
-                    e.Value = "—";
-                    e.FormattingApplied = true;
-                    e.CellStyle.ForeColor = Color.FromArgb(120, 120, 120);
-                }
-            }
-        }
-
-        private void panel_left_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

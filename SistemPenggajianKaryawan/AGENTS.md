@@ -833,6 +833,8 @@ Kerjakan **berurutan**. Jangan melompat ke tahap berikutnya sebelum tahap sebelu
 
 ---
 
+---
+
 ## 13. Fitur Absensi Real — Tambahan Scope
 
 > Section ini ditambahkan setelah konsultasi dosen. Semua aturan di section 1–12 tetap berlaku.
@@ -840,34 +842,30 @@ Kerjakan **berurutan**. Jangan melompat ke tahap berikutnya sebelum tahap sebelu
 ### 13.1 Overview Fitur
 
 Sistem absensi diperluas dari input manual bulanan menjadi absensi harian berbasis:
+- Scan barcode kartu karyawan (via scanner USB — tidak perlu library tambahan)
 - Jam digital real-time (timer interval 1000ms)
-- Foto selfie via webcam sebagai bukti kehadiran
-- Pencatatan jam masuk dan jam keluar per hari
+- Pencatatan jam masuk dan jam keluar per hari otomatis
 - Kalkulasi gaji otomatis berdasarkan jam (telat, lembur, pulang cepat)
 
-### 13.2 Library Tambahan
+> Tidak ada webcam, foto selfie, atau library AForge. Scanner barcode USB bekerja
+> seperti keyboard — hasil scan otomatis masuk ke TextBox yang sedang fokus.
 
-| Library | Fungsi | NuGet |
-|---|---|---|
-| `AForge.Video.DirectShow` | Akses webcam untuk capture foto | `Install-Package AForge.Video.DirectShow` |
-
-> Ini satu-satunya pengecualian dari aturan "tidak menambah library baru" di section 11.
-> Library lain tetap tidak boleh ditambahkan tanpa kesepakatan tim.
-
-### 13.3 Perubahan Schema Database
+### 13.2 Perubahan Schema Database
 
 Tabel `absensi` diubah dari struktur **per bulan** menjadi **per hari**:
 
 ```sql
--- Struktur BARU tabel absensi
+-- Jalankan SEKALI. Backup DB dulu sebelum eksekusi!
+USE penggajian;
+
+DROP TABLE IF EXISTS absensi;
+
 CREATE TABLE absensi (
     absensi_id    INT AUTO_INCREMENT PRIMARY KEY,
     karyawan_id   INT          NOT NULL,
     tanggal       DATE         NOT NULL,
     jam_masuk     TIME         NULL,
     jam_keluar    TIME         NULL,
-    foto_masuk    VARCHAR(255) NULL,
-    foto_keluar   VARCHAR(255) NULL,
     status        ENUM('Hadir','Izin','Sakit','Alpha') NOT NULL DEFAULT 'Hadir',
     keterangan    VARCHAR(255) NULL,
     created_at    DATETIME     DEFAULT NOW(),
@@ -883,19 +881,43 @@ CREATE TABLE konfigurasi_absensi (
     toleransi_menit   INT  NOT NULL DEFAULT 15,
     updated_at        DATETIME DEFAULT NOW()
 );
+
+INSERT INTO konfigurasi_absensi (jam_masuk_normal, jam_keluar_normal, toleransi_menit)
+VALUES ('08:00:00', '17:00:00', 15);
 ```
 
-### 13.4 Model Baru
+### 13.3 Model yang Diupdate
 
-**`KonfigurasiAbsensi.cs`** — taruh di folder `Model/`:
-- Menyimpan jam masuk/keluar normal dan toleransi keterlambatan
-- Method `upahPerJam(decimal gaji_pokok)` → `gaji_pokok / 176`
+**`DataAbsensi.cs`** — field baru:
 
-**`DataAbsensi.cs`** — diupdate dengan field baru:
-- `tanggal`, `jam_masuk`, `jam_keluar`, `foto_masuk`, `foto_keluar`, `status`, `keterangan`
-- Helper: `menitTelat()`, `jamLembur()`, `jamPulangCepat()`, `totalJamKerja`
+```csharp
+private int      _absensi_id;
+private int      _karyawan_id;
+private DateTime _tanggal;
+private TimeSpan _jam_masuk;
+private TimeSpan _jam_keluar;
+private string   _status;       // "Hadir" | "Izin" | "Sakit" | "Alpha"
+private string   _keterangan;
+```
 
-### 13.5 Perubahan Signature HitungGaji()
+Helper methods yang wajib ada:
+```csharp
+public double menitTelat(TimeSpan jamMasukNormal)   // hitung keterlambatan
+public double jamLembur(TimeSpan jamKeluarNormal)    // hitung lembur
+public double jamPulangCepat(TimeSpan jamKeluarNormal) // hitung pulang cepat
+public bool   sudahAbsenMasuk                        // property
+public bool   sudahAbsenKeluar                       // property
+```
+
+**`KonfigurasiAbsensi.cs`** — model baru di folder `Model/`:
+```csharp
+public TimeSpan jam_masuk_normal  // default 08:00
+public TimeSpan jam_keluar_normal // default 17:00
+public int      toleransi_menit   // default 15
+public decimal  upahPerJam(decimal gaji_pokok) // gaji_pokok / 176
+```
+
+### 13.4 Perubahan Signature HitungGaji()
 
 Signature lama:
 ```csharp
@@ -910,9 +932,9 @@ public abstract decimal HitungGaji(
     KonfigurasiAbsensi config);
 ```
 
-Semua subclass (`KaryawanTetap`, `KaryawanKontrak`, `KaryawanHarian`) wajib implementasikan signature baru ini.
+Semua subclass wajib implementasikan signature baru ini.
 
-### 13.6 Formula Kalkulasi Gaji Berbasis Jam
+### 13.5 Formula Kalkulasi Gaji Berbasis Jam
 
 ```
 Upah per jam = Gaji Pokok / 176  (22 hari x 8 jam)
@@ -926,69 +948,74 @@ Per hari alpha:
   Potong (gaji_pokok / 22) x jumlah_alpha
 ```
 
-### 13.7 Penyimpanan Foto
+### 13.6 FormAbsensi — Komponen
 
-- Foto disimpan di folder lokal: `AbsensiFoto/{tahun}/{bulan}/`
-- Nama file: `{kode_karyawan}_{tanggal}_{sesi}.jpg`
-- Contoh: `KRY001_20260531_masuk.jpg`
-- Path relatif disimpan di kolom `foto_masuk` / `foto_keluar` di tabel `absensi`
-
-```csharp
-// Contoh path foto
-string folderFoto = Application.StartupPath + @"\AbsensiFoto\";
-string namaFile   = kode + "_" + DateTime.Now.ToString("yyyyMMdd") + "_masuk.jpg";
-string pathLengkap = folderFoto + DateTime.Now.Year + @"\" +
-                     DateTime.Now.Month.ToString("D2") + @"\" + namaFile;
-```
-
-### 13.8 FormAbsensi — Komponen Tambahan
-
-Form absensi karyawan (self-service) menambahkan komponen berikut:
+Form absensi self-service karyawan. Tidak ada webcam.
 
 | Komponen | Name | Fungsi |
 |---|---|---|
 | Timer | `timer_jam` | Update jam digital, interval 1000ms |
 | Label | `jam_lbl` | Tampil jam real-time `HH:mm:ss` |
-| PictureBox | `webcam_pic` | Preview webcam live |
-| PictureBox | `preview_pic` | Preview foto yang akan disimpan |
-| Button | `absen_masuk_btn` | Capture foto + simpan jam masuk |
-| Button | `absen_keluar_btn` | Capture foto + simpan jam keluar |
-| Label | `status_lbl` | Status absensi hari ini |
+| Label | `tanggal_lbl` | Tanggal hari ini format Indonesia |
+| TextBox | `kode_txt` | Input kode karyawan / hasil scan barcode |
+| Label | `nama_lbl` | Nama karyawan auto-fill dari kode |
+| Label | `jabatan_lbl` | Jabatan + jenis karyawan |
+| Label | `status_masuk_lbl` | Jam masuk + status tepat/telat |
+| Label | `status_keluar_lbl` | Jam keluar / "Belum absen" |
+| Button | `absen_masuk_btn` | Catat jam masuk |
+| Button | `absen_keluar_btn` | Catat jam keluar |
+| Label | `info_lbl` | Pesan status hasil absensi |
+| DataGridView | `log_dgv` | Log absensi semua karyawan hari ini |
 
-### 13.9 Absensi_serv.cs — Method Wajib
+Behavior scan barcode:
+```csharp
+// Scanner barcode = keyboard, hasil scan masuk ke kode_txt
+// Saat Enter terdeteksi, langsung proses absensi
+private void kode_txt_KeyDown(object sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.Enter)
+        prosesAbsensi(kode_txt.Text.Trim());
+}
+```
+
+### 13.7 Absensi_serv.cs — Method Wajib
 
 ```csharp
 internal class Absensi_serv
 {
-    // Cek apakah karyawan sudah absen masuk hari ini
+    // Cek sudah absen masuk hari ini?
     public bool sudahAbsenMasuk(int karyawan_id) { }
 
-    // Cek apakah karyawan sudah absen keluar hari ini
+    // Cek sudah absen keluar hari ini?
     public bool sudahAbsenKeluar(int karyawan_id) { }
 
-    // Simpan jam masuk + path foto
-    public int simpanAbsenMasuk(int karyawan_id, string foto_path) { }
+    // Simpan jam masuk
+    public int simpanAbsenMasuk(int karyawan_id) { }
 
-    // Simpan jam keluar + path foto
-    public int simpanAbsenKeluar(int karyawan_id, string foto_path) { }
+    // Simpan jam keluar
+    public int simpanAbsenKeluar(int karyawan_id) { }
 
     // Ambil data absensi bulan tertentu untuk proses gaji
     public List<DataAbsensi> getAbsensiBulanan(int karyawan_id, int bulan, int tahun) { }
 
     // Rekap absensi untuk tampilan HRD
-    public DataTable viewAbsensiKaryawan(int bulan, int tahun) { }
+    public DataTable viewAbsensiHarian(DateTime tanggal) { }
+
+    // Rekap bulanan untuk tampilan HRD
+    public DataTable viewAbsensiBulanan(int bulan, int tahun) { }
 }
 ```
 
-### 13.10 Aturan Tambahan
+### 13.8 Aturan Bisnis Absensi
 
-- Karyawan hanya bisa absen masuk **sekali per hari** — cek via `sudahAbsenMasuk()` sebelum proses
-- Karyawan hanya bisa absen keluar setelah absen masuk
-- Foto **wajib** diambil — tidak bisa skip capture webcam
-- Folder `AbsensiFoto/` wajib dibuat otomatis jika belum ada saat aplikasi pertama kali run
-- `konfigurasi_absensi` dibaca sekali saat `Gaji_serv` diinisialisasi, bukan per kalkulasi
+- Karyawan hanya bisa absen masuk **sekali per hari**
+- Karyawan hanya bisa absen keluar **setelah absen masuk**
+- Jika scan kode saat belum absen masuk → proses `simpanAbsenMasuk()`
+- Jika scan kode saat sudah absen masuk tapi belum keluar → proses `simpanAbsenKeluar()`
+- Jika sudah absen masuk dan keluar → tampil pesan "Absensi hari ini sudah lengkap"
+- `konfigurasi_absensi` dibaca sekali saat `Gaji_serv` diinisialisasi
 
 ---
 
 *Section ini ditambahkan: Juni 2026 — berdasarkan permintaan dosen pembimbing*
-*Dokumen ini diperbarui seiring perkembangan project. Jika ada keputusan teknis baru yang disepakati, tambahkan ke sini sebelum diimplementasikan.*
+*Update: foto selfie dihapus dari scope, diganti barcode-only*
