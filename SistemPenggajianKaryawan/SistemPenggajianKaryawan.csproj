@@ -193,6 +193,9 @@
     <EmbeddedResource Include="FormDashboarHRD.resx">
       <DependentUpon>FormDashboarHRD.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormKomponenGaji.resx">
+      <DependentUpon>FormKomponenGaji.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
