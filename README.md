@@ -21,7 +21,7 @@ The application supports 4 distinct user roles:
 [![ZXing.Net](https://img.shields.io/badge/ZXing.Net-0.16.9-orange?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/ZXing.Net/)
 [![AForge.NET](https://img.shields.io/badge/AForge.Video-2.2.5-green?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/AForge.Video.DirectShow/)
 [![Bouncy Castle](https://img.shields.io/badge/Bouncy_Castle-v2.6.2-yellowgreen?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/BouncyCastle.Cryptography/)
-[![Visual Studio 2022](https://img.shields.io/badge/Visual_Studio-2022-5C2D91?style=for-the-badge&logo=visual-studio&logoColor=white)](https://visualstudio.microsoft.com/)
+[![Visual Studio 2026](https://img.shields.io/badge/Visual_Studio-2026-5C2D91?style=for-the-badge&logo=visual-studio&logoColor=white)](https://visualstudio.microsoft.com/)
 
 ---
 
