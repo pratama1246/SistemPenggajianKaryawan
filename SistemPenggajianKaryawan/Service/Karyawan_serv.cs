@@ -102,42 +102,28 @@ namespace SistemPenggajianKaryawan.Service
 
         public string createCode()
         {
-            string prefix = "KRY-";
+            string prefix = $"PNC.{DateTime.Now.Year}.";
             int nextNum = 1;
             try
             {
-                // Cek data KRY- dulu
-                string q1 = "SELECT kode_karyawan FROM karyawan WHERE kode_karyawan LIKE 'KRY-%' ORDER BY kode_karyawan DESC LIMIT 1";
-                DataTable dt1 = server.eksekusiQuery(q1);
-                if (dt1.Rows.Count > 0)
+                // Mencari kode karyawan terbaru dengan awalan PNC.Tahun.
+                string q = "SELECT kode_karyawan FROM karyawan WHERE kode_karyawan LIKE @prefix ORDER BY kode_karyawan DESC LIMIT 1";
+                var p = new Dictionary<string, object> { { "@prefix", prefix + "%" } };
+                DataTable dt = server.eksekusiQueryParam(q, p);
+                if (dt.Rows.Count > 0)
                 {
-                    string maxCode = dt1.Rows[0][0].ToString();
-                    string numPart = maxCode.Substring(4);
+                    string maxCode = dt.Rows[0][0].ToString();
+                    string numPart = maxCode.Substring(prefix.Length);
                     int num;
                     if (int.TryParse(numPart, out num))
                     {
                         nextNum = num + 1;
                     }
                 }
-                else
-                {
-                    // Kalau tidak ada KRY-, tapi ada K001, K002
-                    string q2 = "SELECT kode_karyawan FROM karyawan WHERE kode_karyawan LIKE 'K%' ORDER BY kode_karyawan DESC LIMIT 1";
-                    DataTable dt2 = server.eksekusiQuery(q2);
-                    if (dt2.Rows.Count > 0)
-                    {
-                        string maxCode = dt2.Rows[0][0].ToString();
-                        string numPart = maxCode.Substring(1); // skip 'K'
-                        int num;
-                        if (int.TryParse(numPart, out num))
-                        {
-                            nextNum = num + 1;
-                        }
-                    }
-                }
             }
             catch (Exception) { }
-            return prefix + nextNum.ToString("D3");
+            // Mengembalikan format PNC.Tahun.NomorUrut (contoh: PNC.2026.0001)
+            return prefix + nextNum.ToString("D4");
         }
 
         public Dictionary<string, int> getCounts()

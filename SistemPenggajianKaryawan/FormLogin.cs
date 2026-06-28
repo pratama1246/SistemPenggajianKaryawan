@@ -91,6 +91,9 @@ namespace SistemPenggajianKaryawan
                     case "Karyawan":
                         dashboard = new FormDashboardKaryawan();
                         break;
+                    case "Kiosk":
+                        dashboard = new FormAbsensi();
+                        break;
                     default:
                         tampilError("Role tidak dikenali. Hubungi administrator.");
                         return;

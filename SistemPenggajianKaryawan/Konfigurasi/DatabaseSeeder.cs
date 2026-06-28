@@ -26,6 +26,13 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     );";
                 server.eksekusiNonQuery(createKaryawanTable);
 
+                // Jalankan ALTER TABLE untuk memastikan kolom kode_karyawan bertipe VARCHAR(50) jika tabel lama masih VARCHAR kecil
+                try
+                {
+                    server.eksekusiNonQuery("ALTER TABLE karyawan MODIFY COLUMN kode_karyawan VARCHAR(50) NOT NULL;");
+                }
+                catch (Exception) { }
+
                 // 1. Buat tabel users jika belum ada
                 string createTableQuery = @"
                     CREATE TABLE IF NOT EXISTS users (
@@ -33,12 +40,19 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                         nama VARCHAR(100) NOT NULL,
                         username VARCHAR(50) NOT NULL UNIQUE,
                         password VARCHAR(64) NOT NULL,
-                        role ENUM('Admin', 'HRD', 'Karyawan') NOT NULL,
+                        role ENUM('Admin', 'HRD', 'Karyawan', 'Kiosk') NOT NULL,
                         is_active TINYINT(1) NOT NULL DEFAULT 1,
                         karyawan_id INT DEFAULT NULL,
                         FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE SET NULL
                     );";
                 server.eksekusiNonQuery(createTableQuery);
+
+                // Jalankan ALTER TABLE untuk memastikan ENUM 'Kiosk' terdaftar jika tabel sudah pernah dibuat sebelumnya
+                try
+                {
+                    server.eksekusiNonQuery("ALTER TABLE users MODIFY COLUMN role ENUM('Admin', 'HRD', 'Karyawan', 'Kiosk') NOT NULL;");
+                }
+                catch (Exception) { }
 
                 // 1b. Buat tabel absensi jika belum ada
                 bool isOldSchema = false;
@@ -121,6 +135,47 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     );";
                 server.eksekusiNonQuery(createPenggajianTable);
 
+                // Migrasi Otomatis: Ubah kode karyawan lama (seperti K001 atau KRY-001) ke format baru PNC.2026.XXXX
+                try
+                {
+                    DataTable dtOld = server.eksekusiQuery("SELECT karyawan_id, kode_karyawan FROM karyawan WHERE kode_karyawan NOT LIKE 'PNC.%'");
+                    foreach (DataRow r in dtOld.Rows)
+                    {
+                        int id = Convert.ToInt32(r["karyawan_id"]);
+                        string oldCode = r["kode_karyawan"].ToString();
+                        
+                        // Ambil hanya angka dari kode lama
+                        string digitsOnly = "";
+                        foreach (char c in oldCode)
+                        {
+                            if (char.IsDigit(c)) digitsOnly += c;
+                        }
+                        
+                        int numVal = 1;
+                        if (!string.IsNullOrEmpty(digitsOnly))
+                        {
+                            int.TryParse(digitsOnly, out numVal);
+                        }
+                        
+                        string newCode = $"PNC.2026.{numVal.ToString("D4")}";
+                        
+                        // Cek apakah kode baru sudah terpakai
+                        DataTable dtCheck = server.eksekusiQueryParam("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = @newCode", 
+                            new Dictionary<string, object> { { "@newCode", newCode } });
+                        
+                        if (dtCheck.Rows.Count == 0)
+                        {
+                            server.eksekusiNonQueryParam("UPDATE karyawan SET kode_karyawan = @newCode WHERE karyawan_id = @id",
+                                new Dictionary<string, object>
+                                {
+                                    { "@newCode", newCode },
+                                    { "@id", id }
+                                });
+                        }
+                    }
+                }
+                catch (Exception) { }
+
                 // 2. Seed Karyawan secara aman
                 Action<string, string, string, string, decimal> insertKaryawanIfNotExist = (kode, nama, jabatan, jenis, gapok) =>
                 {
@@ -140,10 +195,10 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     }
                 };
 
-                insertKaryawanIfNotExist("K001", "Karyawan Staff", "Staff Administrasi", "Tetap", 4500000.00m);
-                insertKaryawanIfNotExist("K002", "Ahmad H.", "Supervisor", "Tetap", 3500000.00m);
-                insertKaryawanIfNotExist("K003", "Budi S.", "Operator", "Harian", 150000.00m);
-                insertKaryawanIfNotExist("K004", "Citra D.", "Staff IT", "Kontrak", 2800000.00m);
+                insertKaryawanIfNotExist("PNC.2026.0001", "Karyawan Staff", "Staff Administrasi", "Tetap", 4500000.00m);
+                insertKaryawanIfNotExist("PNC.2026.0002", "Ahmad H.", "Supervisor", "Tetap", 3500000.00m);
+                insertKaryawanIfNotExist("PNC.2026.0003", "Budi S.", "Operator", "Harian", 150000.00m);
+                insertKaryawanIfNotExist("PNC.2026.0004", "Citra D.", "Staff IT", "Kontrak", 2800000.00m);
 
                 // 3. Seed Komponen Gaji secara aman
                 Action<string, string, string, decimal, string> insertKomponenIfNotExist = (nama, tipe, jenisNilai, nilai, berlaku) =>
@@ -203,7 +258,7 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     DataTable dtAbsCount = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM absensi");
                     if (dtAbsCount.Rows.Count > 0 && Convert.ToInt32(dtAbsCount.Rows[0]["jumlah"]) == 0)
                     {
-                        string[] kodes = { "K001", "K002", "K003", "K004" };
+                        string[] kodes = { "PNC.2026.0001", "PNC.2026.0002", "PNC.2026.0003", "PNC.2026.0004" };
                         for (int day = 1; day <= 31; day++)
                         {
                             DateTime dt = new DateTime(2026, 5, day);
@@ -270,7 +325,7 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                 if (!auth.usernameAda("karyawan"))
                 {
                     object karyawanId = DBNull.Value;
-                    DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                    DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'PNC.2026.0001'");
                     if (dtStaff.Rows.Count > 0)
                     {
                         karyawanId = Convert.ToInt32(dtStaff.Rows[0]["karyawan_id"]);
@@ -287,13 +342,26 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     };
                     server.eksekusiNonQueryParam(qKaryawan, pKaryawan);
                 }
+
+                if (!auth.usernameAda("kiosk"))
+                {
+                    string qKiosk = "INSERT INTO users (nama, username, password, role, is_active) VALUES (@nama, @username, @password, @role, 1)";
+                    var pKiosk = new Dictionary<string, object>
+                    {
+                        { "@nama", "Kiosk Absensi Pintu" },
+                        { "@username", "kiosk" },
+                        { "@password", auth.hashPassword("kiosk123") },
+                        { "@role", "Kiosk" }
+                    };
+                    server.eksekusiNonQueryParam(qKiosk, pKiosk);
+                }
                 else
                 {
-                    // Self-healing: Hubungkan user 'karyawan' dengan karyawan_id 'K001' jika saat ini masih NULL
+                    // Self-healing: Hubungkan user 'karyawan' dengan karyawan_id 'PNC.2026.0001' jika saat ini masih NULL
                     DataTable dtCheck = server.eksekusiQuery("SELECT karyawan_id FROM users WHERE username = 'karyawan'");
                     if (dtCheck.Rows.Count > 0 && dtCheck.Rows[0]["karyawan_id"] == DBNull.Value)
                     {
-                        DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                        DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'PNC.2026.0001'");
                         if (dtStaff.Rows.Count > 0)
                         {
                             int karyawanId = Convert.ToInt32(dtStaff.Rows[0]["karyawan_id"]);
@@ -325,6 +393,7 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                             if (uname == "admin") plainPw = "admin123";
                             else if (uname == "hrd") plainPw = "hrd123";
                             else if (uname == "karyawan") plainPw = "karyawan123";
+                            else if (uname == "kiosk") plainPw = "kiosk123";
                         }
                         
                         // Encrypt and update

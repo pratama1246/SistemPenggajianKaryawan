@@ -8,6 +8,9 @@ using System.Globalization;
 using SistemPenggajianKaryawan.Konfigurasi;
 using SistemPenggajianKaryawan.Service;
 using SistemPenggajianKaryawan.Model;
+using AForge.Video;
+using AForge.Video.DirectShow;
+using ZXing;
 
 namespace SistemPenggajianKaryawan
 {
@@ -15,6 +18,14 @@ namespace SistemPenggajianKaryawan
     {
         private Absensi_serv absensi_serv = new Absensi_serv();
         private KonfigurasiAbsensi config;
+
+        // Webcam/Camera integration fields for Kiosk mode
+        private FilterInfoCollection videoDevices;
+        private VideoCaptureDevice videoSource;
+        private PictureBox picWebcam;
+        private BarcodeReader barcodeReader;
+        private bool isScanning = false;
+        private DateTime lastScanTime = DateTime.MinValue;
 
         // Karyawan Mode Stats Cache
         private int statSudahAbsen = 0;
@@ -45,11 +56,25 @@ namespace SistemPenggajianKaryawan
                 return;
             }
 
+            // Kiosk specific window configuration
+            if (UserSession.role == "Kiosk")
+            {
+                this.FormBorderStyle = FormBorderStyle.None;
+                this.WindowState = FormWindowState.Maximized;
+                this.MinimizeBox = false;
+                this.MaximizeBox = false;
+                this.ControlBox = false;
+            }
+
+            // Sembunyikan label statis bawaan designer agar tidak tumpang tindih dengan text custom
+            label_masuk_config.Visible = false;
+            label_keluar_config.Visible = false;
+
             // Load configuration
             config = absensi_serv.getKonfigurasi();
 
             // 1. Tampilkan panel UI yang sesuai berdasarkan role
-            if (UserSession.role == "Karyawan")
+            if (UserSession.role == "Karyawan" || UserSession.role == "Kiosk")
             {
                 panel_karyawan_mode.Visible = true;
                 panel_karyawan_mode.Dock = DockStyle.Fill;
@@ -58,7 +83,113 @@ namespace SistemPenggajianKaryawan
                 // Setup jam & data mandiri karyawan
                 timer_jam_Tick(null, null);
                 SetupDataGridView();
-                dapatkanUserKodeKaryawan();
+
+                if (UserSession.role == "Karyawan")
+                {
+                    dapatkanUserKodeKaryawan();
+
+                    // Ubah tombol clear_btn (X) menjadi tombol QR Code untuk akses mandiri karyawan
+                    clear_btn.Text = "QR";
+                    clear_btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                    clear_btn.ForeColor = Color.FromArgb(30, 144, 255); // primary-dark
+                    clear_btn.FlatAppearance.BorderColor = Color.FromArgb(91, 200, 245); // primary cyan
+                    
+                    ToolTip toolTip = new ToolTip();
+                    toolTip.SetToolTip(clear_btn, "Preview & Unduh QR Code Absensi Anda");
+                }
+                else // Kiosk mode
+                {
+                    loggedInKodeKaryawan = "";
+                    kode_txt.Text = "";
+                    kode_txt.ReadOnly = false;
+
+                    // Perbesar area panel_scanner_target agar tampilan kamera lebih besar & jelas
+                    panel_scanner_target.Height = 220;
+
+                    // Geser kontrol lainnya ke bawah agar tidak tumpang tindih
+                    kode_txt.Top = 275;
+                    clear_btn.Top = 275;
+                    absen_masuk_btn.Top = 320;
+                    absen_keluar_btn.Top = 320;
+                    info_lbl.Top = 365;
+                    info_lbl.Height = 55;
+
+                    // Perbesar container panel_scan_card agar memuat kontrol yang digeser
+                    panel_scan_card.Height = 430;
+
+                    // Geser recent_flow_panel (riwayat scan harian) di bawah panel_scan_card
+                    recent_flow_panel.Top = 440;
+                    recent_flow_panel.Height = 60; // Disesuaikan agar pas di panel_left_container (tinggi 500)
+
+                    // Register FormClosing dynamically to stop webcam
+                    this.FormClosing += new FormClosingEventHandler(FormAbsensi_FormClosing);
+
+                    // Initialize Barcode Reader for Kiosk Mode
+                    barcodeReader = new BarcodeReader();
+                    barcodeReader.Options.PossibleFormats = new List<BarcodeFormat> {
+                        BarcodeFormat.QR_CODE,
+                        BarcodeFormat.CODE_128,
+                        BarcodeFormat.CODE_39,
+                        BarcodeFormat.EAN_13,
+                        BarcodeFormat.EAN_8
+                    };
+                    barcodeReader.Options.TryHarder = true;
+
+                    // Setup Live Webcam PictureBox in panel_scanner_target
+                    picWebcam = new PictureBox();
+                    picWebcam.Dock = DockStyle.Fill;
+                    picWebcam.SizeMode = PictureBoxSizeMode.Zoom;
+                    panel_scanner_target.Controls.Add(picWebcam);
+                    picWebcam.BringToFront();
+
+                    // Start camera
+                    try
+                    {
+                        videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                        if (videoDevices.Count > 0)
+                        {
+                            videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
+                            videoSource.NewFrame += VideoSource_NewFrame;
+                            videoSource.Start();
+                            isScanning = true;
+                        }
+                        else
+                        {
+                            info_lbl.Text = "Kamera tidak ditemukan.\r\nSilakan pasang webcam.";
+                            info_lbl.ForeColor = Color.FromArgb(220, 38, 38);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        info_lbl.Text = "Gagal memulai kamera:\r\n" + ex.Message;
+                        info_lbl.ForeColor = Color.FromArgb(220, 38, 38);
+                    }
+
+                    // Tambahkan Tombol Keluar Kiosk secara dinamis di panel_header
+                    Button btnExitKiosk = new Button();
+                    btnExitKiosk.Text = "Keluar Kiosk";
+                    btnExitKiosk.Size = new Size(120, 32);
+                    btnExitKiosk.Location = new Point(panel_header.Width - btnExitKiosk.Width - 15, 15);
+                    btnExitKiosk.FlatStyle = FlatStyle.Flat;
+                    btnExitKiosk.FlatAppearance.BorderSize = 1;
+                    btnExitKiosk.FlatAppearance.BorderColor = Color.FromArgb(205, 92, 92);
+                    btnExitKiosk.ForeColor = Color.FromArgb(205, 92, 92);
+                    btnExitKiosk.BackColor = Color.White;
+                    btnExitKiosk.Cursor = Cursors.Hand;
+                    btnExitKiosk.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                    btnExitKiosk.Click += (s, ev) => {
+                        using (FormAuthExit formAuth = new FormAuthExit())
+                        {
+                            if (formAuth.ShowDialog() == DialogResult.OK)
+                            {
+                                this.Close();
+                            }
+                        }
+                    };
+                    panel_header.Controls.Add(btnExitKiosk);
+                    btnExitKiosk.BringToFront();
+                }
+
                 refreshSemuaData();
             }
             else // HRD atau Admin
@@ -150,8 +281,23 @@ namespace SistemPenggajianKaryawan
 
         private void clear_btn_Click(object sender, EventArgs e)
         {
-            kode_txt.Clear();
-            kode_txt.Focus();
+            if (UserSession.role == "Karyawan")
+            {
+                string kode = kode_txt.Text.Trim();
+                string nama = UserSession.nama;
+                if (!string.IsNullOrEmpty(kode))
+                {
+                    using (FormQRPreview qrForm = new FormQRPreview(kode, nama))
+                    {
+                        qrForm.ShowDialog();
+                    }
+                }
+            }
+            else
+            {
+                kode_txt.Clear();
+                kode_txt.Focus();
+            }
         }
 
         private int dapatkanKaryawanId(string kode, out string nama)
@@ -235,6 +381,21 @@ namespace SistemPenggajianKaryawan
             }
             else if (!sudahKeluar)
             {
+                // Batasi absen keluar otomatis via QR/webcam (Kiosk) sebelum waktunya
+                if (config != null)
+                {
+                    TimeSpan waktuSekarang = DateTime.Now.TimeOfDay;
+                    TimeSpan batasAwalKeluar = config.jam_keluar_normal.Subtract(TimeSpan.FromMinutes(30));
+                    
+                    if (waktuSekarang < batasAwalKeluar)
+                    {
+                        info_lbl.Text = $"{nama} - Sudah absen masuk.\r\nBelum waktunya absen keluar (mulai {batasAwalKeluar.ToString(@"hh\:mm")}).";
+                        info_lbl.ForeColor = Color.FromArgb(180, 83, 9); // Amber/Orange
+                        info_lbl.BackColor = Color.FromArgb(254, 243, 199);
+                        return;
+                    }
+                }
+
                 if (absensi_serv.simpanAbsenKeluar(karyawanId) > 0)
                 {
                     info_lbl.Text = $"{nama} - Absen keluar berhasil - {timeStr}";
@@ -358,6 +519,28 @@ namespace SistemPenggajianKaryawan
             {
                 MessageBox.Show("Karyawan " + nama + " sudah melakukan absen keluar hari ini.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
+
+            // Konfirmasi jika melakukan absen keluar lebih awal dari 30 menit sebelum jam kerja berakhir
+            if (config != null)
+            {
+                TimeSpan waktuSekarang = DateTime.Now.TimeOfDay;
+                TimeSpan batasAwalKeluar = config.jam_keluar_normal.Subtract(TimeSpan.FromMinutes(30));
+                
+                if (waktuSekarang < batasAwalKeluar)
+                {
+                    var confirmResult = MessageBox.Show(
+                        $"Jam kerja normal belum selesai (Absen keluar normal baru mulai pukul {batasAwalKeluar.ToString(@"hh\:mm")}).\r\n\r\n" +
+                        "Apakah Anda yakin ingin mencatat absen keluar lebih awal?",
+                        "Konfirmasi Absen Keluar Awal",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+                    if (confirmResult == DialogResult.No)
+                    {
+                        return;
+                    }
+                }
             }
 
             if (absensi_serv.simpanAbsenKeluar(karyawanId) > 0)
@@ -1120,14 +1303,9 @@ namespace SistemPenggajianKaryawan
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                     e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    e.Graphics.DrawString(masukIcon, iconFont, brush, panel_header.Width - 320, 22);
-                    e.Graphics.DrawString(masukText, textFont, brush, panel_header.Width - 300, 22);
-
-                    string keluarIcon = "\uE896";
-                    string keluarText = $"Keluar normal: {config.jam_keluar_normal.ToString(@"hh\:mm")}";
-
-                    e.Graphics.DrawString(keluarIcon, iconFont, brush, panel_header.Width - 320, 47);
-                    e.Graphics.DrawString(keluarText, textFont, brush, panel_header.Width - 300, 47);
+                    // Pusatkan teks ke tengah vertikal (Y=35) dan geser ke kiri (Width - 450) agar tidak tertabrak tombol "Keluar Kiosk"
+                    e.Graphics.DrawString(masukIcon, iconFont, brush, panel_header.Width - 450, 35);
+                    e.Graphics.DrawString(masukText, textFont, brush, panel_header.Width - 430, 35);
                 }
             }
         }
@@ -1250,6 +1428,92 @@ namespace SistemPenggajianKaryawan
             path.AddArc(arc, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // WEBCAM SCANNING LOGIC FOR KIOSK MODE
+        // ─────────────────────────────────────────────────────────────────────
+        private void VideoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            if (!isScanning) return;
+
+            try
+            {
+                // Clone 1: Untuk rendering di UI Thread Preview
+                Bitmap bitmapForPreview = (Bitmap)eventArgs.Frame.Clone();
+
+                // Update webcam preview box on UI thread
+                this.BeginInvoke(new MethodInvoker(delegate
+                {
+                    if (picWebcam != null && !picWebcam.IsDisposed)
+                    {
+                        if (picWebcam.Image != null)
+                        {
+                            picWebcam.Image.Dispose();
+                        }
+                        picWebcam.Image = bitmapForPreview;
+                    }
+                    else
+                    {
+                        // Jika picturebox tidak ada atau sudah didispose, dispose clone preview ini
+                        bitmapForPreview.Dispose();
+                    }
+                }));
+
+                // Clone 2: Untuk proses decoding di Background Thread (dalam block 'using' agar langsung dibebaskan dari RAM)
+                using (Bitmap bitmapForDecoding = (Bitmap)eventArgs.Frame.Clone())
+                {
+                    // Cooldown: Blok proses decoding selama 3 detik setelah scan sukses
+                    if ((DateTime.Now - lastScanTime).TotalSeconds < 3)
+                    {
+                        return;
+                    }
+
+                    // Lakukan pencarian QR/Barcode dengan ZXing menggunakan bitmap decoding
+                    var result = barcodeReader.Decode(bitmapForDecoding);
+                    if (result != null)
+                    {
+                        lastScanTime = DateTime.Now;
+                        string decodedText = result.Text.Trim();
+
+                        // Mainkan suara beep singkat
+                        System.Media.SystemSounds.Asterisk.Play();
+
+                        // Eksekusi proses absensi di UI thread
+                        this.BeginInvoke(new MethodInvoker(delegate
+                        {
+                            prosesAbsensi(decodedText);
+                        }));
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void FormAbsensi_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            StopWebcam();
+        }
+
+        private void StopWebcam()
+        {
+            try
+            {
+                isScanning = false;
+                if (videoSource != null && videoSource.IsRunning)
+                {
+                    videoSource.SignalToStop();
+                    videoSource.NewFrame -= VideoSource_NewFrame;
+                    videoSource = null;
+                }
+
+                if (picWebcam != null && picWebcam.Image != null)
+                {
+                    picWebcam.Image.Dispose();
+                    picWebcam.Image = null;
+                }
+            }
+            catch { }
         }
     }
 }

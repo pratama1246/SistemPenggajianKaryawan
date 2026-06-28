@@ -184,7 +184,8 @@ namespace SistemPenggajianKaryawan
             this.role_cmb.Items.AddRange(new object[] {
             "Admin",
             "HRD",
-            "Karyawan"});
+            "Karyawan",
+            "Kiosk"});
             this.role_cmb.Location = new System.Drawing.Point(23, 252);
             this.role_cmb.Name = "role_cmb";
             this.role_cmb.Size = new System.Drawing.Size(277, 25);
