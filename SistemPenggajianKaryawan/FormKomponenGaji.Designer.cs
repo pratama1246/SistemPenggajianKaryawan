@@ -15,7 +15,6 @@ namespace SistemPenggajianKaryawan
 
         private void InitializeComponent()
         {
-            this.accentPanel = new System.Windows.Forms.Panel();
             this.panel_left = new System.Windows.Forms.Panel();
             this.inputKomponen_lbl = new System.Windows.Forms.Label();
             this.namaKomponen_lbl = new System.Windows.Forms.Label();
@@ -39,15 +38,6 @@ namespace SistemPenggajianKaryawan
             ((System.ComponentModel.ISupportInitialize)(this.komponen_dgv)).BeginInit();
             this.SuspendLayout();
             // 
-            // accentPanel
-            // 
-            this.accentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
-            this.accentPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.accentPanel.Location = new System.Drawing.Point(0, 0);
-            this.accentPanel.Name = "accentPanel";
-            this.accentPanel.Size = new System.Drawing.Size(900, 4);
-            this.accentPanel.TabIndex = 0;
-            // 
             // panel_left
             // 
             this.panel_left.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -66,9 +56,9 @@ namespace SistemPenggajianKaryawan
             this.panel_left.Controls.Add(this.hapus_btn);
             this.panel_left.Controls.Add(this.batal_btn);
             this.panel_left.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel_left.Location = new System.Drawing.Point(0, 4);
+            this.panel_left.Location = new System.Drawing.Point(0, 0);
             this.panel_left.Name = "panel_left";
-            this.panel_left.Size = new System.Drawing.Size(320, 516);
+            this.panel_left.Size = new System.Drawing.Size(320, 520);
             this.panel_left.TabIndex = 1;
             // 
             // inputKomponen_lbl
@@ -78,7 +68,7 @@ namespace SistemPenggajianKaryawan
             this.inputKomponen_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
             this.inputKomponen_lbl.Location = new System.Drawing.Point(20, 20);
             this.inputKomponen_lbl.Name = "inputKomponen_lbl";
-            this.inputKomponen_lbl.Size = new System.Drawing.Size(157, 21);
+            this.inputKomponen_lbl.Size = new System.Drawing.Size(126, 17);
             this.inputKomponen_lbl.TabIndex = 0;
             this.inputKomponen_lbl.Text = "INPUT KOMPONEN";
             // 
@@ -89,7 +79,7 @@ namespace SistemPenggajianKaryawan
             this.namaKomponen_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.namaKomponen_lbl.Location = new System.Drawing.Point(20, 52);
             this.namaKomponen_lbl.Name = "namaKomponen_lbl";
-            this.namaKomponen_lbl.Size = new System.Drawing.Size(126, 20);
+            this.namaKomponen_lbl.Size = new System.Drawing.Size(101, 15);
             this.namaKomponen_lbl.TabIndex = 1;
             this.namaKomponen_lbl.Text = "Nama Komponen";
             // 
@@ -101,7 +91,7 @@ namespace SistemPenggajianKaryawan
             this.nama_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.nama_txt.Location = new System.Drawing.Point(23, 72);
             this.nama_txt.Name = "nama_txt";
-            this.nama_txt.Size = new System.Drawing.Size(277, 30);
+            this.nama_txt.Size = new System.Drawing.Size(277, 25);
             this.nama_txt.TabIndex = 2;
             // 
             // tipe_lbl
@@ -111,7 +101,7 @@ namespace SistemPenggajianKaryawan
             this.tipe_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.tipe_lbl.Location = new System.Drawing.Point(20, 112);
             this.tipe_lbl.Name = "tipe_lbl";
-            this.tipe_lbl.Size = new System.Drawing.Size(38, 20);
+            this.tipe_lbl.Size = new System.Drawing.Size(30, 15);
             this.tipe_lbl.TabIndex = 3;
             this.tipe_lbl.Text = "Tipe";
             // 
@@ -128,7 +118,7 @@ namespace SistemPenggajianKaryawan
             "Potong"});
             this.tipe_cmb.Location = new System.Drawing.Point(23, 132);
             this.tipe_cmb.Name = "tipe_cmb";
-            this.tipe_cmb.Size = new System.Drawing.Size(277, 31);
+            this.tipe_cmb.Size = new System.Drawing.Size(277, 25);
             this.tipe_cmb.TabIndex = 4;
             // 
             // jenisNilai_lbl
@@ -138,7 +128,7 @@ namespace SistemPenggajianKaryawan
             this.jenisNilai_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.jenisNilai_lbl.Location = new System.Drawing.Point(20, 172);
             this.jenisNilai_lbl.Name = "jenisNilai_lbl";
-            this.jenisNilai_lbl.Size = new System.Drawing.Size(75, 20);
+            this.jenisNilai_lbl.Size = new System.Drawing.Size(59, 15);
             this.jenisNilai_lbl.TabIndex = 5;
             this.jenisNilai_lbl.Text = "Jenis Nilai";
             // 
@@ -155,7 +145,7 @@ namespace SistemPenggajianKaryawan
             "Persen"});
             this.jenisNilai_cmb.Location = new System.Drawing.Point(23, 192);
             this.jenisNilai_cmb.Name = "jenisNilai_cmb";
-            this.jenisNilai_cmb.Size = new System.Drawing.Size(277, 31);
+            this.jenisNilai_cmb.Size = new System.Drawing.Size(277, 25);
             this.jenisNilai_cmb.TabIndex = 6;
             this.jenisNilai_cmb.SelectedIndexChanged += new System.EventHandler(this.jenisNilai_cmb_SelectedIndexChanged);
             // 
@@ -166,7 +156,7 @@ namespace SistemPenggajianKaryawan
             this.nilai_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.nilai_lbl.Location = new System.Drawing.Point(20, 232);
             this.nilai_lbl.Name = "nilai_lbl";
-            this.nilai_lbl.Size = new System.Drawing.Size(40, 20);
+            this.nilai_lbl.Size = new System.Drawing.Size(31, 15);
             this.nilai_lbl.TabIndex = 7;
             this.nilai_lbl.Text = "Nilai";
             // 
@@ -178,7 +168,7 @@ namespace SistemPenggajianKaryawan
             this.nilai_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.nilai_txt.Location = new System.Drawing.Point(23, 252);
             this.nilai_txt.Name = "nilai_txt";
-            this.nilai_txt.Size = new System.Drawing.Size(277, 30);
+            this.nilai_txt.Size = new System.Drawing.Size(277, 25);
             this.nilai_txt.TabIndex = 8;
             this.nilai_txt.Text = "0";
             // 
@@ -189,7 +179,7 @@ namespace SistemPenggajianKaryawan
             this.berlaku_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.berlaku_lbl.Location = new System.Drawing.Point(20, 292);
             this.berlaku_lbl.Name = "berlaku_lbl";
-            this.berlaku_lbl.Size = new System.Drawing.Size(100, 20);
+            this.berlaku_lbl.Size = new System.Drawing.Size(81, 15);
             this.berlaku_lbl.TabIndex = 9;
             this.berlaku_lbl.Text = "Berlaku Untuk";
             // 
@@ -208,7 +198,7 @@ namespace SistemPenggajianKaryawan
             "Harian"});
             this.berlaku_cmb.Location = new System.Drawing.Point(23, 312);
             this.berlaku_cmb.Name = "berlaku_cmb";
-            this.berlaku_cmb.Size = new System.Drawing.Size(277, 31);
+            this.berlaku_cmb.Size = new System.Drawing.Size(277, 25);
             this.berlaku_cmb.TabIndex = 10;
             // 
             // simpan_btn
@@ -265,20 +255,22 @@ namespace SistemPenggajianKaryawan
             this.panel_right.Controls.Add(this.cari_txt);
             this.panel_right.Controls.Add(this.komponen_dgv);
             this.panel_right.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_right.Location = new System.Drawing.Point(320, 4);
+            this.panel_right.Location = new System.Drawing.Point(320, 0);
             this.panel_right.Name = "panel_right";
-            this.panel_right.Size = new System.Drawing.Size(580, 516);
+            this.panel_right.Size = new System.Drawing.Size(580, 520);
             this.panel_right.TabIndex = 2;
             // 
             // cari_txt
             // 
+            this.cari_txt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cari_txt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.cari_txt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.cari_txt.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.cari_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(174)))), ((int)(((byte)(192)))));
             this.cari_txt.Location = new System.Drawing.Point(20, 20);
             this.cari_txt.Name = "cari_txt";
-            this.cari_txt.Size = new System.Drawing.Size(540, 30);
+            this.cari_txt.Size = new System.Drawing.Size(540, 25);
             this.cari_txt.TabIndex = 0;
             this.cari_txt.Text = "🔍 Cari komponen...";
             this.cari_txt.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cari_txt_MouseClick);
@@ -289,6 +281,9 @@ namespace SistemPenggajianKaryawan
             // 
             this.komponen_dgv.AllowUserToAddRows = false;
             this.komponen_dgv.AllowUserToDeleteRows = false;
+            this.komponen_dgv.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.komponen_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.komponen_dgv.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.komponen_dgv.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -313,7 +308,6 @@ namespace SistemPenggajianKaryawan
             this.ClientSize = new System.Drawing.Size(900, 520);
             this.Controls.Add(this.panel_right);
             this.Controls.Add(this.panel_left);
-            this.Controls.Add(this.accentPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -331,8 +325,6 @@ namespace SistemPenggajianKaryawan
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel       accentPanel;
         private System.Windows.Forms.Panel       panel_left;
         private System.Windows.Forms.Label       inputKomponen_lbl;
         private System.Windows.Forms.Label       namaKomponen_lbl;

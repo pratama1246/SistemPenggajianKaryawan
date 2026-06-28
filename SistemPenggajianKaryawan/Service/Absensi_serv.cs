@@ -250,5 +250,59 @@ namespace SistemPenggajianKaryawan.Service
             };
             return server.eksekusiQueryParam(q, p);
         }
+
+        public int getJumlahKaryawanAktif()
+        {
+            try
+            {
+                DataTable dt = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM karyawan WHERE is_aktif = 1");
+                if (dt.Rows.Count > 0) return Convert.ToInt32(dt.Rows[0]["jumlah"]);
+            }
+            catch (Exception) { }
+            return 0;
+        }
+
+        public int getJumlahAbsenHariIni()
+        {
+            try
+            {
+                DataTable dt = server.eksekusiQuery("SELECT COUNT(DISTINCT karyawan_id) AS jumlah FROM absensi WHERE tanggal = CURDATE() AND jam_masuk IS NOT NULL");
+                if (dt.Rows.Count > 0) return Convert.ToInt32(dt.Rows[0]["jumlah"]);
+            }
+            catch (Exception) { }
+            return 0;
+        }
+
+        // Ambil data rekap absensi personal (karyawan tertentu)
+        public DataTable getRekapAbsensiPersonal(int karyawan_id, int bulan, int tahun)
+        {
+            string q = @"
+                SELECT 
+                    tanggal AS 'Tanggal',
+                    jam_masuk AS 'Jam Masuk',
+                    jam_keluar AS 'Jam Keluar',
+                    status AS 'Status',
+                    keterangan AS 'Keterangan'
+                FROM absensi
+                WHERE karyawan_id = @karyawan_id";
+            
+            var p = new Dictionary<string, object>();
+            p.Add("@karyawan_id", karyawan_id);
+            
+            if (bulan > 0)
+            {
+                q += " AND MONTH(tanggal) = @bulan";
+                p.Add("@bulan", bulan);
+            }
+            if (tahun > 0)
+            {
+                q += " AND YEAR(tanggal) = @tahun";
+                p.Add("@tahun", tahun);
+            }
+            
+            q += " ORDER BY tanggal DESC";
+            
+            return server.eksekusiQueryParam(q, p);
+        }
     }
 }

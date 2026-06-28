@@ -1,6 +1,6 @@
 namespace SistemPenggajianKaryawan
 {
-    partial class FormDashboarHRD
+    partial class FormDashboardHRD
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -39,16 +39,10 @@ namespace SistemPenggajianKaryawan
             this.card_periode = new System.Windows.Forms.Panel();
             this.stat_periode_lbl = new System.Windows.Forms.Label();
             this.statlbl_periode = new System.Windows.Forms.Label();
-            this.aktivitas_lbl = new System.Windows.Forms.Label();
-            this.akt1_panel = new System.Windows.Forms.Panel();
-            this.akt1_lbl = new System.Windows.Forms.Label();
-            this.akt1_badge = new System.Windows.Forms.Label();
-            this.akt2_panel = new System.Windows.Forms.Panel();
-            this.akt2_lbl = new System.Windows.Forms.Label();
-            this.akt2_badge = new System.Windows.Forms.Label();
-            this.akt3_panel = new System.Windows.Forms.Panel();
-            this.akt3_lbl = new System.Windows.Forms.Label();
-            this.akt3_badge = new System.Windows.Forms.Label();
+            this.quick_actions_lbl = new System.Windows.Forms.Label();
+            this.quick_absensi_btn = new System.Windows.Forms.Button();
+            this.quick_proses_btn = new System.Windows.Forms.Button();
+            this.quick_slip_btn = new System.Windows.Forms.Button();
             this.sidebar_panel.SuspendLayout();
             this.content_panel.SuspendLayout();
             this.dashboard_home_panel.SuspendLayout();
@@ -56,14 +50,12 @@ namespace SistemPenggajianKaryawan
             this.card_absensi.SuspendLayout();
             this.card_gaji.SuspendLayout();
             this.card_periode.SuspendLayout();
-            this.akt1_panel.SuspendLayout();
-            this.akt2_panel.SuspendLayout();
-            this.akt3_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // accentPanel
             // 
             this.accentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
+            this.accentPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.accentPanel.Location = new System.Drawing.Point(0, 0);
             this.accentPanel.Name = "accentPanel";
             this.accentPanel.Size = new System.Drawing.Size(1100, 4);
@@ -80,6 +72,7 @@ namespace SistemPenggajianKaryawan
             this.sidebar_panel.Controls.Add(this.menu_slip_btn);
             this.sidebar_panel.Controls.Add(this.divider_panel);
             this.sidebar_panel.Controls.Add(this.logout_btn);
+            this.sidebar_panel.Dock = System.Windows.Forms.DockStyle.Left;
             this.sidebar_panel.Location = new System.Drawing.Point(0, 4);
             this.sidebar_panel.Name = "sidebar_panel";
             this.sidebar_panel.Size = new System.Drawing.Size(180, 636);
@@ -215,6 +208,7 @@ namespace SistemPenggajianKaryawan
             // 
             this.content_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.content_panel.Controls.Add(this.dashboard_home_panel);
+            this.content_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.content_panel.Location = new System.Drawing.Point(180, 4);
             this.content_panel.Name = "content_panel";
             this.content_panel.Size = new System.Drawing.Size(920, 636);
@@ -229,10 +223,10 @@ namespace SistemPenggajianKaryawan
             this.dashboard_home_panel.Controls.Add(this.card_absensi);
             this.dashboard_home_panel.Controls.Add(this.card_gaji);
             this.dashboard_home_panel.Controls.Add(this.card_periode);
-            this.dashboard_home_panel.Controls.Add(this.aktivitas_lbl);
-            this.dashboard_home_panel.Controls.Add(this.akt1_panel);
-            this.dashboard_home_panel.Controls.Add(this.akt2_panel);
-            this.dashboard_home_panel.Controls.Add(this.akt3_panel);
+            this.dashboard_home_panel.Controls.Add(this.quick_actions_lbl);
+            this.dashboard_home_panel.Controls.Add(this.quick_absensi_btn);
+            this.dashboard_home_panel.Controls.Add(this.quick_proses_btn);
+            this.dashboard_home_panel.Controls.Add(this.quick_slip_btn);
             this.dashboard_home_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dashboard_home_panel.Location = new System.Drawing.Point(0, 0);
             this.dashboard_home_panel.Name = "dashboard_home_panel";
@@ -241,6 +235,8 @@ namespace SistemPenggajianKaryawan
             // 
             // sambut_lbl
             // 
+            this.sambut_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.sambut_lbl.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.sambut_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.sambut_lbl.Location = new System.Drawing.Point(24, 24);
@@ -251,6 +247,8 @@ namespace SistemPenggajianKaryawan
             // 
             // tanggal_lbl
             // 
+            this.tanggal_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tanggal_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tanggal_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.tanggal_lbl.Location = new System.Drawing.Point(24, 56);
@@ -263,18 +261,18 @@ namespace SistemPenggajianKaryawan
             this.card_karyawan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.card_karyawan.Controls.Add(this.stat_karyawan_lbl);
             this.card_karyawan.Controls.Add(this.statlbl_karyawan);
-            this.card_karyawan.Location = new System.Drawing.Point(24, 90);
+            this.card_karyawan.Location = new System.Drawing.Point(30, 90);
             this.card_karyawan.Name = "card_karyawan";
-            this.card_karyawan.Size = new System.Drawing.Size(200, 80);
+            this.card_karyawan.Size = new System.Drawing.Size(260, 90);
             this.card_karyawan.TabIndex = 2;
             // 
             // stat_karyawan_lbl
             // 
             this.stat_karyawan_lbl.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
             this.stat_karyawan_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.stat_karyawan_lbl.Location = new System.Drawing.Point(8, 10);
+            this.stat_karyawan_lbl.Location = new System.Drawing.Point(15, 12);
             this.stat_karyawan_lbl.Name = "stat_karyawan_lbl";
-            this.stat_karyawan_lbl.Size = new System.Drawing.Size(176, 36);
+            this.stat_karyawan_lbl.Size = new System.Drawing.Size(230, 36);
             this.stat_karyawan_lbl.TabIndex = 0;
             this.stat_karyawan_lbl.Text = "24";
             // 
@@ -282,71 +280,71 @@ namespace SistemPenggajianKaryawan
             // 
             this.statlbl_karyawan.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.statlbl_karyawan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.statlbl_karyawan.Location = new System.Drawing.Point(12, 50);
+            this.statlbl_karyawan.Location = new System.Drawing.Point(15, 54);
             this.statlbl_karyawan.Name = "statlbl_karyawan";
-            this.statlbl_karyawan.Size = new System.Drawing.Size(176, 18);
+            this.statlbl_karyawan.Size = new System.Drawing.Size(230, 18);
             this.statlbl_karyawan.TabIndex = 1;
-            this.statlbl_karyawan.Text = "Total Karyawan";
+            this.statlbl_karyawan.Text = "Karyawan aktif";
             // 
             // card_absensi
             // 
             this.card_absensi.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.card_absensi.Controls.Add(this.stat_absensi_lbl);
             this.card_absensi.Controls.Add(this.statlbl_absensi);
-            this.card_absensi.Location = new System.Drawing.Point(248, 90);
+            this.card_absensi.Location = new System.Drawing.Point(330, 90);
             this.card_absensi.Name = "card_absensi";
-            this.card_absensi.Size = new System.Drawing.Size(200, 80);
+            this.card_absensi.Size = new System.Drawing.Size(260, 90);
             this.card_absensi.TabIndex = 3;
             // 
             // stat_absensi_lbl
             // 
             this.stat_absensi_lbl.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
-            this.stat_absensi_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(166)))), ((int)(((byte)(35)))));
-            this.stat_absensi_lbl.Location = new System.Drawing.Point(8, 10);
+            this.stat_absensi_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.stat_absensi_lbl.Location = new System.Drawing.Point(15, 12);
             this.stat_absensi_lbl.Name = "stat_absensi_lbl";
-            this.stat_absensi_lbl.Size = new System.Drawing.Size(176, 36);
+            this.stat_absensi_lbl.Size = new System.Drawing.Size(230, 36);
             this.stat_absensi_lbl.TabIndex = 0;
-            this.stat_absensi_lbl.Text = "22";
+            this.stat_absensi_lbl.Text = "18";
             // 
             // statlbl_absensi
             // 
             this.statlbl_absensi.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.statlbl_absensi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.statlbl_absensi.Location = new System.Drawing.Point(12, 50);
+            this.statlbl_absensi.Location = new System.Drawing.Point(15, 54);
             this.statlbl_absensi.Name = "statlbl_absensi";
-            this.statlbl_absensi.Size = new System.Drawing.Size(176, 18);
+            this.statlbl_absensi.Size = new System.Drawing.Size(230, 18);
             this.statlbl_absensi.TabIndex = 1;
-            this.statlbl_absensi.Text = "Absensi Masuk";
+            this.statlbl_absensi.Text = "Absensi input";
             // 
             // card_gaji
             // 
             this.card_gaji.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.card_gaji.Controls.Add(this.stat_gaji_lbl);
             this.card_gaji.Controls.Add(this.statlbl_gaji);
-            this.card_gaji.Location = new System.Drawing.Point(472, 90);
+            this.card_gaji.Location = new System.Drawing.Point(630, 90);
             this.card_gaji.Name = "card_gaji";
-            this.card_gaji.Size = new System.Drawing.Size(200, 80);
+            this.card_gaji.Size = new System.Drawing.Size(260, 90);
             this.card_gaji.TabIndex = 4;
             // 
             // stat_gaji_lbl
             // 
             this.stat_gaji_lbl.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold);
-            this.stat_gaji_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(144)))), ((int)(((byte)(255)))));
-            this.stat_gaji_lbl.Location = new System.Drawing.Point(8, 10);
+            this.stat_gaji_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(166)))), ((int)(((byte)(35)))));
+            this.stat_gaji_lbl.Location = new System.Drawing.Point(15, 12);
             this.stat_gaji_lbl.Name = "stat_gaji_lbl";
-            this.stat_gaji_lbl.Size = new System.Drawing.Size(176, 36);
+            this.stat_gaji_lbl.Size = new System.Drawing.Size(230, 36);
             this.stat_gaji_lbl.TabIndex = 0;
-            this.stat_gaji_lbl.Text = "18";
+            this.stat_gaji_lbl.Text = "6";
             // 
             // statlbl_gaji
             // 
             this.statlbl_gaji.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.statlbl_gaji.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.statlbl_gaji.Location = new System.Drawing.Point(12, 50);
+            this.statlbl_gaji.Location = new System.Drawing.Point(15, 54);
             this.statlbl_gaji.Name = "statlbl_gaji";
-            this.statlbl_gaji.Size = new System.Drawing.Size(176, 18);
+            this.statlbl_gaji.Size = new System.Drawing.Size(230, 18);
             this.statlbl_gaji.TabIndex = 1;
-            this.statlbl_gaji.Text = "Gaji Diproses";
+            this.statlbl_gaji.Text = "Belum input";
             // 
             // card_periode
             // 
@@ -357,6 +355,7 @@ namespace SistemPenggajianKaryawan
             this.card_periode.Name = "card_periode";
             this.card_periode.Size = new System.Drawing.Size(200, 80);
             this.card_periode.TabIndex = 5;
+            this.card_periode.Visible = false;
             // 
             // stat_periode_lbl
             // 
@@ -378,126 +377,80 @@ namespace SistemPenggajianKaryawan
             this.statlbl_periode.TabIndex = 1;
             this.statlbl_periode.Text = "Periode Aktif";
             // 
-            // aktivitas_lbl
+            // quick_actions_lbl
             // 
-            this.aktivitas_lbl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.aktivitas_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(85)))), ((int)(((byte)(104)))));
-            this.aktivitas_lbl.Location = new System.Drawing.Point(24, 196);
-            this.aktivitas_lbl.Name = "aktivitas_lbl";
-            this.aktivitas_lbl.Size = new System.Drawing.Size(860, 22);
-            this.aktivitas_lbl.TabIndex = 6;
-            this.aktivitas_lbl.Text = "Aktivitas Terbaru";
+            this.quick_actions_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.quick_actions_lbl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.quick_actions_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(85)))), ((int)(((byte)(104)))));
+            this.quick_actions_lbl.Location = new System.Drawing.Point(30, 205);
+            this.quick_actions_lbl.Name = "quick_actions_lbl";
+            this.quick_actions_lbl.Size = new System.Drawing.Size(860, 22);
+            this.quick_actions_lbl.TabIndex = 6;
+            this.quick_actions_lbl.Text = "Aksi cepat";
             // 
-            // akt1_panel
+            // quick_absensi_btn
             // 
-            this.akt1_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt1_panel.Controls.Add(this.akt1_lbl);
-            this.akt1_panel.Controls.Add(this.akt1_badge);
-            this.akt1_panel.Location = new System.Drawing.Point(24, 236);
-            this.akt1_panel.Name = "akt1_panel";
-            this.akt1_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt1_panel.TabIndex = 7;
+            this.quick_absensi_btn.BackColor = System.Drawing.Color.White;
+            this.quick_absensi_btn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.quick_absensi_btn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.quick_absensi_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.quick_absensi_btn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.quick_absensi_btn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
+            this.quick_absensi_btn.Location = new System.Drawing.Point(30, 236);
+            this.quick_absensi_btn.Name = "quick_absensi_btn";
+            this.quick_absensi_btn.Size = new System.Drawing.Size(260, 50);
+            this.quick_absensi_btn.TabIndex = 7;
+            this.quick_absensi_btn.Text = "⛶  Absensi";
+            this.quick_absensi_btn.UseVisualStyleBackColor = false;
+            this.quick_absensi_btn.Click += new System.EventHandler(this.quick_absensi_btn_Click);
             // 
-            // akt1_lbl
+            // quick_proses_btn
             // 
-            this.akt1_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt1_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt1_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt1_lbl.Name = "akt1_lbl";
-            this.akt1_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt1_lbl.TabIndex = 0;
-            this.akt1_lbl.Text = "Absensi bulan Mei 2026 telah diperbarui";
+            this.quick_proses_btn.BackColor = System.Drawing.Color.White;
+            this.quick_proses_btn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.quick_proses_btn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.quick_proses_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.quick_proses_btn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.quick_proses_btn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
+            this.quick_proses_btn.Location = new System.Drawing.Point(330, 236);
+            this.quick_proses_btn.Name = "quick_proses_btn";
+            this.quick_proses_btn.Size = new System.Drawing.Size(260, 50);
+            this.quick_proses_btn.TabIndex = 8;
+            this.quick_proses_btn.Text = "💵  Proses gaji";
+            this.quick_proses_btn.UseVisualStyleBackColor = false;
+            this.quick_proses_btn.Click += new System.EventHandler(this.quick_proses_btn_Click);
             // 
-            // akt1_badge
+            // quick_slip_btn
             // 
-            this.akt1_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.akt1_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt1_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt1_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt1_badge.Name = "akt1_badge";
-            this.akt1_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt1_badge.TabIndex = 1;
-            this.akt1_badge.Text = "Selesai";
-            this.akt1_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.quick_slip_btn.BackColor = System.Drawing.Color.White;
+            this.quick_slip_btn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.quick_slip_btn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.quick_slip_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.quick_slip_btn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.quick_slip_btn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
+            this.quick_slip_btn.Location = new System.Drawing.Point(630, 236);
+            this.quick_slip_btn.Name = "quick_slip_btn";
+            this.quick_slip_btn.Size = new System.Drawing.Size(260, 50);
+            this.quick_slip_btn.TabIndex = 9;
+            this.quick_slip_btn.Text = "📄  Slip gaji";
+            this.quick_slip_btn.UseVisualStyleBackColor = false;
+            this.quick_slip_btn.Click += new System.EventHandler(this.quick_slip_btn_Click);
             // 
-            // akt2_panel
-            // 
-            this.akt2_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt2_panel.Controls.Add(this.akt2_lbl);
-            this.akt2_panel.Controls.Add(this.akt2_badge);
-            this.akt2_panel.Location = new System.Drawing.Point(24, 284);
-            this.akt2_panel.Name = "akt2_panel";
-            this.akt2_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt2_panel.TabIndex = 8;
-            // 
-            // akt2_lbl
-            // 
-            this.akt2_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt2_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt2_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt2_lbl.Name = "akt2_lbl";
-            this.akt2_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt2_lbl.TabIndex = 0;
-            this.akt2_lbl.Text = "Karyawan baru: Ahmad Ridwan ditambahkan";
-            // 
-            // akt2_badge
-            // 
-            this.akt2_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
-            this.akt2_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt2_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt2_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt2_badge.Name = "akt2_badge";
-            this.akt2_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt2_badge.TabIndex = 1;
-            this.akt2_badge.Text = "Info";
-            this.akt2_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // akt3_panel
-            // 
-            this.akt3_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt3_panel.Controls.Add(this.akt3_lbl);
-            this.akt3_panel.Controls.Add(this.akt3_badge);
-            this.akt3_panel.Location = new System.Drawing.Point(24, 332);
-            this.akt3_panel.Name = "akt3_panel";
-            this.akt3_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt3_panel.TabIndex = 9;
-            // 
-            // akt3_lbl
-            // 
-            this.akt3_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt3_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt3_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt3_lbl.Name = "akt3_lbl";
-            this.akt3_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt3_lbl.TabIndex = 0;
-            this.akt3_lbl.Text = "Slip gaji Mei 2026 siap dicetak";
-            // 
-            // akt3_badge
-            // 
-            this.akt3_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(166)))), ((int)(((byte)(35)))));
-            this.akt3_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt3_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt3_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt3_badge.Name = "akt3_badge";
-            this.akt3_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt3_badge.TabIndex = 1;
-            this.akt3_badge.Text = "Update";
-            this.akt3_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // FormDashboarHRD
+            // FormDashboardHRD
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.ClientSize = new System.Drawing.Size(1100, 640);
-            this.Controls.Add(this.accentPanel);
-            this.Controls.Add(this.sidebar_panel);
             this.Controls.Add(this.content_panel);
+            this.Controls.Add(this.sidebar_panel);
+            this.Controls.Add(this.accentPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "FormDashboarHRD";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
+            this.Name = "FormDashboardHRD";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dashboard HRD - Sistem Penggajian Karyawan";
-            this.Load += new System.EventHandler(this.FormDashboarHRD_Load);
+            this.Load += new System.EventHandler(this.FormDashboardHRD_Load);
             this.sidebar_panel.ResumeLayout(false);
             this.content_panel.ResumeLayout(false);
             this.dashboard_home_panel.ResumeLayout(false);
@@ -505,9 +458,6 @@ namespace SistemPenggajianKaryawan
             this.card_absensi.ResumeLayout(false);
             this.card_gaji.ResumeLayout(false);
             this.card_periode.ResumeLayout(false);
-            this.akt1_panel.ResumeLayout(false);
-            this.akt2_panel.ResumeLayout(false);
-            this.akt3_panel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -547,18 +497,9 @@ namespace SistemPenggajianKaryawan
         private System.Windows.Forms.Label stat_periode_lbl;
         private System.Windows.Forms.Label statlbl_periode;
 
-        private System.Windows.Forms.Label aktivitas_lbl;
-
-        private System.Windows.Forms.Panel akt1_panel;
-        private System.Windows.Forms.Label akt1_lbl;
-        private System.Windows.Forms.Label akt1_badge;
-
-        private System.Windows.Forms.Panel akt2_panel;
-        private System.Windows.Forms.Label akt2_lbl;
-        private System.Windows.Forms.Label akt2_badge;
-
-        private System.Windows.Forms.Panel akt3_panel;
-        private System.Windows.Forms.Label akt3_lbl;
-        private System.Windows.Forms.Label akt3_badge;
+        private System.Windows.Forms.Label quick_actions_lbl;
+        private System.Windows.Forms.Button quick_absensi_btn;
+        private System.Windows.Forms.Button quick_proses_btn;
+        private System.Windows.Forms.Button quick_slip_btn;
     }
 }

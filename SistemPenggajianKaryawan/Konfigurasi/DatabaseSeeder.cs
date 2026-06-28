@@ -102,6 +102,25 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     );";
                 server.eksekusiNonQuery(createKomponenTable);
 
+                // 1d. Buat tabel penggajian jika belum ada
+                string createPenggajianTable = @"
+                    CREATE TABLE IF NOT EXISTS penggajian (
+                        penggajian_id INT AUTO_INCREMENT PRIMARY KEY,
+                        karyawan_id   INT NOT NULL,
+                        bulan         INT NOT NULL,
+                        tahun         INT NOT NULL,
+                        gaji_pokok    DECIMAL(15, 2) NOT NULL,
+                        total_tunjangan DECIMAL(15, 2) NOT NULL,
+                        total_potongan  DECIMAL(15, 2) NOT NULL,
+                        gaji_bersih   DECIMAL(15, 2) NOT NULL,
+                        diproses_oleh INT NOT NULL,
+                        tgl_proses    DATETIME NOT NULL,
+                        FOREIGN KEY (karyawan_id) REFERENCES karyawan(karyawan_id) ON DELETE CASCADE,
+                        FOREIGN KEY (diproses_oleh) REFERENCES users(user_id),
+                        UNIQUE KEY unik_penggajian (karyawan_id, bulan, tahun)
+                    );";
+                server.eksekusiNonQuery(createPenggajianTable);
+
                 // 2. Seed Karyawan secara aman
                 Action<string, string, string, string, decimal> insertKaryawanIfNotExist = (kode, nama, jabatan, jenis, gapok) =>
                 {
@@ -267,6 +286,57 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                         { "@karyawan_id", karyawanId }
                     };
                     server.eksekusiNonQueryParam(qKaryawan, pKaryawan);
+                }
+                else
+                {
+                    // Self-healing: Hubungkan user 'karyawan' dengan karyawan_id 'K001' jika saat ini masih NULL
+                    DataTable dtCheck = server.eksekusiQuery("SELECT karyawan_id FROM users WHERE username = 'karyawan'");
+                    if (dtCheck.Rows.Count > 0 && dtCheck.Rows[0]["karyawan_id"] == DBNull.Value)
+                    {
+                        DataTable dtStaff = server.eksekusiQuery("SELECT karyawan_id FROM karyawan WHERE kode_karyawan = 'K001'");
+                        if (dtStaff.Rows.Count > 0)
+                        {
+                            int karyawanId = Convert.ToInt32(dtStaff.Rows[0]["karyawan_id"]);
+                            server.eksekusiNonQueryParam(
+                                "UPDATE users SET karyawan_id = @karyawan_id WHERE username = 'karyawan'",
+                                new Dictionary<string, object> { { "@karyawan_id", karyawanId } }
+                            );
+                        }
+                    }
+                }
+
+                // Reset/Verify default users passwords to encrypted if they are currently plain or hashed
+                string qCheckHash = "SELECT user_id, username, password FROM users";
+                DataTable dtUsers = server.eksekusiQuery(qCheckHash);
+                foreach (DataRow r in dtUsers.Rows)
+                {
+                    string uname = r["username"].ToString();
+                    string pw = r["password"].ToString();
+                    int uid = Convert.ToInt32(r["user_id"]);
+                    
+                    // Coba dekripsi. Jika hasil dekripsi sama dengan aslinya (berarti plain text atau old hash), maka kita harus mengenkripsinya.
+                    string decrypted = auth.decryptPassword(pw);
+                    if (decrypted == pw) 
+                    {
+                        string plainPw = pw;
+                        // Jika panjangnya 64 (kemungkinan SHA-256 hash lama), reset ke password default aslinya
+                        if (pw.Length == 64)
+                        {
+                            if (uname == "admin") plainPw = "admin123";
+                            else if (uname == "hrd") plainPw = "hrd123";
+                            else if (uname == "karyawan") plainPw = "karyawan123";
+                        }
+                        
+                        // Encrypt and update
+                        string encrypted = auth.encryptPassword(plainPw);
+                        string qUp = "UPDATE users SET password = @pw WHERE user_id = @uid";
+                        var pUp = new Dictionary<string, object>
+                        {
+                            { "@pw", encrypted },
+                            { "@uid", uid }
+                        };
+                        server.eksekusiNonQueryParam(qUp, pUp);
+                    }
                 }
             }
             catch (Exception ex)

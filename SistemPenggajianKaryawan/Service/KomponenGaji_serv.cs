@@ -7,7 +7,6 @@ namespace SistemPenggajianKaryawan.Service
 {
     internal class KomponenGaji_serv
     {
-        internal int     komponen_id;
         internal string  nama_komponen;
         internal string  tipe;          // "Tambah" | "Potong"
         internal string  jenis_nilai;   // "Nominal" | "Persen"
@@ -91,6 +90,17 @@ namespace SistemPenggajianKaryawan.Service
             try { nilai_ret = server.eksekusiNonQueryParam(q, p); }
             catch (Exception) { }
             return nilai_ret;
+        }
+
+        public int getJumlahKomponenAktif()
+        {
+            try
+            {
+                DataTable dt = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM komponen_gaji WHERE is_aktif = 1");
+                if (dt.Rows.Count > 0) return Convert.ToInt32(dt.Rows[0]["jumlah"]);
+            }
+            catch (Exception) { }
+            return 0;
         }
     }
 }

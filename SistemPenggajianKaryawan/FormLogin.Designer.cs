@@ -24,6 +24,7 @@ namespace SistemPenggajianKaryawan
             this.username_txt = new System.Windows.Forms.TextBox();
             this.password_lbl = new System.Windows.Forms.Label();
             this.password_txt = new System.Windows.Forms.TextBox();
+            this.showPw_btn = new System.Windows.Forms.Button();
             this.error_lbl = new System.Windows.Forms.Label();
             this.login_btn = new System.Windows.Forms.Button();
             this.version_lbl = new System.Windows.Forms.Label();
@@ -85,6 +86,7 @@ namespace SistemPenggajianKaryawan
             this.panel_right.Controls.Add(this.username_txt);
             this.panel_right.Controls.Add(this.password_lbl);
             this.panel_right.Controls.Add(this.password_txt);
+            this.panel_right.Controls.Add(this.showPw_btn);
             this.panel_right.Controls.Add(this.error_lbl);
             this.panel_right.Controls.Add(this.login_btn);
             this.panel_right.Controls.Add(this.version_lbl);
@@ -154,10 +156,24 @@ namespace SistemPenggajianKaryawan
             this.password_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.password_txt.Location = new System.Drawing.Point(53, 270);
             this.password_txt.Name = "password_txt";
-            this.password_txt.PasswordChar = '●';
-            this.password_txt.Size = new System.Drawing.Size(360, 34);
+            this.password_txt.UseSystemPasswordChar = true;
+            this.password_txt.Size = new System.Drawing.Size(322, 34);
             this.password_txt.TabIndex = 5;
             this.password_txt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.password_txt_KeyDown);
+            // 
+            // showPw_btn
+            // 
+            this.showPw_btn.BackColor = System.Drawing.Color.White;
+            this.showPw_btn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.showPw_btn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(213)))), ((int)(((byte)(225)))));
+            this.showPw_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.showPw_btn.Location = new System.Drawing.Point(379, 270);
+            this.showPw_btn.Name = "showPw_btn";
+            this.showPw_btn.Size = new System.Drawing.Size(34, 34);
+            this.showPw_btn.TabIndex = 6;
+            this.showPw_btn.UseVisualStyleBackColor = false;
+            this.showPw_btn.Click += new System.EventHandler(this.showPw_btn_Click);
+            this.showPw_btn.Paint += new System.Windows.Forms.PaintEventHandler(this.showPw_btn_Paint);
             // 
             // error_lbl
             // 
@@ -238,6 +254,7 @@ namespace SistemPenggajianKaryawan
         private System.Windows.Forms.TextBox    username_txt;
         private System.Windows.Forms.Label      password_lbl;
         private System.Windows.Forms.TextBox    password_txt;
+        private System.Windows.Forms.Button     showPw_btn;
         private System.Windows.Forms.Label      error_lbl;
         private System.Windows.Forms.Button     login_btn;
         private System.Windows.Forms.Label      version_lbl;

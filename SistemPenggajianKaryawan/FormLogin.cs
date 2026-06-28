@@ -69,10 +69,13 @@ namespace SistemPenggajianKaryawan
             if (hasil.Rows.Count > 0)
             {
                 // Isi UserSession
-                UserSession.user_id  = Convert.ToInt32(hasil.Rows[0]["user_id"]);
-                UserSession.nama     = hasil.Rows[0]["nama"].ToString();
-                UserSession.username = hasil.Rows[0]["username"].ToString();
-                UserSession.role     = hasil.Rows[0]["role"].ToString();
+                UserSession.user_id     = Convert.ToInt32(hasil.Rows[0]["user_id"]);
+                UserSession.nama        = hasil.Rows[0]["nama"].ToString();
+                UserSession.username    = hasil.Rows[0]["username"].ToString();
+                UserSession.role        = hasil.Rows[0]["role"].ToString();
+                UserSession.karyawan_id = hasil.Rows[0]["karyawan_id"] != DBNull.Value
+                    ? Convert.ToInt32(hasil.Rows[0]["karyawan_id"])
+                    : 0;
 
                 // Redirect sesuai role
                 Form dashboard = null;
@@ -83,7 +86,7 @@ namespace SistemPenggajianKaryawan
                         dashboard = new FormDashboardAdmin();
                         break;
                     case "HRD":
-                        dashboard = new FormDashboarHRD();
+                        dashboard = new FormDashboardHRD();
                         break;
                     case "Karyawan":
                         dashboard = new FormDashboardKaryawan();
@@ -125,6 +128,43 @@ namespace SistemPenggajianKaryawan
         private void username_txt_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void showPw_btn_Click(object sender, EventArgs e)
+        {
+            password_txt.UseSystemPasswordChar = !password_txt.UseSystemPasswordChar;
+            showPw_btn.Invalidate();
+        }
+
+        private void showPw_btn_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            
+            int w = showPw_btn.Width;
+            int h = showPw_btn.Height;
+            
+            float cx = w / 2f;
+            float cy = h / 2f;
+            
+            using (Pen pen = new Pen(Color.FromArgb(113, 128, 150), 1.5f))
+            using (Brush brush = new SolidBrush(Color.FromArgb(113, 128, 150)))
+            {
+                // Draw pupil
+                e.Graphics.FillEllipse(brush, cx - 2.5f, cy - 2.5f, 5, 5);
+                
+                // Draw upper and lower eyelid curves
+                e.Graphics.DrawArc(pen, cx - 8.5f, cy - 9f, 17, 13, 25, 130);
+                e.Graphics.DrawArc(pen, cx - 8.5f, cy - 4f, 17, 13, 205, 130);
+                
+                if (!password_txt.UseSystemPasswordChar)
+                {
+                    // Draw a slash across the eye when revealed
+                    using (Pen slashPen = new Pen(Color.FromArgb(205, 92, 92), 1.5f))
+                    {
+                        e.Graphics.DrawLine(slashPen, cx - 7, cy - 5, cx + 7, cy + 5);
+                    }
+                }
+            }
         }
     }
 }

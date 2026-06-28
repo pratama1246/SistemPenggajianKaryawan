@@ -10,12 +10,10 @@ namespace SistemPenggajianKaryawan.Service
     internal class Gaji_serv
     {
         Koneksi server;
-        string Query;
 
         public Gaji_serv()
         {
             server = new Koneksi();
-            Query = "";
         }
 
         // Factory Method - sesuai dengan instruksi di AGENTS.md
@@ -44,7 +42,7 @@ namespace SistemPenggajianKaryawan.Service
             DataTable dtEmp = server.eksekusiQuery(qEmp);
 
             // Ambil semua komponen gaji
-            string qComp = "SELECT komponen_id, nama_komponen, tipe, jenis_nilai, nilai, berlaku_untuk FROM komponen_gaji";
+            string qComp = "SELECT komponen_id, nama_komponen, tipe, jenis_nilai, nilai, berlaku_untuk FROM komponen_gaji WHERE is_aktif = 1";
             DataTable dtComp = server.eksekusiQuery(qComp);
             List<KomponenGaji> komponenList = new List<KomponenGaji>();
             foreach (DataRow r in dtComp.Rows)
@@ -68,6 +66,7 @@ namespace SistemPenggajianKaryawan.Service
                 int karId = Convert.ToInt32(rEmp["karyawan_id"]);
                 string jenis = rEmp["jenis"].ToString();
                 decimal gapok = Convert.ToDecimal(rEmp["gaji_pokok"]);
+                decimal gapokAsli = gapok; // Simpan nilai asli sebelum dimodifikasi untuk Harian
 
                 BaseKaryawan karObj = buatObjekKaryawan(jenis);
                 if (karObj == null) continue;
@@ -147,7 +146,7 @@ namespace SistemPenggajianKaryawan.Service
                 // Kalkulasi Gaji Bersih menggunakan polymorphism
                 decimal netto = karObj.HitungGaji(absensiList, komponenList, config);
 
-                dtHasil.Rows.Add(karId, karObj.nama_karyawan, jenis, gapok, tunjangan, potongan, netto);
+                dtHasil.Rows.Add(karId, karObj.nama_karyawan, jenis, gapokAsli, tunjangan, potongan, netto);
             }
 
             return dtHasil;
@@ -196,6 +195,51 @@ namespace SistemPenggajianKaryawan.Service
                 return -1;
             }
             return rowsSaved;
+        }
+
+        // Ambil data rekap gaji historis
+        public DataTable getRekapGaji(int bulan, int tahun, string keyword)
+        {
+            string q = @"
+                SELECT 
+                    p.penggajian_id,
+                    k.kode_karyawan AS 'Kode',
+                    k.nama_karyawan AS 'Nama',
+                    k.jenis AS 'Jenis',
+                    p.bulan AS 'Bulan',
+                    p.tahun AS 'Tahun',
+                    p.gaji_pokok AS 'Gaji Pokok',
+                    p.total_tunjangan AS 'Tunjangan',
+                    p.total_potongan AS 'Potongan',
+                    p.gaji_bersih AS 'Gaji Bersih',
+                    u.nama AS 'Diproses Oleh',
+                    p.tgl_proses AS 'Tgl Proses'
+                FROM penggajian p
+                JOIN karyawan k ON p.karyawan_id = k.karyawan_id
+                JOIN users u ON p.diproses_oleh = u.user_id
+                WHERE 1=1";
+            
+            var p = new Dictionary<string, object>();
+            
+            if (bulan > 0)
+            {
+                q += " AND p.bulan = @bulan";
+                p.Add("@bulan", bulan);
+            }
+            if (tahun > 0)
+            {
+                q += " AND p.tahun = @tahun";
+                p.Add("@tahun", tahun);
+            }
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                q += " AND (k.nama_karyawan LIKE @keyword OR k.kode_karyawan LIKE @keyword)";
+                p.Add("@keyword", "%" + keyword + "%");
+            }
+            
+            q += " ORDER BY p.tahun DESC, p.bulan DESC, k.nama_karyawan ASC";
+            
+            return server.eksekusiQueryParam(q, p);
         }
     }
 }

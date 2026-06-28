@@ -67,6 +67,8 @@ namespace SistemPenggajianKaryawan.Model
         // Jam pulang cepat (kurang dari jam keluar normal)
         public double jamPulangCepat(TimeSpan jamKeluarNormal)
         {
+            // Jika jam_keluar belum diisi (Zero), jangan anggap sebagai pulang cepat
+            if (_jam_keluar == TimeSpan.Zero) return 0;
             if (_jam_keluar >= jamKeluarNormal) return 0;
             return (jamKeluarNormal - _jam_keluar).TotalHours;
         }

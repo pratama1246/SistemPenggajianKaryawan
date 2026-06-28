@@ -38,16 +38,6 @@ namespace SistemPenggajianKaryawan
             this.card_periode = new System.Windows.Forms.Panel();
             this.stat_periode_lbl = new System.Windows.Forms.Label();
             this.statlbl_periode = new System.Windows.Forms.Label();
-            this.aktivitas_lbl = new System.Windows.Forms.Label();
-            this.akt1_panel = new System.Windows.Forms.Panel();
-            this.akt1_lbl = new System.Windows.Forms.Label();
-            this.akt1_badge = new System.Windows.Forms.Label();
-            this.akt2_panel = new System.Windows.Forms.Panel();
-            this.akt2_lbl = new System.Windows.Forms.Label();
-            this.akt2_badge = new System.Windows.Forms.Label();
-            this.akt3_panel = new System.Windows.Forms.Panel();
-            this.akt3_lbl = new System.Windows.Forms.Label();
-            this.akt3_badge = new System.Windows.Forms.Label();
             this.sidebar_panel.SuspendLayout();
             this.content_panel.SuspendLayout();
             this.dashboard_home_panel.SuspendLayout();
@@ -55,14 +45,12 @@ namespace SistemPenggajianKaryawan
             this.card_user.SuspendLayout();
             this.card_komponen.SuspendLayout();
             this.card_periode.SuspendLayout();
-            this.akt1_panel.SuspendLayout();
-            this.akt2_panel.SuspendLayout();
-            this.akt3_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // accentPanel
             // 
             this.accentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
+            this.accentPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.accentPanel.Location = new System.Drawing.Point(0, 0);
             this.accentPanel.Name = "accentPanel";
             this.accentPanel.Size = new System.Drawing.Size(1100, 4);
@@ -78,6 +66,7 @@ namespace SistemPenggajianKaryawan
             this.sidebar_panel.Controls.Add(this.menu_rekap_btn);
             this.sidebar_panel.Controls.Add(this.divider_panel);
             this.sidebar_panel.Controls.Add(this.logout_btn);
+            this.sidebar_panel.Dock = System.Windows.Forms.DockStyle.Left;
             this.sidebar_panel.Location = new System.Drawing.Point(0, 4);
             this.sidebar_panel.Name = "sidebar_panel";
             this.sidebar_panel.Size = new System.Drawing.Size(180, 636);
@@ -195,6 +184,7 @@ namespace SistemPenggajianKaryawan
             // 
             this.content_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.content_panel.Controls.Add(this.dashboard_home_panel);
+            this.content_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.content_panel.Location = new System.Drawing.Point(180, 4);
             this.content_panel.Name = "content_panel";
             this.content_panel.Size = new System.Drawing.Size(920, 636);
@@ -209,10 +199,6 @@ namespace SistemPenggajianKaryawan
             this.dashboard_home_panel.Controls.Add(this.card_user);
             this.dashboard_home_panel.Controls.Add(this.card_komponen);
             this.dashboard_home_panel.Controls.Add(this.card_periode);
-            this.dashboard_home_panel.Controls.Add(this.aktivitas_lbl);
-            this.dashboard_home_panel.Controls.Add(this.akt1_panel);
-            this.dashboard_home_panel.Controls.Add(this.akt2_panel);
-            this.dashboard_home_panel.Controls.Add(this.akt3_panel);
             this.dashboard_home_panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dashboard_home_panel.Location = new System.Drawing.Point(0, 0);
             this.dashboard_home_panel.Name = "dashboard_home_panel";
@@ -221,6 +207,8 @@ namespace SistemPenggajianKaryawan
             // 
             // sambut_lbl
             // 
+            this.sambut_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.sambut_lbl.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.sambut_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.sambut_lbl.Location = new System.Drawing.Point(24, 24);
@@ -231,6 +219,8 @@ namespace SistemPenggajianKaryawan
             // 
             // tanggal_lbl
             // 
+            this.tanggal_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tanggal_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tanggal_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.tanggal_lbl.Location = new System.Drawing.Point(24, 56);
@@ -358,122 +348,16 @@ namespace SistemPenggajianKaryawan
             this.statlbl_periode.TabIndex = 1;
             this.statlbl_periode.Text = "Periode Aktif";
             // 
-            // aktivitas_lbl
-            // 
-            this.aktivitas_lbl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.aktivitas_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(85)))), ((int)(((byte)(104)))));
-            this.aktivitas_lbl.Location = new System.Drawing.Point(24, 196);
-            this.aktivitas_lbl.Name = "aktivitas_lbl";
-            this.aktivitas_lbl.Size = new System.Drawing.Size(860, 22);
-            this.aktivitas_lbl.TabIndex = 6;
-            this.aktivitas_lbl.Text = "Aktivitas Terbaru";
-            // 
-            // akt1_panel
-            // 
-            this.akt1_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt1_panel.Controls.Add(this.akt1_lbl);
-            this.akt1_panel.Controls.Add(this.akt1_badge);
-            this.akt1_panel.Location = new System.Drawing.Point(24, 236);
-            this.akt1_panel.Name = "akt1_panel";
-            this.akt1_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt1_panel.TabIndex = 7;
-            // 
-            // akt1_lbl
-            // 
-            this.akt1_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt1_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt1_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt1_lbl.Name = "akt1_lbl";
-            this.akt1_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt1_lbl.TabIndex = 0;
-            this.akt1_lbl.Text = "Proses gaji Mei 2026 selesai";
-            // 
-            // akt1_badge
-            // 
-            this.akt1_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.akt1_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt1_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt1_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt1_badge.Name = "akt1_badge";
-            this.akt1_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt1_badge.TabIndex = 1;
-            this.akt1_badge.Text = "Selesai";
-            this.akt1_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // akt2_panel
-            // 
-            this.akt2_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt2_panel.Controls.Add(this.akt2_lbl);
-            this.akt2_panel.Controls.Add(this.akt2_badge);
-            this.akt2_panel.Location = new System.Drawing.Point(24, 284);
-            this.akt2_panel.Name = "akt2_panel";
-            this.akt2_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt2_panel.TabIndex = 8;
-            // 
-            // akt2_lbl
-            // 
-            this.akt2_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt2_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt2_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt2_lbl.Name = "akt2_lbl";
-            this.akt2_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt2_lbl.TabIndex = 0;
-            this.akt2_lbl.Text = "User baru: hrd_sari ditambahkan";
-            // 
-            // akt2_badge
-            // 
-            this.akt2_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
-            this.akt2_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt2_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt2_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt2_badge.Name = "akt2_badge";
-            this.akt2_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt2_badge.TabIndex = 1;
-            this.akt2_badge.Text = "Info";
-            this.akt2_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // akt3_panel
-            // 
-            this.akt3_panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.akt3_panel.Controls.Add(this.akt3_lbl);
-            this.akt3_panel.Controls.Add(this.akt3_badge);
-            this.akt3_panel.Location = new System.Drawing.Point(24, 332);
-            this.akt3_panel.Name = "akt3_panel";
-            this.akt3_panel.Size = new System.Drawing.Size(872, 38);
-            this.akt3_panel.TabIndex = 9;
-            // 
-            // akt3_lbl
-            // 
-            this.akt3_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.akt3_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.akt3_lbl.Location = new System.Drawing.Point(12, 10);
-            this.akt3_lbl.Name = "akt3_lbl";
-            this.akt3_lbl.Size = new System.Drawing.Size(720, 18);
-            this.akt3_lbl.TabIndex = 0;
-            this.akt3_lbl.Text = "Komponen BPJS diperbarui";
-            // 
-            // akt3_badge
-            // 
-            this.akt3_badge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(166)))), ((int)(((byte)(35)))));
-            this.akt3_badge.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.akt3_badge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.akt3_badge.Location = new System.Drawing.Point(786, 9);
-            this.akt3_badge.Name = "akt3_badge";
-            this.akt3_badge.Size = new System.Drawing.Size(70, 20);
-            this.akt3_badge.TabIndex = 1;
-            this.akt3_badge.Text = "Update";
-            this.akt3_badge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // FormDashboardAdmin
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.ClientSize = new System.Drawing.Size(1100, 640);
-            this.Controls.Add(this.accentPanel);
-            this.Controls.Add(this.sidebar_panel);
             this.Controls.Add(this.content_panel);
+            this.Controls.Add(this.sidebar_panel);
+            this.Controls.Add(this.accentPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FormDashboardAdmin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dashboard Admin - Sistem Penggajian Karyawan";
@@ -485,9 +369,6 @@ namespace SistemPenggajianKaryawan
             this.card_user.ResumeLayout(false);
             this.card_komponen.ResumeLayout(false);
             this.card_periode.ResumeLayout(false);
-            this.akt1_panel.ResumeLayout(false);
-            this.akt2_panel.ResumeLayout(false);
-            this.akt3_panel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -526,19 +407,7 @@ namespace SistemPenggajianKaryawan
         private System.Windows.Forms.Label stat_periode_lbl;
         private System.Windows.Forms.Label statlbl_periode;
 
-        private System.Windows.Forms.Label aktivitas_lbl;
 
-        private System.Windows.Forms.Panel akt1_panel;
-        private System.Windows.Forms.Label akt1_lbl;
-        private System.Windows.Forms.Label akt1_badge;
-
-        private System.Windows.Forms.Panel akt2_panel;
-        private System.Windows.Forms.Label akt2_lbl;
-        private System.Windows.Forms.Label akt2_badge;
-
-        private System.Windows.Forms.Panel akt3_panel;
-        private System.Windows.Forms.Label akt3_lbl;
-        private System.Windows.Forms.Label akt3_badge;
     }
 }
 

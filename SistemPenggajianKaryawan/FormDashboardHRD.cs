@@ -7,16 +7,17 @@ using SistemPenggajianKaryawan.Service;
 
 namespace SistemPenggajianKaryawan
 {
-    public partial class FormDashboarHRD : Form
+    public partial class FormDashboardHRD : Form
     {
         private Form activeForm = null;
 
-        public FormDashboarHRD()
+        public FormDashboardHRD()
         {
             InitializeComponent();
+            content_panel.BringToFront();
         }
 
-        private void FormDashboarHRD_Load(object sender, System.EventArgs e)
+        private void FormDashboardHRD_Load(object sender, System.EventArgs e)
         {
             if (UserSession.role != "HRD")
             {
@@ -29,18 +30,55 @@ namespace SistemPenggajianKaryawan
             tanggal_lbl.Text = DateTime.Now.ToString("dddd, dd MMMM yyyy",
                                new System.Globalization.CultureInfo("id-ID"));
 
+            // Set standard text labels for menu buttons (with Y spacing spacing)
+            menu_dashboard_btn.Text = "  Dashboard";
+            menu_karyawan_btn.Text  = "  Data Karyawan";
+            menu_absensi_btn.Text   = "  Absensi";
+            menu_proses_btn.Text    = "  Proses Gaji";
+            menu_slip_btn.Text      = "  Slip Gaji";
+            logout_btn.Text         = "  Logout";
+
             muatStatistik();
+
+            // Highlight default active menu
+            setAktifMenu(menu_dashboard_btn);
         }
 
         void muatStatistik()
         {
-            // Nanti diisi dari service masing-masing
-            // Sementara placeholder dulu biar form bisa jalan
-            stat_karyawan_lbl.Text  = "24";
-            stat_absensi_lbl.Text   = "22";
-            stat_gaji_lbl.Text      = "18";
-            stat_periode_lbl.Text   = DateTime.Now.ToString("MMM",
-                                      new System.Globalization.CultureInfo("id-ID"));
+            try
+            {
+                Absensi_serv absServ = new Absensi_serv();
+                int karyawanAktif = absServ.getJumlahKaryawanAktif();
+                int absensiInput = absServ.getJumlahAbsenHariIni();
+                int belumInput = karyawanAktif - absensiInput;
+                if (belumInput < 0) belumInput = 0;
+
+                stat_karyawan_lbl.Text = karyawanAktif.ToString();
+                stat_absensi_lbl.Text = absensiInput.ToString();
+                stat_gaji_lbl.Text = belumInput.ToString();
+            }
+            catch (Exception)
+            {
+                stat_karyawan_lbl.Text = "0";
+                stat_absensi_lbl.Text = "0";
+                stat_gaji_lbl.Text = "0";
+            }
+        }
+
+        private void quick_absensi_btn_Click(object sender, EventArgs e)
+        {
+            menu_absensi_btn_Click(sender, e);
+        }
+
+        private void quick_proses_btn_Click(object sender, EventArgs e)
+        {
+            menu_proses_btn_Click(sender, e);
+        }
+
+        private void quick_slip_btn_Click(object sender, EventArgs e)
+        {
+            menu_slip_btn_Click(sender, e);
         }
 
         private void openChildForm(Form childForm)
@@ -59,6 +97,15 @@ namespace SistemPenggajianKaryawan
             dashboard_home_panel.Visible = false;
 
             content_panel.Controls.Add(childForm);
+
+            if (childForm.IsDisposed)
+            {
+                activeForm = null;
+                dashboard_home_panel.Visible = true;
+                setAktifMenu(menu_dashboard_btn);
+                return;
+            }
+
             content_panel.Tag = childForm;
             childForm.BringToFront();
             childForm.Show();
@@ -98,7 +145,6 @@ namespace SistemPenggajianKaryawan
             setAktifMenu(menu_dashboard_btn);
         }
 
-        // Navigasi menu
         private void menu_karyawan_btn_Click(object sender, EventArgs e)
         {
             setAktifMenu(menu_karyawan_btn);
@@ -134,4 +180,3 @@ namespace SistemPenggajianKaryawan
         }
     }
 }
-

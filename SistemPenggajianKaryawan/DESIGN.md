@@ -8,7 +8,7 @@
 ## Overview
 
 Aplikasi desktop WinForms untuk sistem penggajian karyawan Politeknik Negeri Cilacap.
-Vibe keseluruhan: **profesional, gelap, bersih** — terinspirasi dari warna logo PNC.
+Vibe keseluruhan: **profesional, terang, bersih** — terinspirasi dari warna logo PNC.
 Bukan meniru web app. Bukan flat design generik. Konsisten dari splash sampai slip gaji.
 
 Identitas visual dibangun dari tiga warna utama logo PNC:
@@ -145,8 +145,8 @@ Urutan tombol dalam form CRUD: **Simpan → Hapus → Batal** (kiri ke kanan).
 ### TextBox
 
 ```csharp
-txt.BackColor   = Color.FromArgb(50, 50, 50);    // bg-input
-txt.ForeColor   = Color.White;                    // text-primary
+txt.BackColor   = Color.White;                    // bg-input
+txt.ForeColor   = Color.FromArgb(45, 55, 72);    // text-primary
 txt.BorderStyle = BorderStyle.FixedSingle;
 txt.Font        = new Font("Segoe UI", 10F);
 txt.Size        = new Size(lebarInput, 26);
@@ -159,8 +159,8 @@ Password field wajib `PasswordChar = '●'`.
 ### ComboBox
 
 ```csharp
-cmb.BackColor   = Color.FromArgb(50, 50, 50);
-cmb.ForeColor   = Color.White;
+cmb.BackColor   = Color.White;
+cmb.ForeColor   = Color.FromArgb(45, 55, 72);
 cmb.FlatStyle   = FlatStyle.Flat;
 cmb.Font        = new Font("Segoe UI", 9F);
 ```
@@ -179,8 +179,8 @@ dgv.AllowUserToAddRows                = false;
 dgv.AllowUserToDeleteRows             = false;
 dgv.AutoSizeColumnsMode               = DataGridViewAutoSizeColumnsMode.Fill;
 dgv.EnableHeadersVisualStyles         = false;
-dgv.BackgroundColor                   = Color.FromArgb(38, 38, 38);
-dgv.GridColor                         = Color.FromArgb(58, 58, 58);
+dgv.BackgroundColor                   = Color.FromArgb(244, 246, 249); // bg-base
+dgv.GridColor                         = Color.FromArgb(226, 232, 240); // border
 dgv.BorderStyle                       = BorderStyle.None;
 
 dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180); // #4682B4
@@ -210,10 +210,10 @@ Form CRUD menggunakan layout dua panel: kiri input (40%), kanan grid (60%).
 
 ```csharp
 // Panel kiri
-panel_left.BackColor = Color.FromArgb(38, 38, 38);  // bg-surface
+panel_left.BackColor = Color.White;                    // bg-surface
 
 // Panel kanan
-panel_right.BackColor = Color.FromArgb(30, 30, 30); // bg-base
+panel_right.BackColor = Color.FromArgb(244, 246, 249); // bg-base
 ```
 
 ---
@@ -247,7 +247,7 @@ error_lbl.Visible   = false; // default hidden, tampil saat ada error
 │ [AccentBar #5BC8F5, 4px]                                    │
 ├──────────────────────┬──────────────────────────────────────┤
 │  Panel Kiri (40%)    │  Panel Kanan (60%)                   │
-│  bg: #262626         │  bg: #1E1E1E                         │
+│  bg: #FFFFFF         │  bg: #F4F6F9                         │
 │                      │                                      │
 │  Kode  : [TextBox]   │  [Cari: ___________________]         │
 │  Nama  : [TextBox]   │                                      │
@@ -267,12 +267,12 @@ error_lbl.Visible   = false; // default hidden, tampil saat ada error
 │ [AccentBar #5BC8F5, 4px]                                    │
 ├─────────────────────┬───────────────────────────────────────┤
 │  Panel Kiri (41%)   │  Panel Kanan (59%)                    │
-│  bg: #181818        │  bg: #262626                          │
+│  bg: #FFFFFF        │  bg: #F4F6F9                          │
 │                     │                                       │
-│  [Logo PNC]         │  Selamat Datang   (18pt Bold White)  │
-│                     │  subtitle         (9pt #888)          │
+│  [Logo PNC]         │  Selamat Datang   (18pt Bold #2D3748) │
+│                     │  subtitle         (9pt #718096)       │
 │  Sistem Penggajian  │                                       │
-│  (13pt Bold White)  │  Username  [___________________]      │
+│  (13pt Bold #2D3748)│  Username  [___________________]      │
 │                     │  Password  [___________________]      │
 │  Politeknik Negeri  │                                       │
 │  Cilacap (#5BC8F5)  │  [error label, hidden by default]    │
@@ -291,7 +291,7 @@ error_lbl.Visible   = false; // default hidden, tampil saat ada error
 │                                  │
 │         [Logo PNC 90x90]         │
 │                                  │
-│   Sistem Penggajian Karyawan     │  14pt Bold White
+│   Sistem Penggajian Karyawan     │  14pt Bold #2D3748
 │     Politeknik Negeri Cilacap    │  10pt #5BC8F5
 │  Pemrograman Berorientasi Objek  │  8pt #F5A623
 │                                  │
@@ -327,7 +327,7 @@ error_lbl.Visible   = false; // default hidden, tampil saat ada error
 - Gunakan `warnaiBaris()` setiap kali DataGridView di-refresh
 - Set `Cursor = Cursors.Hand` di semua tombol
 - Set `FlatStyle = FlatStyle.Flat` + `BorderSize = 0` di tombol primary
-- Konsisten: `panel_left` selalu lebih gelap dari `panel_right`
+- Konsisten: `panel_left` (putih/bg-surface) selalu lebih terang dari `panel_right` (abu-abu/bg-base)
 
 ### Don't
 - Jangan pakai `BackColor = SystemColors.*` — override semua dengan hex yang sudah ditentukan

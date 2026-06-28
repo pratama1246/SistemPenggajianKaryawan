@@ -115,11 +115,11 @@
     <Compile Include="FormDashboardKaryawan.Designer.cs">
       <DependentUpon>FormDashboardKaryawan.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormDashboarHRD.cs">
+    <Compile Include="FormDashboardHRD.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormDashboarHRD.Designer.cs">
-      <DependentUpon>FormDashboarHRD.cs</DependentUpon>
+    <Compile Include="FormDashboardHRD.Designer.cs">
+      <DependentUpon>FormDashboardHRD.cs</DependentUpon>
     </Compile>
     <Compile Include="FormManajemenUser.cs">
       <SubType>Form</SubType>
@@ -157,6 +157,24 @@
     <Compile Include="FormProsesGaji.Designer.cs">
       <DependentUpon>FormProsesGaji.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormRekapAbsensi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRekapAbsensi.Designer.cs">
+      <DependentUpon>FormRekapAbsensi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGantiPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGantiPassword.Designer.cs">
+      <DependentUpon>FormGantiPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRekapGaji.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRekapGaji.Designer.cs">
+      <DependentUpon>FormRekapGaji.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSlipGaji.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +199,7 @@
     <Compile Include="Service\Gaji_serv.cs" />
     <Compile Include="Service\Karyawan_serv.cs" />
     <Compile Include="Service\KomponenGaji_serv.cs" />
+    <Compile Include="Service\User_serv.cs" />
     <EmbeddedResource Include="FormAbsensi.resx">
       <DependentUpon>FormAbsensi.cs</DependentUpon>
     </EmbeddedResource>
@@ -190,8 +209,14 @@
     <EmbeddedResource Include="FormDashboardKaryawan.resx">
       <DependentUpon>FormDashboardKaryawan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormDashboarHRD.resx">
-      <DependentUpon>FormDashboarHRD.cs</DependentUpon>
+    <EmbeddedResource Include="FormDashboardHRD.resx">
+      <DependentUpon>FormDashboardHRD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormGantiPassword.resx">
+      <DependentUpon>FormGantiPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormKaryawan.resx">
+      <DependentUpon>FormKaryawan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormKomponenGaji.resx">
       <DependentUpon>FormKomponenGaji.cs</DependentUpon>
@@ -199,8 +224,17 @@
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormManajemenUser.resx">
+      <DependentUpon>FormManajemenUser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormProsesGaji.resx">
       <DependentUpon>FormProsesGaji.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRekapAbsensi.resx">
+      <DependentUpon>FormRekapAbsensi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRekapGaji.resx">
+      <DependentUpon>FormRekapGaji.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSlipGaji.resx">
       <DependentUpon>FormSlipGaji.cs</DependentUpon>

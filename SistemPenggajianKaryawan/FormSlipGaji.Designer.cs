@@ -28,7 +28,6 @@ namespace SistemPenggajianKaryawan
         /// </summary>
         private void InitializeComponent()
         {
-            this.accentPanel = new System.Windows.Forms.Panel();
             this.panel_left = new System.Windows.Forms.Panel();
             this.cetak_btn = new System.Windows.Forms.Button();
             this.tampilkan_btn = new System.Windows.Forms.Button();
@@ -36,7 +35,8 @@ namespace SistemPenggajianKaryawan
             this.tahun_lbl = new System.Windows.Forms.Label();
             this.bulan_cmb = new System.Windows.Forms.ComboBox();
             this.bulan_lbl = new System.Windows.Forms.Label();
-            this.karyawan_cmb = new System.Windows.Forms.ComboBox();
+            this.karyawan_dgv = new System.Windows.Forms.DataGridView();
+            this.cari_txt = new System.Windows.Forms.TextBox();
             this.karyawan_lbl = new System.Windows.Forms.Label();
             this.filter_title_lbl = new System.Windows.Forms.Label();
             this.panel_right = new System.Windows.Forms.Panel();
@@ -61,6 +61,7 @@ namespace SistemPenggajianKaryawan
             this.netto_title_lbl = new System.Windows.Forms.Label();
             this.netto_val_lbl = new System.Windows.Forms.Label();
             this.panel_left.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.karyawan_dgv)).BeginInit();
             this.panel_right.SuspendLayout();
             this.slip_container_panel.SuspendLayout();
             this.slip_card_panel.SuspendLayout();
@@ -68,15 +69,6 @@ namespace SistemPenggajianKaryawan
             this.emp_row_pnl.SuspendLayout();
             this.netto_row_pnl.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // accentPanel
-            // 
-            this.accentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(91)))), ((int)(((byte)(200)))), ((int)(((byte)(245)))));
-            this.accentPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.accentPanel.Location = new System.Drawing.Point(0, 0);
-            this.accentPanel.Name = "accentPanel";
-            this.accentPanel.Size = new System.Drawing.Size(1021, 4);
-            this.accentPanel.TabIndex = 0;
             // 
             // panel_left
             // 
@@ -87,13 +79,14 @@ namespace SistemPenggajianKaryawan
             this.panel_left.Controls.Add(this.tahun_lbl);
             this.panel_left.Controls.Add(this.bulan_cmb);
             this.panel_left.Controls.Add(this.bulan_lbl);
-            this.panel_left.Controls.Add(this.karyawan_cmb);
+            this.panel_left.Controls.Add(this.karyawan_dgv);
+            this.panel_left.Controls.Add(this.cari_txt);
             this.panel_left.Controls.Add(this.karyawan_lbl);
             this.panel_left.Controls.Add(this.filter_title_lbl);
             this.panel_left.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel_left.Location = new System.Drawing.Point(0, 4);
+            this.panel_left.Location = new System.Drawing.Point(0, 0);
             this.panel_left.Name = "panel_left";
-            this.panel_left.Size = new System.Drawing.Size(280, 645);
+            this.panel_left.Size = new System.Drawing.Size(280, 649);
             this.panel_left.TabIndex = 1;
             // 
             // cetak_btn
@@ -104,10 +97,10 @@ namespace SistemPenggajianKaryawan
             this.cetak_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cetak_btn.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.cetak_btn.ForeColor = System.Drawing.Color.White;
-            this.cetak_btn.Location = new System.Drawing.Point(20, 456);
+            this.cetak_btn.Location = new System.Drawing.Point(20, 500);
             this.cetak_btn.Name = "cetak_btn";
             this.cetak_btn.Size = new System.Drawing.Size(240, 36);
-            this.cetak_btn.TabIndex = 8;
+            this.cetak_btn.TabIndex = 9;
             this.cetak_btn.Text = "Cetak PDF";
             this.cetak_btn.UseVisualStyleBackColor = false;
             this.cetak_btn.Click += new System.EventHandler(this.cetak_btn_Click);
@@ -120,10 +113,10 @@ namespace SistemPenggajianKaryawan
             this.tampilkan_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.tampilkan_btn.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.tampilkan_btn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
-            this.tampilkan_btn.Location = new System.Drawing.Point(20, 410);
+            this.tampilkan_btn.Location = new System.Drawing.Point(20, 455);
             this.tampilkan_btn.Name = "tampilkan_btn";
             this.tampilkan_btn.Size = new System.Drawing.Size(240, 36);
-            this.tampilkan_btn.TabIndex = 7;
+            this.tampilkan_btn.TabIndex = 8;
             this.tampilkan_btn.Text = "Tampilkan";
             this.tampilkan_btn.UseVisualStyleBackColor = false;
             this.tampilkan_btn.Click += new System.EventHandler(this.tampilkan_btn_Click);
@@ -136,20 +129,20 @@ namespace SistemPenggajianKaryawan
             this.thn_cmb.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.thn_cmb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.thn_cmb.FormattingEnabled = true;
-            this.thn_cmb.Location = new System.Drawing.Point(20, 220);
+            this.thn_cmb.Location = new System.Drawing.Point(20, 405);
             this.thn_cmb.Name = "thn_cmb";
-            this.thn_cmb.Size = new System.Drawing.Size(240, 33);
-            this.thn_cmb.TabIndex = 6;
+            this.thn_cmb.Size = new System.Drawing.Size(240, 25);
+            this.thn_cmb.TabIndex = 7;
             // 
             // tahun_lbl
             // 
             this.tahun_lbl.AutoSize = true;
             this.tahun_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tahun_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.tahun_lbl.Location = new System.Drawing.Point(20, 196);
+            this.tahun_lbl.Location = new System.Drawing.Point(20, 380);
             this.tahun_lbl.Name = "tahun_lbl";
-            this.tahun_lbl.Size = new System.Drawing.Size(58, 25);
-            this.tahun_lbl.TabIndex = 5;
+            this.tahun_lbl.Size = new System.Drawing.Size(40, 15);
+            this.tahun_lbl.TabIndex = 6;
             this.tahun_lbl.Text = "Tahun";
             // 
             // bulan_cmb
@@ -160,34 +153,57 @@ namespace SistemPenggajianKaryawan
             this.bulan_cmb.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.bulan_cmb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
             this.bulan_cmb.FormattingEnabled = true;
-            this.bulan_cmb.Location = new System.Drawing.Point(20, 150);
+            this.bulan_cmb.Location = new System.Drawing.Point(20, 335);
             this.bulan_cmb.Name = "bulan_cmb";
-            this.bulan_cmb.Size = new System.Drawing.Size(240, 33);
-            this.bulan_cmb.TabIndex = 4;
+            this.bulan_cmb.Size = new System.Drawing.Size(240, 25);
+            this.bulan_cmb.TabIndex = 5;
             // 
             // bulan_lbl
             // 
             this.bulan_lbl.AutoSize = true;
             this.bulan_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bulan_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.bulan_lbl.Location = new System.Drawing.Point(20, 126);
+            this.bulan_lbl.Location = new System.Drawing.Point(20, 310);
             this.bulan_lbl.Name = "bulan_lbl";
-            this.bulan_lbl.Size = new System.Drawing.Size(55, 25);
-            this.bulan_lbl.TabIndex = 3;
+            this.bulan_lbl.Size = new System.Drawing.Size(37, 15);
+            this.bulan_lbl.TabIndex = 4;
             this.bulan_lbl.Text = "Bulan";
             // 
-            // karyawan_cmb
+            // karyawan_dgv
             // 
-            this.karyawan_cmb.BackColor = System.Drawing.Color.White;
-            this.karyawan_cmb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.karyawan_cmb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.karyawan_cmb.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.karyawan_cmb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
-            this.karyawan_cmb.FormattingEnabled = true;
-            this.karyawan_cmb.Location = new System.Drawing.Point(20, 80);
-            this.karyawan_cmb.Name = "karyawan_cmb";
-            this.karyawan_cmb.Size = new System.Drawing.Size(240, 33);
-            this.karyawan_cmb.TabIndex = 2;
+            this.karyawan_dgv.AllowUserToAddRows = false;
+            this.karyawan_dgv.AllowUserToDeleteRows = false;
+            this.karyawan_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.karyawan_dgv.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
+            this.karyawan_dgv.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.karyawan_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.karyawan_dgv.Location = new System.Drawing.Point(20, 120);
+            this.karyawan_dgv.MultiSelect = false;
+            this.karyawan_dgv.Name = "karyawan_dgv";
+            this.karyawan_dgv.ReadOnly = true;
+            this.karyawan_dgv.RowHeadersVisible = false;
+            this.karyawan_dgv.RowHeadersWidth = 62;
+            this.karyawan_dgv.RowTemplate.Height = 28;
+            this.karyawan_dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.karyawan_dgv.Size = new System.Drawing.Size(240, 180);
+            this.karyawan_dgv.TabIndex = 3;
+            this.karyawan_dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.karyawan_dgv_CellClick);
+            this.karyawan_dgv.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.karyawan_dgv_CellFormatting);
+            // 
+            // cari_txt
+            // 
+            this.cari_txt.BackColor = System.Drawing.Color.White;
+            this.cari_txt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cari_txt.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.cari_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(174)))), ((int)(((byte)(192)))));
+            this.cari_txt.Location = new System.Drawing.Point(20, 80);
+            this.cari_txt.Name = "cari_txt";
+            this.cari_txt.Size = new System.Drawing.Size(240, 24);
+            this.cari_txt.TabIndex = 2;
+            this.cari_txt.Text = "🔍 Cari nama/kode...";
+            this.cari_txt.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cari_txt_MouseClick);
+            this.cari_txt.TextChanged += new System.EventHandler(this.cari_txt_TextChanged);
+            this.cari_txt.Leave += new System.EventHandler(this.cari_txt_Leave);
             // 
             // karyawan_lbl
             // 
@@ -196,7 +212,7 @@ namespace SistemPenggajianKaryawan
             this.karyawan_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
             this.karyawan_lbl.Location = new System.Drawing.Point(20, 56);
             this.karyawan_lbl.Name = "karyawan_lbl";
-            this.karyawan_lbl.Size = new System.Drawing.Size(87, 25);
+            this.karyawan_lbl.Size = new System.Drawing.Size(58, 15);
             this.karyawan_lbl.TabIndex = 1;
             this.karyawan_lbl.Text = "Karyawan";
             // 
@@ -207,7 +223,7 @@ namespace SistemPenggajianKaryawan
             this.filter_title_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
             this.filter_title_lbl.Location = new System.Drawing.Point(20, 24);
             this.filter_title_lbl.Name = "filter_title_lbl";
-            this.filter_title_lbl.Size = new System.Drawing.Size(70, 25);
+            this.filter_title_lbl.Size = new System.Drawing.Size(48, 17);
             this.filter_title_lbl.TabIndex = 0;
             this.filter_title_lbl.Text = "FILTER";
             // 
@@ -216,9 +232,9 @@ namespace SistemPenggajianKaryawan
             this.panel_right.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.panel_right.Controls.Add(this.slip_container_panel);
             this.panel_right.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_right.Location = new System.Drawing.Point(280, 4);
+            this.panel_right.Location = new System.Drawing.Point(280, 0);
             this.panel_right.Name = "panel_right";
-            this.panel_right.Size = new System.Drawing.Size(741, 645);
+            this.panel_right.Size = new System.Drawing.Size(741, 649);
             this.panel_right.TabIndex = 2;
             // 
             // slip_container_panel
@@ -228,8 +244,9 @@ namespace SistemPenggajianKaryawan
             this.slip_container_panel.Location = new System.Drawing.Point(0, 0);
             this.slip_container_panel.Name = "slip_container_panel";
             this.slip_container_panel.Padding = new System.Windows.Forms.Padding(20);
-            this.slip_container_panel.Size = new System.Drawing.Size(741, 645);
+            this.slip_container_panel.Size = new System.Drawing.Size(741, 649);
             this.slip_container_panel.TabIndex = 0;
+            this.slip_container_panel.Paint += new System.Windows.Forms.PaintEventHandler(this.slip_container_panel_Paint);
             // 
             // slip_card_panel
             // 
@@ -454,13 +471,12 @@ namespace SistemPenggajianKaryawan
             // 
             // FormSlipGaji
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
             this.ClientSize = new System.Drawing.Size(1021, 649);
             this.Controls.Add(this.panel_right);
             this.Controls.Add(this.panel_left);
-            this.Controls.Add(this.accentPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -470,6 +486,7 @@ namespace SistemPenggajianKaryawan
             this.Load += new System.EventHandler(this.FormSlipGaji_Load);
             this.panel_left.ResumeLayout(false);
             this.panel_left.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.karyawan_dgv)).EndInit();
             this.panel_right.ResumeLayout(false);
             this.slip_container_panel.ResumeLayout(false);
             this.slip_card_panel.ResumeLayout(false);
@@ -482,13 +499,12 @@ namespace SistemPenggajianKaryawan
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel accentPanel;
         private System.Windows.Forms.Panel panel_left;
         private System.Windows.Forms.Panel panel_right;
         private System.Windows.Forms.Label filter_title_lbl;
         private System.Windows.Forms.Label karyawan_lbl;
-        private System.Windows.Forms.ComboBox karyawan_cmb;
+        private System.Windows.Forms.TextBox cari_txt;
+        private System.Windows.Forms.DataGridView karyawan_dgv;
         private System.Windows.Forms.Label bulan_lbl;
         private System.Windows.Forms.ComboBox bulan_cmb;
         private System.Windows.Forms.Label tahun_lbl;

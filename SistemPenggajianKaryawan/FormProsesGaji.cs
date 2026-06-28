@@ -160,13 +160,13 @@ namespace SistemPenggajianKaryawan
                 int saved = gajiService.simpanSemuaGaji(bulan, tahun, dtGajiKalkulasi, UserSession.user_id);
                 Cursor = Cursors.Default;
 
-                if (saved >= 0)
+                if (saved > 0)
                 {
                     MessageBox.Show("Berhasil menyimpan data penggajian " + saved + " karyawan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Gagal menyimpan data penggajian ke database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Gagal menyimpan data penggajian ke database.\nPastikan data kalkulasi tidak kosong.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -209,6 +209,11 @@ namespace SistemPenggajianKaryawan
             {
                 e.CellStyle.Font = new Font(gaji_dgv.Font, FontStyle.Bold);
             }
+        }
+
+        private void panel_right_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
