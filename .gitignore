@@ -361,4 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Antigravity agents and design documents
+**/AGENTS.md
+**/DESIGN.md
+
 
