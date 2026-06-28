@@ -16,9 +16,12 @@ The application supports 4 distinct user roles:
 
 [![C#](https://img.shields.io/badge/C%23-8.0-blueviolet?style=for-the-badge&logo=csharp&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/csharp/)
 [![.NET Framework](https://img.shields.io/badge/.NET_Framework-4.8-blue?style=for-the-badge&logo=.net&logoColor=white)](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)
+[![Windows Forms](https://img.shields.io/badge/Windows_Forms-v4.8-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
 [![ZXing.Net](https://img.shields.io/badge/ZXing.Net-0.16.9-orange?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/ZXing.Net/)
 [![AForge.NET](https://img.shields.io/badge/AForge.Video-2.2.5-green?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/AForge.Video.DirectShow/)
+[![Bouncy Castle](https://img.shields.io/badge/Bouncy_Castle-v2.6.2-yellowgreen?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/BouncyCastle.Cryptography/)
+[![Visual Studio 2022](https://img.shields.io/badge/Visual_Studio-2022-5C2D91?style=for-the-badge&logo=visual-studio&logoColor=white)](https://visualstudio.microsoft.com/)
 
 ---
 
@@ -139,11 +142,21 @@ The user interface follows strict design specifications detailed in [DESIGN.md](
 - **UI Framework**: Windows Forms (WinForms)
 - **Database Engine**: MySQL Server
 - **Database Driver**: ADO.NET Provider (`MySql.Data` `v9.7.0`)
+- **IDE**: Visual Studio 2022
 
-**Third-Party Libraries (NuGet Packages)**
-- **ZXing.Net** (`v0.16.9`): QR Code generation and image decoding.
-- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): Direct webcam video rendering tools.
-- **BouncyCastle.Cryptography** (`v2.6.2`): Core cryptography functions for parameters.
+**Third-Party Libraries & Transitive Dependencies (NuGet Packages)**
+- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): High-performance webcam acquisition tools.
+- **AForge** (`v2.2.5`): Base computer vision frameworks.
+- **ZXing.Net** (`v0.16.9`): Multi-format 1D/2D barcode image processing library.
+- **BouncyCastle.Cryptography** (`v2.6.2`): Advanced cryptography provider for securing passwords.
+- **Google.Protobuf** (`v3.32.0`): Protocol Buffers message serialization library.
+- **ZstdSharp.Port** (`v0.8.6`): Port of Zstandard compression algorithm for MySQL connection optimization.
+- **K4os.Compression.LZ4 & LZ4.Streams** (`v1.3.8`): LZ4 compression algorithms.
+- **System.Configuration.ConfigurationManager** (`v8.0.0`): Access to local machine configuration parameters.
+- **System.IO.Pipelines** (`v5.0.2`): High-performance buffer pipeline management.
+- **System.Memory** (`v4.5.5`): Shared structures for memory optimizations.
+- **System.Runtime.CompilerServices.Unsafe** (`v6.0.0`): Support for low-level memory operations.
+
 
 ---
 
