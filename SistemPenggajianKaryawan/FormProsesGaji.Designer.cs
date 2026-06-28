@@ -42,8 +42,12 @@ namespace SistemPenggajianKaryawan
             this.bulan_cmb = new System.Windows.Forms.ComboBox();
             this.bulan_lbl = new System.Windows.Forms.Label();
             this.periode_group_lbl = new System.Windows.Forms.Label();
+            this.status_periode_lbl = new System.Windows.Forms.Label();
+            this.status_periode_val_lbl = new System.Windows.Forms.Label();
             this.judul_lbl = new System.Windows.Forms.Label();
             this.gaji_dgv = new System.Windows.Forms.DataGridView();
+            this.cari_kalkulasi_txt = new System.Windows.Forms.TextBox();
+            this.ekspor_btn = new System.Windows.Forms.Button();
             this.panel_right = new System.Windows.Forms.Panel();
             this.panel_left.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gaji_dgv)).BeginInit();
@@ -61,6 +65,8 @@ namespace SistemPenggajianKaryawan
             this.panel_left.Controls.Add(this.total_kar_lbl);
             this.panel_left.Controls.Add(this.ringkasan_group_lbl);
             this.panel_left.Controls.Add(this.divider_line);
+            this.panel_left.Controls.Add(this.status_periode_lbl);
+            this.panel_left.Controls.Add(this.status_periode_val_lbl);
             this.panel_left.Controls.Add(this.thn_cmb);
             this.panel_left.Controls.Add(this.tahun_lbl);
             this.panel_left.Controls.Add(this.bulan_cmb);
@@ -153,16 +159,38 @@ namespace SistemPenggajianKaryawan
             this.ringkasan_group_lbl.AutoSize = true;
             this.ringkasan_group_lbl.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.ringkasan_group_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
-            this.ringkasan_group_lbl.Location = new System.Drawing.Point(20, 224);
+            this.ringkasan_group_lbl.Location = new System.Drawing.Point(20, 230);
             this.ringkasan_group_lbl.Name = "ringkasan_group_lbl";
             this.ringkasan_group_lbl.Size = new System.Drawing.Size(82, 17);
             this.ringkasan_group_lbl.TabIndex = 6;
             this.ringkasan_group_lbl.Text = "RINGKASAN";
             // 
+            // status_periode_lbl
+            // 
+            this.status_periode_lbl.AutoSize = true;
+            this.status_periode_lbl.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.status_periode_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
+            this.status_periode_lbl.Location = new System.Drawing.Point(20, 190);
+            this.status_periode_lbl.Name = "status_periode_lbl";
+            this.status_periode_lbl.Size = new System.Drawing.Size(87, 15);
+            this.status_periode_lbl.TabIndex = 13;
+            this.status_periode_lbl.Text = "Status Periode:";
+            // 
+            // status_periode_val_lbl
+            // 
+            this.status_periode_val_lbl.AutoSize = true;
+            this.status_periode_val_lbl.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.status_periode_val_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.status_periode_val_lbl.Location = new System.Drawing.Point(120, 190);
+            this.status_periode_val_lbl.Name = "status_periode_val_lbl";
+            this.status_periode_val_lbl.Size = new System.Drawing.Size(95, 15);
+            this.status_periode_val_lbl.TabIndex = 14;
+            this.status_periode_val_lbl.Text = "Belum Diproses";
+            // 
             // divider_line
             // 
             this.divider_line.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
-            this.divider_line.Location = new System.Drawing.Point(20, 204);
+            this.divider_line.Location = new System.Drawing.Point(20, 215);
             this.divider_line.Name = "divider_line";
             this.divider_line.Size = new System.Drawing.Size(240, 1);
             this.divider_line.TabIndex = 5;
@@ -252,9 +280,42 @@ namespace SistemPenggajianKaryawan
             this.gaji_dgv.Size = new System.Drawing.Size(540, 440);
             this.gaji_dgv.TabIndex = 1;
             // 
+            // cari_kalkulasi_txt
+            // 
+            this.cari_kalkulasi_txt.BackColor = System.Drawing.Color.White;
+            this.cari_kalkulasi_txt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.cari_kalkulasi_txt.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.cari_kalkulasi_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(174)))), ((int)(((byte)(192)))));
+            this.cari_kalkulasi_txt.Location = new System.Drawing.Point(260, 22);
+            this.cari_kalkulasi_txt.Name = "cari_kalkulasi_txt";
+            this.cari_kalkulasi_txt.Size = new System.Drawing.Size(180, 23);
+            this.cari_kalkulasi_txt.TabIndex = 4;
+            this.cari_kalkulasi_txt.Text = "🔍 Cari nama...";
+            this.cari_kalkulasi_txt.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cari_kalkulasi_txt_MouseClick);
+            this.cari_kalkulasi_txt.Leave += new System.EventHandler(this.cari_kalkulasi_txt_Leave);
+            this.cari_kalkulasi_txt.TextChanged += new System.EventHandler(this.cari_kalkulasi_txt_TextChanged);
+            // 
+            // ekspor_btn
+            // 
+            this.ekspor_btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.ekspor_btn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ekspor_btn.FlatAppearance.BorderSize = 0;
+            this.ekspor_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ekspor_btn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.ekspor_btn.ForeColor = System.Drawing.Color.White;
+            this.ekspor_btn.Location = new System.Drawing.Point(450, 20);
+            this.ekspor_btn.Name = "ekspor_btn";
+            this.ekspor_btn.Size = new System.Drawing.Size(110, 25);
+            this.ekspor_btn.TabIndex = 5;
+            this.ekspor_btn.Text = "Ekspor CSV";
+            this.ekspor_btn.UseVisualStyleBackColor = false;
+            this.ekspor_btn.Click += new System.EventHandler(this.ekspor_btn_Click);
+            // 
             // panel_right
             // 
             this.panel_right.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
+            this.panel_right.Controls.Add(this.cari_kalkulasi_txt);
+            this.panel_right.Controls.Add(this.ekspor_btn);
             this.panel_right.Controls.Add(this.gaji_dgv);
             this.panel_right.Controls.Add(this.judul_lbl);
             this.panel_right.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -306,5 +367,9 @@ namespace SistemPenggajianKaryawan
         private System.Windows.Forms.Label judul_lbl;
         private System.Windows.Forms.DataGridView gaji_dgv;
         private System.Windows.Forms.Panel panel_right;
+        private System.Windows.Forms.Label status_periode_lbl;
+        private System.Windows.Forms.Label status_periode_val_lbl;
+        private System.Windows.Forms.TextBox cari_kalkulasi_txt;
+        private System.Windows.Forms.Button ekspor_btn;
     }
 }

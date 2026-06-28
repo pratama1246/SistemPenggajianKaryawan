@@ -197,6 +197,27 @@ namespace SistemPenggajianKaryawan.Service
             return rowsSaved;
         }
 
+        // Apakah periode penggajian sudah diproses/disimpan sebelumnya?
+        public bool apakahPeriodeSudahDiproses(int bulan, int tahun)
+        {
+            string q = "SELECT COUNT(*) AS jumlah FROM penggajian WHERE bulan = @bulan AND tahun = @tahun";
+            var p = new Dictionary<string, object>
+            {
+                { "@bulan", bulan },
+                { "@tahun", tahun }
+            };
+            try
+            {
+                DataTable dt = server.eksekusiQueryParam(q, p);
+                if (dt.Rows.Count > 0)
+                {
+                    return Convert.ToInt32(dt.Rows[0]["jumlah"]) > 0;
+                }
+            }
+            catch (Exception) { }
+            return false;
+        }
+
         // Ambil data rekap gaji historis
         public DataTable getRekapGaji(int bulan, int tahun, string keyword)
         {

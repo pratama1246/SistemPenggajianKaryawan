@@ -12,6 +12,8 @@ namespace SistemPenggajianKaryawan
     {
         private Gaji_serv gajiService = new Gaji_serv();
         private DataTable dtGajiKalkulasi = null;
+        private bool isCariPlaceholder = true;
+        private const string PlaceholderText = "🔍 Cari nama...";
 
         public FormProsesGaji()
         {
@@ -19,6 +21,10 @@ namespace SistemPenggajianKaryawan
             
             // Pasang event handler untuk formatting cell grid secara programmatic
             this.gaji_dgv.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.gaji_dgv_CellFormatting);
+
+            // Pasang event handler untuk perubahan periode
+            this.bulan_cmb.SelectedIndexChanged += new System.EventHandler(this.periode_SelectedIndexChanged);
+            this.thn_cmb.SelectedIndexChanged += new System.EventHandler(this.periode_SelectedIndexChanged);
         }
 
         private void FormProsesGaji_Load(object sender, EventArgs e)
@@ -81,6 +87,11 @@ namespace SistemPenggajianKaryawan
             stat_karyawan_lbl.Text = "0";
             stat_pengeluaran_lbl.Text = "Rp 0";
             judul_lbl.Text = "Hasil Kalkulasi";
+
+            // Reset search box
+            cari_kalkulasi_txt.Text = PlaceholderText;
+            cari_kalkulasi_txt.ForeColor = Color.FromArgb(160, 174, 192);
+            isCariPlaceholder = true;
         }
 
         private void hitung_btn_Click(object sender, EventArgs e)
@@ -99,6 +110,11 @@ namespace SistemPenggajianKaryawan
             {
                 dtGajiKalkulasi = gajiService.hitungGajiBulanan(bulan, tahun);
                 gaji_dgv.DataSource = dtGajiKalkulasi;
+
+                // Reset search box
+                cari_kalkulasi_txt.Text = PlaceholderText;
+                cari_kalkulasi_txt.ForeColor = Color.FromArgb(160, 174, 192);
+                isCariPlaceholder = true;
 
                 // Format visibilitas kolom
                 if (gaji_dgv.Columns.Contains("karyawan_id"))
@@ -163,6 +179,7 @@ namespace SistemPenggajianKaryawan
                 if (saved > 0)
                 {
                     MessageBox.Show("Berhasil menyimpan data penggajian " + saved + " karyawan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    UpdateStatusPeriode(); // Perbarui status periode
                 }
                 else
                 {
@@ -214,6 +231,139 @@ namespace SistemPenggajianKaryawan
         private void panel_right_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // METHODS & EVENTS — Status Periode
+        // ─────────────────────────────────────────────────────────────────────
+        private void UpdateStatusPeriode()
+        {
+            if (bulan_cmb.SelectedIndex == -1 || thn_cmb.SelectedIndex == -1) return;
+
+            int bulan = bulan_cmb.SelectedIndex + 1;
+            int tahun = Convert.ToInt32(thn_cmb.SelectedItem);
+
+            bool sudahDiproses = gajiService.apakahPeriodeSudahDiproses(bulan, tahun);
+            if (sudahDiproses)
+            {
+                status_periode_val_lbl.Text = "Sudah Diproses";
+                status_periode_val_lbl.ForeColor = Color.FromArgb(245, 166, 35); // Amber / Warning
+            }
+            else
+            {
+                status_periode_val_lbl.Text = "Belum Diproses";
+                status_periode_val_lbl.ForeColor = Color.FromArgb(76, 175, 80); // Success Green
+            }
+        }
+
+        private void periode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateStatusPeriode();
+            bersihkan(); // Bersihkan hasil grid ketika user mengubah periode
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // EVENTS — Cari Karyawan Kalkulasi (Placeholder & Filtering)
+        // ─────────────────────────────────────────────────────────────────────
+        private void cari_kalkulasi_txt_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (isCariPlaceholder)
+            {
+                cari_kalkulasi_txt.Text = "";
+                cari_kalkulasi_txt.ForeColor = Color.FromArgb(45, 55, 72);
+                isCariPlaceholder = false;
+            }
+        }
+
+        private void cari_kalkulasi_txt_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(cari_kalkulasi_txt.Text))
+            {
+                cari_kalkulasi_txt.Text = PlaceholderText;
+                cari_kalkulasi_txt.ForeColor = Color.FromArgb(160, 174, 192);
+                isCariPlaceholder = true;
+            }
+        }
+
+        private void cari_kalkulasi_txt_TextChanged(object sender, EventArgs e)
+        {
+            if (dtGajiKalkulasi == null) return;
+
+            string keyword = cari_kalkulasi_txt.Text.Trim().Replace("'", "''");
+
+            if (isCariPlaceholder || string.IsNullOrEmpty(keyword))
+            {
+                dtGajiKalkulasi.DefaultView.RowFilter = "";
+            }
+            else
+            {
+                dtGajiKalkulasi.DefaultView.RowFilter = string.Format("nama_karyawan LIKE '%{0}%'", keyword);
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // EVENTS — Ekspor Laporan CSV
+        // ─────────────────────────────────────────────────────────────────────
+        private void ekspor_btn_Click(object sender, EventArgs e)
+        {
+            if (dtGajiKalkulasi == null || dtGajiKalkulasi.Rows.Count == 0)
+            {
+                MessageBox.Show("Tidak ada data untuk diekspor. Silakan lakukan hitung gaji terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "CSV File (*.csv)|*.csv";
+            sfd.FileName = string.Format("Laporan_Gaji_{0}_{1}.csv", bulan_cmb.SelectedItem.ToString(), thn_cmb.SelectedItem.ToString());
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Cursor = Cursors.WaitCursor;
+                try
+                {
+                    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.FileName, false, System.Text.Encoding.UTF8))
+                    {
+                        // Write Headers
+                        List<string> headers = new List<string>();
+                        foreach (DataColumn col in dtGajiKalkulasi.Columns)
+                        {
+                            if (col.ColumnName != "karyawan_id")
+                            {
+                                headers.Add(col.ColumnName);
+                            }
+                        }
+                        sw.WriteLine(string.Join(",", headers));
+
+                        // Write Rows
+                        foreach (DataRow row in dtGajiKalkulasi.Rows)
+                        {
+                            List<string> cells = new List<string>();
+                            foreach (DataColumn col in dtGajiKalkulasi.Columns)
+                            {
+                                if (col.ColumnName != "karyawan_id")
+                                {
+                                    string cellValue = row[col.ColumnName].ToString().Replace("\"", "\"\"");
+                                    if (cellValue.Contains(",") || cellValue.Contains("\n") || cellValue.Contains("\""))
+                                    {
+                                        cellValue = "\"" + cellValue + "\"";
+                                    }
+                                    cells.Add(cellValue);
+                                }
+                            }
+                            sw.WriteLine(string.Join(",", cells));
+                        }
+                    }
+                    MessageBox.Show("Data berhasil diekspor ke CSV.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal mengekspor data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    Cursor = Cursors.Default;
+                }
+            }
         }
     }
 }
