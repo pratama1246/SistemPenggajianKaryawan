@@ -1,16 +1,16 @@
-# 💳 Sistem Informasi Penggajian Karyawan (PNC)
+# 💳 Employee Payroll Information System (PNC)
 
-**Sistem Informasi Penggajian Karyawan** adalah sebuah aplikasi desktop berbasis **Windows Forms (C# .NET Framework 4.8)** yang dirancang untuk mengelola data karyawan, pencatatan absensi, pengelolaan komponen gaji, pemrosesan gaji bulanan secara otomatis, serta pencetakan slip gaji. Proyek ini dibangun sebagai bagian dari praktikum mata kuliah Pemrograman Berorientasi Objek (PBO) di **Politeknik Negeri Cilacap**.
+**Sistem Informasi Penggajian Karyawan** (Employee Payroll Information System) is a desktop application based on **Windows Forms (C# .NET Framework 4.8)** designed to manage employee profiles, track daily attendance, configure custom salary components, calculate monthly payroll automatically, and print/view salary slips. This project was built as a practical assignment for the Object-Oriented Programming (OOP) Lab Course at **Politeknik Negeri Cilacap**.
 
-Aplikasi ini mendukung 4 peran (roles) utama dengan alur kerja masing-masing:
+The application supports 4 distinct user roles:
 
-- **Admin**: Mengelola user login (CRUD), mengelola master data karyawan (CRUD), mengganti password, serta melihat ringkasan statistik sistem.
-- **HRD**: Mengelola absensi harian karyawan, konfigurasi jam kerja dan toleransi keterlambatan, manajemen komponen gaji (tunjangan & potongan), memproses gaji bulanan karyawan, serta melihat rekapitulasi absensi & gaji.
-- **Karyawan**: Mengakses dashboard pribadi (informasi status aktif dan total kehadiran), melihat riwayat absensi, serta melihat dan mencetak slip gaji bulanan secara mandiri.
-- **Kiosk (Webcam Attendance)**: Mode khusus untuk pencatatan absensi mandiri karyawan menggunakan pemindaian kartu identitas QR Code melalui integrasi kamera webcam secara real-time.
+- **Admin**: Manages user accounts (CRUD), manages master employee records (CRUD), handles password management, and views high-level system statistics.
+- **HRD**: Manages attendance records (manual logs, shift configurations, and late tolerances), configures salary components (allowances & deductions), processes monthly payroll, and reviews historical attendance & payment summaries.
+- **Employee (Karyawan)**: Accesses a personal dashboard (showing attendance stats and active status), reviews attendance history, and prints monthly salary slips.
+- **Kiosk (Webcam Attendance)**: A dedicated terminal screen for contactless check-in/out by scanning printed employee QR Code cards using a live webcam feed.
 
-> Aplikasi ini menggunakan pencatatan absensi berbasis kamera (kiosk mode) yang secara otomatis mendeteksi dan menerjemahkan QR Code karyawan untuk pencatatan jam masuk & keluar secara presisi.
-> Proyek Praktikum Pemrograman Berorientasi Objek — Jurusan Teknik Informatika, Politeknik Negeri Cilacap.
+> The application integrates a webcam scanning system using computer vision to read QR Codes for automated kiosk-mode attendance processing.
+> Practical Object-Oriented Programming Project — Department of Informatics Engineering, Politeknik Negeri Cilacap.
 
 ---
 
@@ -25,6 +25,7 @@ Aplikasi ini mendukung 4 peran (roles) utama dengan alur kerja masing-masing:
 ## Table of Contents
 
 - [Key Features](#key-features)
+- [Folder Structure](#folder-structure)
 - [Visual Design & Theme](#visual-design--theme)
 - [Tech Stack](#tech-stack)
 - [Requirements](#requirements)
@@ -35,188 +36,202 @@ Aplikasi ini mendukung 4 peran (roles) utama dengan alur kerja masing-masing:
 - [How to Run](#how-to-run)
 - [Team](#team)
 - [License](#license)
-- [Disclaimer](#disclaimer)
 
 ---
 
 ## Key Features
 
 ### 🔑 Authentication & Security
-- Sistem Login & Logout yang aman berbasis enkripsi password satu arah menggunakan algoritma custom di kelas [Auth_serv](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Service/Auth_serv.cs).
-- Pengalihan antarmuka dashboard secara dinamis berdasarkan role yang terautentikasi (Admin, HRD, Karyawan, Kiosk).
-- Fitur ganti password aman bagi seluruh pengguna melalui [FormGantiPassword](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormGantiPassword.cs).
+- Secure login and logout flows using custom password cryptography implemented in [Auth_serv](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Service/Auth_serv.cs).
+- Dynamic dashboard redirection based on the authenticated user's role (Admin, HRD, Employee, or Kiosk).
+- Secure password reset utility accessible in [FormGantiPassword](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormGantiPassword.cs).
 
 ### 👥 Administrator Panel
-- **Manajemen User**: Operasi CRUD akun pengguna di [FormManajemenUser](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormManajemenUser.cs).
-- **Manajemen Karyawan**: Operasi CRUD data master karyawan (Tetap, Kontrak, Harian) di [FormKaryawan](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormKaryawan.cs).
-- **Kartu Identitas QR Code**: Menghasilkan kartu identitas dengan QR Code unik yang dapat diunduh sebagai berkas PNG melalui [FormQRPreview](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormQRPreview.cs).
+- **User Management**: Complete CRUD operations for login accounts in [FormManajemenUser](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormManajemenUser.cs).
+- **Employee Management**: CRUD operations for employee master profiles (Permanent, Contract, Daily) in [FormKaryawan](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormKaryawan.cs).
+- **QR Identity Cards**: Automatically generate and download employee QR identity badges as PNG files via [FormQRPreview](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormQRPreview.cs).
 
 ### 💼 HRD Panel
-- **Manajemen Absensi**: Pencatatan manual kehadiran, sakit, izin, atau alpha di [FormAbsensi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormAbsensi.cs).
-- **Konfigurasi Jam Kerja**: Mengatur batas jam masuk normal, jam pulang, serta toleransi keterlambatan dalam menit.
-- **Komponen Gaji**: Menentukan besaran tunjangan dan potongan secara dinamis berdasarkan nominal atau persentase, serta batas berlaku per jenis karyawan di [FormKomponenGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormKomponenGaji.cs).
-- **Proses Gaji**: Pemrosesan kalkulasi gaji bulanan otomatis yang menggabungkan gaji pokok, tunjangan, potongan, serta akumulasi kehadiran di [FormProsesGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormProsesGaji.cs).
-- **Rekapitulasi**: Mengakses laporan rekap absensi di [FormRekapAbsensi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormRekapAbsensi.cs) dan rekap penggajian di [FormRekapGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormRekapGaji.cs).
+- **Attendance Management**: Log daily attendance manually (Present, Sick, Leave, Alpha) in [FormAbsensi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormAbsensi.cs).
+- **Shift Settings**: Set normal start time, end time, and grace period (late tolerance) in minutes.
+- **Salary Components**: Configure allowances and deductions dynamically (by nominal values or percentages) and apply them to specific employee categories in [FormKomponenGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormKomponenGaji.cs).
+- **Payroll Processing**: Automatic monthly payroll calculation based on basic salary, active allowances, deductions, and attendance records in [FormProsesGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormProsesGaji.cs).
+- **Recaps & Reports**: View detailed attendance history in [FormRekapAbsensi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormRekapAbsensi.cs) and payroll payout summaries in [FormRekapGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormRekapGaji.cs).
 
 ### 🖥️ Kiosk Mode (Webcam Scanner)
-- Pencatatan kehadiran mandiri tanpa kontak fisik.
-- Menggunakan library `AForge` untuk menangkap feed kamera secara real-time.
-- Pemindaian dan pembacaan QR Code secara instan dengan `ZXing.Net`.
-- Validasi data keterlambatan otomatis berdasarkan toleransi jam kerja yang telah ditentukan.
+- Contactless self-attendance clocking.
+- Integrates `AForge` library to capture live webcam streams.
+- Decodes scanned employee QR codes instantly using `ZXing.Net`.
+- Automated late penalty detection based on predefined shift parameters.
 
-### 📄 Karyawan Portal
-- Tampilan dashboard dengan statistik kehadiran berjalan di [FormDashboardKaryawan](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormDashboardKaryawan.cs).
-- Melihat riwayat penerimaan gaji bulanan.
-- Cetak slip gaji terformat rapi dengan struktur rincian detail menggunakan rendering GDI+ di [FormSlipGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormSlipGaji.cs).
+### 📄 Employee Portal
+- Personal dashboard showing real-time attendance statistics and active payroll history in [FormDashboardKaryawan](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormDashboardKaryawan.cs).
+- Access to print-ready monthly salary slips rendered dynamically using GDI+ in [FormSlipGaji](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/FormSlipGaji.cs).
+
+---
+
+## Folder Structure
+
+The project's architectural structure is organized as follows:
+
+```
+SistemPenggajianKaryawan/
+├── Konfigurasi/
+│   ├── DatabaseSeeder.cs      ← Automatic database seeder & schema initialization
+│   ├── Koneksi.cs             ← Concrete MySQL connection execution layer
+│   ├── Konfigurasi.cs         ← Abstract database configuration contract
+│   └── UserSession.cs         ← Static class for active user session management
+├── Model/
+│   ├── BaseKaryawan.cs        ← Abstract base class representing OOP employee hierarchy
+│   ├── KaryawanTetap.cs       ← Permanent employee model class
+│   ├── KaryawanKontrak.cs     ← Contract employee model class
+│   ├── KaryawanHarian.cs      ← Daily employee model class
+│   ├── KomponenGaji.cs        ← Salary component definition model
+│   └── DataAbsensi.cs         ← Attendance log record model
+├── Service/
+│   ├── Auth_serv.cs           ← Login authentication & cryptography algorithms
+│   ├── Karyawan_serv.cs       ← Employee database CRUD operations
+│   ├── Absensi_serv.cs        ← Attendance logging CRUD operations
+│   └── Gaji_serv.cs           ← Salary calculation business rules & factories
+├── Resources/
+│   └── Politeknik_Negeri_Cilacap.png  ← Logo asset representing the university brand
+├── App.config                 ← Application runtime configurations and assemblies
+├── FormAbsensi.cs             ← Manual logs and kiosk scanner webcam controller
+├── FormAuthExit.cs            ← Secure dialog verifying credentials before exiting Kiosk
+├── FormDashboardAdmin.cs      ← Administrator landing panel dashboard
+├── FormDashboardHRD.cs        ← HRD landing panel dashboard
+├── FormDashboardKaryawan.cs   ← Employee dashboard and status panel
+├── FormGantiPassword.cs       ← User password update screen
+├── FormKaryawan.cs            ← Employee master editor and management
+├── FormKomponenGaji.cs        ← Allowance & deduction editor
+├── FormLogin.cs               ← User gateway credentials checker
+├── FormManajemenUser.cs       ← Administrator credentials editor
+├── FormProsesGaji.cs          ← Monthly payroll calculations trigger
+├── FormQRPreview.cs           ← QR Badge generator and download panel
+├── FormRekapAbsensi.cs        ← HRD attendance logs table
+├── FormRekapGaji.cs          ← HRD payout logs table
+├── FormSlipGaji.cs            ← Employee dynamic salary slip rendering
+├── FormSplash.cs              ← Loader screen running seeder on initialization
+├── Program.cs                 ← Main process execution bootstrap entry
+└── SistemPenggajianKaryawan.csproj ← Visual Studio project definition file
+```
 
 ---
 
 ## Visual Design & Theme
 
-Desain visual aplikasi ini mengikuti panduan ketat yang tertuang di [DESIGN.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/DESIGN.md). Desain ini mengambil inspirasi warna dari logo institusi Politeknik Negeri Cilacap untuk menghadirkan kesan profesional, terang, dan bersih.
+The user interface follows strict design specifications detailed in [DESIGN.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/DESIGN.md). The styling incorporates the branding colors of Politeknik Negeri Cilacap for a professional and modern look.
 
 ### 🎨 Color Tokens
-- **Primary Color (`#5BC8F5`)**: Digunakan sebagai tombol utama, sorotan aktif, accent bar atas, dan garis batas fokus input.
-- **Primary Dark Color (`#1E90FF`)**: Digunakan sebagai tombol simpan data serta efek hover tombol primary.
-- **Accent Color (`#F5A623`)**: Digunakan untuk penanda badge kecil, peringatan, dan detail highlight.
-- **Neutral Background (`#F4F6F9`)**: Background dasar utama form.
-- **Surface Background (`#FFFFFF`)**: Background panel input, groupbox, serta elemen kartu aktivitas.
-- **Typography Font**: Menggunakan satu rumpun font **Segoe UI** di seluruh antarmuka dengan skala ukuran yang konsisten.
+- **Primary Color (`#5BC8F5`)**: Used for main actions, active selections, top accent bars, and input borders.
+- **Primary Dark Color (`#1E90FF`)**: Applied to save operations and hover states.
+- **Accent Color (`#F5A623`)**: Used for highlights, alert badges, and secondary elements.
+- **Neutral Background (`#F4F6F9`)**: Default canvas color for all forms.
+- **Surface Background (`#FFFFFF`)**: Input sections, group boxes, and cards.
+- **Typography Font**: Standardized **Segoe UI** typography hierarchy used application-wide.
 
 ---
 
 ## Tech Stack
 
 **Core Technology & Infrastructure**
-- **Bahasa Pemrograman**: C# (`.NET Framework 4.8`)
-- **Tampilan Antarmuka**: Windows Forms (WinForms)
+- **Programming Language**: C# (`.NET Framework 4.8`)
+- **UI Framework**: Windows Forms (WinForms)
 - **Database Engine**: MySQL Server
 - **Database Driver**: ADO.NET Provider (`MySql.Data` `v9.7.0`)
 
 **Third-Party Libraries (NuGet Packages)**
-- **ZXing.Net** (`v0.16.9`): Generator dan pembaca QR Code secara terprogram.
-- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): Antarmuka kontrol dan capture stream webcam perangkat keras secara asinkron.
-- **BouncyCastle.Cryptography** (`v2.6.2`): Menyediakan algoritma pengolahan data kriptografis terenkripsi.
+- **ZXing.Net** (`v0.16.9`): QR Code generation and image decoding.
+- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): Direct webcam video rendering tools.
+- **BouncyCastle.Cryptography** (`v2.6.2`): Core cryptography functions for parameters.
 
 ---
 
 ## Requirements
 
-Untuk menjalankan, memodifikasi, atau melakukan kompilasi proyek ini, pastikan komputer Anda memenuhi syarat minimum berikut:
-- **Sistem Operasi**: Windows 10/11
-- **IDE**: Visual Studio 2022 (dengan modul *Desktop development with .NET* terpasang)
-- **Runtime**: .NET Framework 4.8 SDK & Runtime
-- **Database**: MySQL Server (menggunakan XAMPP, Laragon, Docker, atau instalasi native)
+Ensure your workstation meets these prerequisites before running or building the project:
+- **Operating System**: Windows 10 or 11
+- **IDE**: Visual Studio 2022 (with *Desktop development with .NET* workload)
+- **Framework**: .NET Framework 4.8 SDK & Runtime
+- **Database**: MySQL Server (supported via XAMPP, Laragon, or standalone native setups)
 
 ---
 
 ## Local Setup
 
-Ikuti langkah-langkah di bawah ini untuk memasang proyek ini di lingkungan lokal Anda:
+Deploy the application locally by following these steps:
 
 ```bash
-# 1) Clone repository ke komputer lokal Anda
+# 1) Clone the repository to your local machine
 git clone https://github.com/pratama1246/SistemPenggajianKaryawan.git
 cd SistemPenggajianKaryawan
 
-# 2) Buat database baru di MySQL
-# Nyalakan MySQL Server Anda, lalu buka MySQL client (CLI, phpMyAdmin, DBeaver, dll.) dan buat schema database:
+# 2) Create the database in MySQL
+# Open phpMyAdmin, DBeaver, or command line client and execute:
 CREATE DATABASE penggajian;
 
-# 3) Konfigurasi Database Connection (Opsional)
-# Koneksi default adalah server=localhost, database=penggajian, user=root, password=kosong.
-# Jika kredensial database Anda berbeda, Anda bisa menyesuaikan string koneksi di file:
-# SistemPenggajianKaryawan/Konfigurasi/Koneksi.cs baris 13
+# 3) Database Connection Setup (Optional)
+# The default connection parameters are: server=localhost, database=penggajian, user=root, password=empty.
+# Adjust the connection settings if yours differ in:
+# SistemPenggajianKaryawan/Konfigurasi/Koneksi.cs (line 13)
 ```
 
-Setelah database dibuat, Anda **tidak perlu mengimpor file SQL secara manual**. Aplikasi ini dilengkapi dengan mekanisme inisialisasi mandiri (auto-seeder). Saat aplikasi pertama kali dijalankan dari Visual Studio, kelas [DatabaseSeeder](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Konfigurasi/DatabaseSeeder.cs) secara otomatis akan:
-1. Membuat seluruh tabel yang diperlukan jika belum ada (`CREATE TABLE IF NOT EXISTS`).
-2. Melakukan migrasi/penyesuaian tipe kolom yang dibutuhkan secara asinkron.
-3. Menyuntikkan (seeding) contoh data master karyawan, komponen gaji standar, rekam absensi Mei 2026, dan akun pengguna default untuk pengujian.
+No database importing step is needed. The system employs a self-healing auto-seeder in the [DatabaseSeeder](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Konfigurasi/DatabaseSeeder.cs) class. Upon starting the app for the first time, it will:
+1. Build the database structure if tables are missing (`CREATE TABLE IF NOT EXISTS`).
+2. Adjust schema columns and enforce relational constraints.
+3. Seed sample data including employees, payroll definitions, May 2026 attendance, and testing user credentials.
 
 ---
 
 ## Default Testing Credentials
 
-Setelah program berhasil diluncurkan pertama kali, Anda dapat login menggunakan kredensial pengujian bawaan berikut:
+Use these default user accounts to explore different features after launching the application:
 
-| Peran (Role) | Username | Password | Deskripsi / Kegunaan |
+| Role | Username | Password | Intended Use / Features |
 |---|---|---|---|
-| **Administrator** | `admin` | `admin123` | Mengelola data karyawan, master user login, dan preview kartu QR. |
-| **HRD** | `hrd` | `hrd123` | Mengatur komponen gaji, mengolah absen manual, memproses gaji, rekap laporan. |
-| **Kiosk Mode** | `kiosk` | `kiosk123` | Membuka layar kiosk scanner webcam untuk proses scan kartu QR karyawan. |
-| **Karyawan** | `karyawan` | `karyawan123` | Melihat data absensi personal, dashboard kehadiran, dan cetak slip gaji. |
-
----
-
-## Database Configuration & Schema
-
-Proyek ini mendefinisikan skema basis data relasional yang terdiri atas beberapa tabel utama:
-
-1. **`karyawan`**: Menyimpan biodata, jabatan, tipe kontrak, dan gaji pokok karyawan.
-2. **`users`**: Menyimpan kredensial login, peran akses (Admin/HRD/Karyawan/Kiosk), dan relasi kunci asing ke tabel karyawan.
-3. **`absensi`**: Mencatat log harian presensi berupa tanggal, jam masuk, jam keluar, status (Hadir/Izin/Sakit/Alpha), dan keterangan tambahan.
-4. **`konfigurasi_absensi`**: Konfigurasi parameter operasional shift jam kerja default beserta batas toleransi menit telat.
-5. **`komponen_gaji`**: Menyimpan definisi tunjangan penambah atau potongan pengurang gaji.
-6. **`penggajian`**: Menyimpan riwayat hitung gaji bulanan bersih karyawan yang diproses oleh pihak HRD.
-
-Koneksi relasi antar tabel dipetakan menggunakan *Foreign Keys* dengan aksi cascading tertentu demi menjaga integritas data relasional.
+| **Administrator** | `admin` | `admin123` | Employee/User CRUD control, QR badges downloads. |
+| **HRD** | `hrd` | `hrd123` | Payroll calculations, shift settings, attendance updates, reports. |
+| **Kiosk Mode** | `kiosk` | `kiosk123` | Live webcam QR scanner check-in panel. |
+| **Employee (Karyawan)** | `karyawan` | `karyawan123` | Personal stats, individual attendance history, printing slip salary. |
 
 ---
 
 ## Coding Conventions
 
-Seluruh kode yang ditulis dalam proyek ini wajib mematuhi standar pengembangan yang terdokumentasi pada [AGENTS.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/AGENTS.md):
+Developers must adhere to standard coding styles documented in [AGENTS.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/AGENTS.md):
 
-### 📁 Struktur Folder Proyek
-- `Konfigurasi/`: Berisi infrastruktur database, kelas abstrak [Konfigurasi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Konfigurasi/Konfigurasi.cs), implementasi konkret [Koneksi](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Konfigurasi/Koneksi.cs), dan class penyimpanan session [UserSession](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Konfigurasi/UserSession.cs).
-- `Model/`: Berisi cetak biru data murni (property & constructor) seperti class warisan [BaseKaryawan](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Model/BaseKaryawan.cs). Tidak diperbolehkan ada logika SQL/Query database di folder ini.
-- `Service/`: Semua pemrosesan query SQL ADO.NET mentah dan logika bisnis didefinisikan di sini (misal: [Karyawan_serv](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Service/Karyawan_serv.cs), [Absensi_serv](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/Service/Absensi_serv.cs)).
-- `(Root)`: Semua class form Windows Forms ditempatkan langsung di tingkat root proyek untuk menjaga kesederhanaan kompilasi praktikum.
-
-### 🏷️ Naming Convention
-- **Nama Kelas**: Menggunakan gaya `PascalCase` kata benda (e.g. `KaryawanTetap`, `FormAbsensi`).
-- **Nama Service**: Menggunakan format `PascalCase` dengan akhiran `_serv` (e.g. `Gaji_serv`).
-- **Variabel Model**: Menggunakan format property `snake_case` publik dengan backing field privat berawalan garis bawah (e.g. `_kode_karyawan` & `kode_karyawan`).
-- **Komponen Form**: Menggunakan akhiran singkatan tipe kontrol (e.g. `simpan_btn`, `cari_txt`, `absensi_dgv`, `bulan_cmb`).
+- **Class Names**: PascalCase nouns (e.g. `KaryawanTetap`, `FormAbsensi`).
+- **Service Classes**: PascalCase nouns with `_serv` suffix (e.g. `Gaji_serv`).
+- **Model Fields**: Properties defined in `snake_case` mapping to backing fields starting with an underscore (e.g. `_kode_karyawan` & `kode_karyawan`).
+- **UI Controls**: Suffix abbreviations based on type (e.g. `simpan_btn`, `cari_txt`, `absensi_dgv`, `bulan_cmb`).
 
 ---
 
 ## How to Run
 
-1. Buka berkas solusi `SistemPenggajianKaryawan.slnx` atau berkas proyek `SistemPenggajianKaryawan.csproj` menggunakan Visual Studio 2022.
-2. Tunggu Visual Studio memulihkan (restore) seluruh pustaka NuGet secara otomatis.
-3. Pastikan MySQL Server Anda dalam kondisi aktif dan database `penggajian` sudah dibuat.
-4. Klik tombol **Start (F5)** pada Visual Studio untuk memulai kompilasi dan menjalankan program.
-5. Pertama kali diluncurkan, layar Splash Screen akan menginisialisasi tabel database dan menyuntikkan data seed secara otomatis, kemudian memunculkan Form Login.
+1. Open the Solution file `SistemPenggajianKaryawan.slnx` or Project file `SistemPenggajianKaryawan.csproj` in Visual Studio 2022.
+2. Allow Visual Studio to restore all required NuGet packages automatically.
+3. Ensure your MySQL server is running and the `penggajian` schema has been created.
+4. Press **F5** or click **Start** in Visual Studio to build and launch the application.
+5. The Splash screen will run the database seeder on initialization and redirect you to the login screen.
 
 ---
 
 ## 👥 Team
 
-Proyek praktikum ini dikerjakan oleh kelompok mahasiswa Politeknik Negeri Cilacap:
-- **[Nama Anda]** - Developer Utama / Programmer
-- **[Nama Rekan 1]** - Database Engineer / Analis Sistem
-- **[Nama Rekan 2]** - UI/UX Designer / Penguji Sistem
+This practical application was built by the student group from Politeknik Negeri Cilacap:
+- **[Your Name]** - Lead Developer / Programmer
+- **[Teammate Name 1]** - Database Engineer / System Analyst
+- **[Teammate Name 2]** - UI Designer / System Tester
 
-Dibangun sebagai proyek akhir praktikum pemrograman desktop di Politeknik Negeri Cilacap, Jurusan Teknik Informatika.
+Developed for the Object-Oriented Programming (OOP) Practical Assignment at Politeknik Negeri Cilacap, Department of Informatics Engineering.
 
-**Kelas**: Teknik Informatika [Kelas Anda]  
-**Mata Kuliah**: Praktikum Pemrograman Berorientasi Objek (PBO)  
-**Institusi**: Politeknik Negeri Cilacap  
+**Class**: Informatics Engineering [Your Class]  
+**Course**: Object-Oriented Programming (OOP) Lab  
+**Institution**: Politeknik Negeri Cilacap
 
 ---
 
 ## License
 
-Proyek praktikum ini dilisensikan di bawah ketentuan [MIT License](LICENSE).
-
----
-
-## ⚠️ Disclaimer
-
-Seluruh logo, informasi nama, dan instansi yang digunakan di dalam data sampel maupun demo visual program ini murni ditujukan untuk pemenuhan tugas akademik praktikum perkuliahan Pemrograman Berorientasi Objek (PBO) Politeknik Negeri Cilacap. Tidak ada maksud komersialisasi maupun pelanggaran hak cipta.
-
----
-
-[![GitHub](https://img.shields.io/badge/GitHub-pratama1246-black?logo=github)](https://github.com/pratama1246)
+This project is licensed under the terms of the [MIT License](LICENSE).
