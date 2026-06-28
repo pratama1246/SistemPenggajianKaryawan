@@ -287,6 +287,13 @@ namespace SistemPenggajianKaryawan
                     e.CellStyle.SelectionBackColor = Color.FromArgb(74, 85, 104);
                     e.CellStyle.SelectionForeColor = Color.White;
                 }
+                else if (val == "Kiosk")
+                {
+                    e.CellStyle.BackColor = Color.FromArgb(243, 232, 255); // Light Purple
+                    e.CellStyle.ForeColor = Color.FromArgb(147, 51, 234);  // Purple
+                    e.CellStyle.SelectionBackColor = Color.FromArgb(147, 51, 234);
+                    e.CellStyle.SelectionForeColor = Color.White;
+                }
             }
 
             // Mewarnai badge Status

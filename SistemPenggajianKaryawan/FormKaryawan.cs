@@ -14,6 +14,7 @@ namespace SistemPenggajianKaryawan
         private string currentFilter = "Semua";
         private bool isCariPlaceholder = true;
         private const string PlaceholderText = "🔍 Cari nama atau kode...";
+        private Button btnCetakQR;
 
         public FormKaryawan()
         {
@@ -42,6 +43,23 @@ namespace SistemPenggajianKaryawan
             bersihkan();
             hitungStatistikFilter();
             tampilGrid();
+
+            // Tambahkan Tombol Preview QR secara dinamis di panel_left
+            btnCetakQR = new Button();
+            btnCetakQR.Name = "btn_cetak_qr";
+            btnCetakQR.Text = "Preview & Cetak QR Code";
+            btnCetakQR.Location = new Point(23, 485);
+            btnCetakQR.Size = new Size(277, 35);
+            btnCetakQR.FlatStyle = FlatStyle.Flat;
+            btnCetakQR.FlatAppearance.BorderSize = 1;
+            btnCetakQR.FlatAppearance.BorderColor = Color.FromArgb(91, 200, 245); // primary cyan
+            btnCetakQR.ForeColor = Color.FromArgb(30, 144, 255); // primary-dark
+            btnCetakQR.BackColor = Color.White;
+            btnCetakQR.Cursor = Cursors.Hand;
+            btnCetakQR.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnCetakQR.Enabled = false; // default mati sampai pilih karyawan
+            btnCetakQR.Click += btnCetakQR_Click;
+            panel_left.Controls.Add(btnCetakQR);
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -50,6 +68,7 @@ namespace SistemPenggajianKaryawan
         private void bersihkan()
         {
             kode_txt.Text = karyawan.createCode();
+            if (btnCetakQR != null) btnCetakQR.Enabled = false;
             nama_txt.Clear();
             jabatan_txt.Clear();
             jenis_cmb.SelectedIndex = 0;
@@ -222,6 +241,8 @@ namespace SistemPenggajianKaryawan
                 nama_txt.Focus();
                 nama_txt.SelectAll();
             }
+
+            if (btnCetakQR != null) btnCetakQR.Enabled = true;
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -413,6 +434,19 @@ namespace SistemPenggajianKaryawan
         private void batal_btn_Click(object sender, EventArgs e)
         {
             bersihkan();
+        }
+
+        private void btnCetakQR_Click(object sender, EventArgs e)
+        {
+            string kode = kode_txt.Text.Trim();
+            string nama = nama_txt.Text.Trim();
+            if (!string.IsNullOrEmpty(kode) && !string.IsNullOrEmpty(nama))
+            {
+                using (FormQRPreview qrForm = new FormQRPreview(kode, nama))
+                {
+                    qrForm.ShowDialog();
+                }
+            }
         }
 
         private void accentPanel_Paint(object sender, PaintEventArgs e)

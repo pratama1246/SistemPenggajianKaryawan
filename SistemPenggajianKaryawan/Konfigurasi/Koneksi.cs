@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -96,7 +96,10 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                     _command.Parameters.AddWithValue(p.Key, p.Value);
                 nilai = _command.ExecuteNonQuery();
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Database Error: " + ex.Message, "Error Database", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
             finally
             {
                 _command.Parameters.Clear();
