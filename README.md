@@ -18,10 +18,6 @@ The application supports 4 distinct user roles:
 [![.NET Framework](https://img.shields.io/badge/.NET_Framework-4.8-blue?style=for-the-badge&logo=.net&logoColor=white)](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)
 [![Windows Forms](https://img.shields.io/badge/Windows_Forms-v4.8-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/desktop/winforms/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
-[![ZXing.Net](https://img.shields.io/badge/ZXing.Net-0.16.9-orange?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/ZXing.Net/)
-[![AForge.NET](https://img.shields.io/badge/AForge.Video-2.2.5-green?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/AForge.Video.DirectShow/)
-[![Bouncy Castle](https://img.shields.io/badge/Bouncy_Castle-v2.6.2-yellowgreen?style=for-the-badge&logo=nuget&logoColor=white)](https://www.nuget.org/packages/BouncyCastle.Cryptography/)
-[![Visual Studio 2026](https://img.shields.io/badge/Visual_Studio-2026-5C2D91?style=for-the-badge&logo=visual-studio&logoColor=white)](https://visualstudio.microsoft.com/)
 
 ---
 
@@ -80,50 +76,50 @@ The project's architectural structure is organized as follows:
 ```
 SistemPenggajianKaryawan/
 ├── Konfigurasi/
-│   ├── DatabaseSeeder.cs      ← Automatic database seeder & schema initialization
-│   ├── Koneksi.cs             ← Concrete MySQL connection execution layer
-│   ├── Konfigurasi.cs         ← Abstract database configuration contract
-│   └── UserSession.cs         ← Static class for active user session management
+│   ├── DatabaseSeeder.cs                ← Automatic database seeder & schema initialization
+│   ├── Koneksi.cs                       ← Concrete MySQL connection execution layer
+│   ├── Konfigurasi.cs                   ← Abstract database configuration contract
+│   └── UserSession.cs                   ← Static class for active user session management
 ├── Model/
-│   ├── BaseKaryawan.cs        ← Abstract base class representing OOP employee hierarchy
-│   ├── KaryawanTetap.cs       ← Permanent employee model class
-│   ├── KaryawanKontrak.cs     ← Contract employee model class
-│   ├── KaryawanHarian.cs      ← Daily employee model class
-│   ├── KomponenGaji.cs        ← Salary component definition model
-│   └── DataAbsensi.cs         ← Attendance log record model
+│   ├── BaseKaryawan.cs                  ← Abstract base class representing OOP employee hierarchy
+│   ├── KaryawanTetap.cs                 ← Permanent employee model class
+│   ├── KaryawanKontrak.cs               ← Contract employee model class
+│   ├── KaryawanHarian.cs                ← Daily employee model class
+│   ├── KomponenGaji.cs                  ← Salary component definition model
+│   └── DataAbsensi.cs                   ← Attendance log record model
 ├── Service/
-│   ├── Auth_serv.cs           ← Login authentication & cryptography algorithms
-│   ├── Karyawan_serv.cs       ← Employee database CRUD operations
-│   ├── Absensi_serv.cs        ← Attendance logging CRUD operations
-│   └── Gaji_serv.cs           ← Salary calculation business rules & factories
+│   ├── Auth_serv.cs                     ← Login authentication & cryptography algorithms
+│   ├── Karyawan_serv.cs                 ← Employee database CRUD operations
+│   ├── Absensi_serv.cs                  ← Attendance logging CRUD operations
+│   └── Gaji_serv.cs                     ← Salary calculation business rules & factories
 ├── Resources/
-│   └── Politeknik_Negeri_Cilacap.png  ← Logo asset representing the university brand
-├── App.config                 ← Application runtime configurations and assemblies
-├── FormAbsensi.cs             ← Manual logs and kiosk scanner webcam controller
-├── FormAuthExit.cs            ← Secure dialog verifying credentials before exiting Kiosk
-├── FormDashboardAdmin.cs      ← Administrator landing panel dashboard
-├── FormDashboardHRD.cs        ← HRD landing panel dashboard
-├── FormDashboardKaryawan.cs   ← Employee dashboard and status panel
-├── FormGantiPassword.cs       ← User password update screen
-├── FormKaryawan.cs            ← Employee master editor and management
-├── FormKomponenGaji.cs        ← Allowance & deduction editor
-├── FormLogin.cs               ← User gateway credentials checker
-├── FormManajemenUser.cs       ← Administrator credentials editor
-├── FormProsesGaji.cs          ← Monthly payroll calculations trigger
-├── FormQRPreview.cs           ← QR Badge generator and download panel
-├── FormRekapAbsensi.cs        ← HRD attendance logs table
-├── FormRekapGaji.cs          ← HRD payout logs table
-├── FormSlipGaji.cs            ← Employee dynamic salary slip rendering
-├── FormSplash.cs              ← Loader screen running seeder on initialization
-├── Program.cs                 ← Main process execution bootstrap entry
-└── SistemPenggajianKaryawan.csproj ← Visual Studio project definition file
+│   └── Politeknik_Negeri_Cilacap.png    ← Logo asset representing the university brand
+├── App.config                           ← Application runtime configurations and assemblies
+├── FormAbsensi.cs                       ← Manual logs and kiosk scanner webcam controller
+├── FormAuthExit.cs                      ← Secure dialog verifying credentials before exiting Kiosk
+├── FormDashboardAdmin.cs                ← Administrator landing panel dashboard
+├── FormDashboardHRD.cs                  ← HRD landing panel dashboard
+├── FormDashboardKaryawan.cs             ← Employee dashboard and status panel
+├── FormGantiPassword.cs                 ← User password update screen
+├── FormKaryawan.cs                      ← Employee master editor and management
+├── FormKomponenGaji.cs                  ← Allowance & deduction editor
+├── FormLogin.cs                         ← User gateway credentials checker
+├── FormManajemenUser.cs                 ← Administrator credentials editor
+├── FormProsesGaji.cs                    ← Monthly payroll calculations trigger
+├── FormQRPreview.cs                     ← QR Badge generator and download panel
+├── FormRekapAbsensi.cs                  ← HRD attendance logs table
+├── FormRekapGaji.cs                     ← HRD payout logs table
+├── FormSlipGaji.cs                      ← Employee dynamic salary slip rendering
+├── FormSplash.cs                        ← Loader screen running seeder on initialization
+├── Program.cs                           ← Main process execution bootstrap entry
+└── SistemPenggajianKaryawan.csproj      ← Visual Studio project definition file
 ```
 
 ---
 
 ## Visual Design & Theme
 
-The user interface follows strict design specifications detailed in [DESIGN.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/DESIGN.md). The styling incorporates the branding colors of Politeknik Negeri Cilacap for a professional and modern look.
+The styling incorporates the branding colors of Politeknik Negeri Cilacap for a professional and modern look.
 
 ### 🎨 Color Tokens
 - **Primary Color (`#5BC8F5`)**: Used for main actions, active selections, top accent bars, and input borders.
@@ -211,8 +207,6 @@ Use these default user accounts to explore different features after launching th
 
 ## Coding Conventions
 
-Developers must adhere to standard coding styles documented in [AGENTS.md](file:///D:/Coder%20Project/Praktikum%20PBO/SistemPenggajianKaryawan/SistemPenggajianKaryawan/AGENTS.md):
-
 - **Class Names**: PascalCase nouns (e.g. `KaryawanTetap`, `FormAbsensi`).
 - **Service Classes**: PascalCase nouns with `_serv` suffix (e.g. `Gaji_serv`).
 - **Model Fields**: Properties defined in `snake_case` mapping to backing fields starting with an underscore (e.g. `_kode_karyawan` & `kode_karyawan`).
@@ -233,15 +227,11 @@ Developers must adhere to standard coding styles documented in [AGENTS.md](file:
 ## 👥 Team
 
 This practical application was built by the student group from Politeknik Negeri Cilacap:
-- **[Your Name]** - Lead Developer / Programmer
-- **[Teammate Name 1]** - Database Engineer / System Analyst
-- **[Teammate Name 2]** - UI Designer / System Tester
+- **Tama**
+- **Nesya**
+- **Jihan**
+- **Tasya**
 
-Developed for the Object-Oriented Programming (OOP) Practical Assignment at Politeknik Negeri Cilacap, Department of Informatics Engineering.
-
-**Class**: Informatics Engineering [Your Class]  
-**Course**: Object-Oriented Programming (OOP) Lab  
-**Institution**: Politeknik Negeri Cilacap
 
 ---
 
