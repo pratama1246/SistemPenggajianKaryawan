@@ -1,4 +1,4 @@
-# 💳 Employee Payroll Information System (PNC)
+# 💳 Employee Payroll Information System
 
 **Sistem Informasi Penggajian Karyawan** (Employee Payroll Information System) is a desktop application based on **Windows Forms (C# .NET Framework 4.8)** designed to manage employee profiles, track daily attendance, configure custom salary components, calculate monthly payroll automatically, and print/view salary slips. This project was built as a practical assignment for the Object-Oriented Programming (OOP) Lab Course at **Politeknik Negeri Cilacap**.
 
