@@ -140,19 +140,11 @@ The styling incorporates the branding colors of Politeknik Negeri Cilacap for a 
 - **Database Driver**: ADO.NET Provider (`MySql.Data` `v9.7.0`)
 - **IDE**: Visual Studio 2022
 
-**Third-Party Libraries & Transitive Dependencies (NuGet Packages)**
-- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): High-performance webcam acquisition tools.
-- **AForge** (`v2.2.5`): Base computer vision frameworks.
-- **ZXing.Net** (`v0.16.9`): Multi-format 1D/2D barcode image processing library.
-- **BouncyCastle.Cryptography** (`v2.6.2`): Advanced cryptography provider for securing passwords.
-- **Google.Protobuf** (`v3.32.0`): Protocol Buffers message serialization library.
-- **ZstdSharp.Port** (`v0.8.6`): Port of Zstandard compression algorithm for MySQL connection optimization.
-- **K4os.Compression.LZ4 & LZ4.Streams** (`v1.3.8`): LZ4 compression algorithms.
-- **System.Configuration.ConfigurationManager** (`v8.0.0`): Access to local machine configuration parameters.
-- **System.IO.Pipelines** (`v5.0.2`): High-performance buffer pipeline management.
-- **System.Memory** (`v4.5.5`): Shared structures for memory optimizations.
-- **System.Runtime.CompilerServices.Unsafe** (`v6.0.0`): Support for low-level memory operations.
-
+**Third-Party Libraries (NuGet Packages)**
+- **AForge.Video & AForge.Video.DirectShow** (`v2.2.5`): Direct webcam video capture libraries for Kiosk Mode attendance.
+- **ZXing.Net** (`v0.16.9`): QR Code generation and image decoding library.
+- **BouncyCastle.Cryptography** (`v2.6.2`): Advanced cryptography provider for secure password encryption and decryption.
+- **MySql.Data** (`v9.7.0`): Official ADO.NET driver for database connection.
 
 ---
 
