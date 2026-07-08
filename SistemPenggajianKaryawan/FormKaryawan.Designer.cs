@@ -29,6 +29,12 @@ namespace SistemPenggajianKaryawan
             this.jenis_cmb = new System.Windows.Forms.ComboBox();
             this.gaji_lbl = new System.Windows.Forms.Label();
             this.gaji_txt = new System.Windows.Forms.TextBox();
+            this.user_chk = new System.Windows.Forms.CheckBox();
+            this.userPanel = new System.Windows.Forms.Panel();
+            this.username_lbl = new System.Windows.Forms.Label();
+            this.user_uname_txt = new System.Windows.Forms.TextBox();
+            this.password_lbl = new System.Windows.Forms.Label();
+            this.user_pass_txt = new System.Windows.Forms.TextBox();
             this.simpan_btn = new System.Windows.Forms.Button();
             this.hapus_btn = new System.Windows.Forms.Button();
             this.batal_btn = new System.Windows.Forms.Button();
@@ -58,13 +64,15 @@ namespace SistemPenggajianKaryawan
             this.panel_left.Controls.Add(this.jenis_cmb);
             this.panel_left.Controls.Add(this.gaji_lbl);
             this.panel_left.Controls.Add(this.gaji_txt);
+            this.panel_left.Controls.Add(this.user_chk);
+            this.panel_left.Controls.Add(this.userPanel);
             this.panel_left.Controls.Add(this.simpan_btn);
             this.panel_left.Controls.Add(this.hapus_btn);
             this.panel_left.Controls.Add(this.batal_btn);
             this.panel_left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel_left.Location = new System.Drawing.Point(0, 0);
             this.panel_left.Name = "panel_left";
-            this.panel_left.Size = new System.Drawing.Size(320, 540);
+            this.panel_left.Size = new System.Drawing.Size(320, 620);
             this.panel_left.TabIndex = 1;
             // 
             // inputTitle_lbl
@@ -195,6 +203,76 @@ namespace SistemPenggajianKaryawan
             this.gaji_txt.Size = new System.Drawing.Size(277, 25);
             this.gaji_txt.TabIndex = 10;
             // 
+            // 
+            // user_chk
+            // 
+            this.user_chk.AutoSize = true;
+            this.user_chk.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.user_chk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
+            this.user_chk.Location = new System.Drawing.Point(23, 370);
+            this.user_chk.Name = "user_chk";
+            this.user_chk.Size = new System.Drawing.Size(182, 19);
+            this.user_chk.TabIndex = 11;
+            this.user_chk.Text = "Buat Akun Login Karyawan";
+            this.user_chk.UseVisualStyleBackColor = true;
+            this.user_chk.CheckedChanged += new System.EventHandler(this.user_chk_CheckedChanged);
+            // 
+            // userPanel
+            // 
+            this.userPanel.Controls.Add(this.username_lbl);
+            this.userPanel.Controls.Add(this.user_uname_txt);
+            this.userPanel.Controls.Add(this.password_lbl);
+            this.userPanel.Controls.Add(this.user_pass_txt);
+            this.userPanel.Location = new System.Drawing.Point(23, 395);
+            this.userPanel.Name = "userPanel";
+            this.userPanel.Size = new System.Drawing.Size(277, 105);
+            this.userPanel.TabIndex = 12;
+            this.userPanel.Visible = false;
+            // 
+            // username_lbl
+            // 
+            this.username_lbl.AutoSize = true;
+            this.username_lbl.Font = new System.Drawing.Font("Segoe UI", 8.5F);
+            this.username_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
+            this.username_lbl.Location = new System.Drawing.Point(0, 5);
+            this.username_lbl.Name = "username_lbl";
+            this.username_lbl.Size = new System.Drawing.Size(60, 15);
+            this.username_lbl.TabIndex = 0;
+            this.username_lbl.Text = "Username";
+            // 
+            // user_uname_txt
+            // 
+            this.user_uname_txt.BackColor = System.Drawing.Color.White;
+            this.user_uname_txt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.user_uname_txt.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.user_uname_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
+            this.user_uname_txt.Location = new System.Drawing.Point(0, 23);
+            this.user_uname_txt.Name = "user_uname_txt";
+            this.user_uname_txt.Size = new System.Drawing.Size(277, 24);
+            this.user_uname_txt.TabIndex = 1;
+            // 
+            // password_lbl
+            // 
+            this.password_lbl.AutoSize = true;
+            this.password_lbl.Font = new System.Drawing.Font("Segoe UI", 8.5F);
+            this.password_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
+            this.password_lbl.Location = new System.Drawing.Point(0, 53);
+            this.password_lbl.Name = "password_lbl";
+            this.password_lbl.Size = new System.Drawing.Size(57, 15);
+            this.password_lbl.TabIndex = 2;
+            this.password_lbl.Text = "Password";
+            // 
+            // user_pass_txt
+            // 
+            this.user_pass_txt.BackColor = System.Drawing.Color.White;
+            this.user_pass_txt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.user_pass_txt.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.user_pass_txt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(55)))), ((int)(((byte)(72)))));
+            this.user_pass_txt.Location = new System.Drawing.Point(0, 71);
+            this.user_pass_txt.Name = "user_pass_txt";
+            this.user_pass_txt.Size = new System.Drawing.Size(277, 24);
+            this.user_pass_txt.TabIndex = 3;
+            // 
             // simpan_btn
             // 
             this.simpan_btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(144)))), ((int)(((byte)(255)))));
@@ -203,10 +281,10 @@ namespace SistemPenggajianKaryawan
             this.simpan_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.simpan_btn.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.simpan_btn.ForeColor = System.Drawing.Color.White;
-            this.simpan_btn.Location = new System.Drawing.Point(23, 440);
+            this.simpan_btn.Location = new System.Drawing.Point(23, 510);
             this.simpan_btn.Name = "simpan_btn";
             this.simpan_btn.Size = new System.Drawing.Size(90, 32);
-            this.simpan_btn.TabIndex = 11;
+            this.simpan_btn.TabIndex = 13;
             this.simpan_btn.Text = "💾 Simpan";
             this.simpan_btn.UseVisualStyleBackColor = false;
             this.simpan_btn.Click += new System.EventHandler(this.simpan_btn_Click);
@@ -219,10 +297,10 @@ namespace SistemPenggajianKaryawan
             this.hapus_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.hapus_btn.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.hapus_btn.ForeColor = System.Drawing.Color.White;
-            this.hapus_btn.Location = new System.Drawing.Point(121, 440);
+            this.hapus_btn.Location = new System.Drawing.Point(121, 510);
             this.hapus_btn.Name = "hapus_btn";
             this.hapus_btn.Size = new System.Drawing.Size(90, 32);
-            this.hapus_btn.TabIndex = 12;
+            this.hapus_btn.TabIndex = 14;
             this.hapus_btn.Text = "🗑️ Hapus";
             this.hapus_btn.UseVisualStyleBackColor = false;
             this.hapus_btn.Click += new System.EventHandler(this.hapus_btn_Click);
@@ -235,10 +313,10 @@ namespace SistemPenggajianKaryawan
             this.batal_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.batal_btn.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.batal_btn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(113)))), ((int)(((byte)(128)))), ((int)(((byte)(150)))));
-            this.batal_btn.Location = new System.Drawing.Point(219, 440);
+            this.batal_btn.Location = new System.Drawing.Point(219, 510);
             this.batal_btn.Name = "batal_btn";
             this.batal_btn.Size = new System.Drawing.Size(80, 32);
-            this.batal_btn.TabIndex = 13;
+            this.batal_btn.TabIndex = 15;
             this.batal_btn.Text = "Batal";
             this.batal_btn.UseVisualStyleBackColor = false;
             this.batal_btn.Click += new System.EventHandler(this.batal_btn_Click);
@@ -367,7 +445,7 @@ namespace SistemPenggajianKaryawan
             // FormKaryawan
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(244)))), ((int)(((byte)(246)))), ((int)(((byte)(249)))));
-            this.ClientSize = new System.Drawing.Size(900, 540);
+            this.ClientSize = new System.Drawing.Size(900, 620);
             this.Controls.Add(this.panel_right);
             this.Controls.Add(this.panel_left);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -399,6 +477,12 @@ namespace SistemPenggajianKaryawan
         private System.Windows.Forms.ComboBox jenis_cmb;
         private System.Windows.Forms.Label gaji_lbl;
         private System.Windows.Forms.TextBox gaji_txt;
+        private System.Windows.Forms.CheckBox user_chk;
+        private System.Windows.Forms.Panel userPanel;
+        private System.Windows.Forms.Label username_lbl;
+        private System.Windows.Forms.TextBox user_uname_txt;
+        private System.Windows.Forms.Label password_lbl;
+        private System.Windows.Forms.TextBox user_pass_txt;
         private System.Windows.Forms.Button simpan_btn;
         private System.Windows.Forms.Button hapus_btn;
         private System.Windows.Forms.Button batal_btn;

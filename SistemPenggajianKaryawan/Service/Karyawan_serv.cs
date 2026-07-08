@@ -27,6 +27,17 @@ namespace SistemPenggajianKaryawan.Service
             return server.eksekusiQueryParam(q, p).Rows.Count > 0;
         }
 
+        // Dapatkan karyawan_id berdasarkan kode_karyawan
+        public int GetIdByKode(string kode)
+        {
+            string q = "SELECT karyawan_id FROM karyawan WHERE kode_karyawan = @kode";
+            var p = new Dictionary<string, object> { { "@kode", kode } };
+            DataTable dt = server.eksekusiQueryParam(q, p);
+            if (dt.Rows.Count > 0)
+                return Convert.ToInt32(dt.Rows[0]["karyawan_id"]);
+            return -1;
+        }
+
         public int Save()
         {
             int nilai = -1;

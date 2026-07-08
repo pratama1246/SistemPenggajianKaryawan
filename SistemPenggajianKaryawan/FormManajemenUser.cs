@@ -142,6 +142,11 @@ namespace SistemPenggajianKaryawan
             karyawan_cmb.DisplayMember = "Label";
             karyawan_cmb.ValueMember = "Id";
             karyawan_cmb.SelectedIndex = 0;
+
+            // Set style to DropDown and enable AutoComplete to show suggestion list while typing
+            karyawan_cmb.DropDownStyle = ComboBoxStyle.DropDown;
+            karyawan_cmb.AutoCompleteSource = AutoCompleteSource.ListItems;
+            karyawan_cmb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
         }
 
         private void role_cmb_SelectedIndexChanged(object sender, EventArgs e)

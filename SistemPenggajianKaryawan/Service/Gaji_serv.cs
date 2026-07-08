@@ -16,7 +16,7 @@ namespace SistemPenggajianKaryawan.Service
             server = new Koneksi();
         }
 
-        // Factory Method - sesuai dengan instruksi di AGENTS.md
+        // Factory Method
         private BaseKaryawan buatObjekKaryawan(string jenis)
         {
             if (jenis == "Tetap") return new KaryawanTetap();
@@ -47,10 +47,13 @@ namespace SistemPenggajianKaryawan.Service
             List<KomponenGaji> komponenList = new List<KomponenGaji>();
             foreach (DataRow r in dtComp.Rows)
             {
+                string nama = r["nama_komponen"].ToString();
+                if (nama.ToLower().Contains("makan")) continue;
+
                 komponenList.Add(new KomponenGaji
                 {
                     komponen_id = Convert.ToInt32(r["komponen_id"]),
-                    nama_komponen = r["nama_komponen"].ToString(),
+                    nama_komponen = nama,
                     tipe = r["tipe"].ToString(),
                     jenis_nilai = r["jenis_nilai"].ToString(),
                     nilai = Convert.ToDecimal(r["nilai"]),
@@ -83,18 +86,22 @@ namespace SistemPenggajianKaryawan.Service
 
                 decimal tunjangan = 0;
                 decimal potongan = 0;
+                int jumlahHadir = absensiList.Count(a => a.status == "Hadir");
 
                 if (jenis == "Tetap" || jenis == "Kontrak")
                 {
+                    // Tunjangan Makan Otomatis: 10k per hari masuk
+                    tunjangan += 10000m * jumlahHadir;
+
                     // Tunjangan
                     foreach (var k in komponenList.Where(k => k.tipe == "Tambah" && (k.berlaku_untuk == "Semua" || k.berlaku_untuk == jenis)))
                     {
-                        tunjangan += k.HitungNominal(gapok);
+                        tunjangan += k.HitungNominal(gapok, jumlahHadir);
                     }
                     // Potongan
                     foreach (var k in komponenList.Where(k => k.tipe == "Potong" && (k.berlaku_untuk == "Semua" || k.berlaku_untuk == jenis)))
                     {
-                        potongan += k.HitungNominal(gapok);
+                        potongan += k.HitungNominal(gapok, jumlahHadir);
                     }
                     // Potongan alpha
                     int jumlahAlpha = absensiList.Count(a => a.status == "Alpha");
@@ -128,7 +135,7 @@ namespace SistemPenggajianKaryawan.Service
                     // Harian: upah hadir + upah lembur
                     decimal upahPerHari = gapok;
                     decimal upahPerJam = upahPerHari / 8;
-                    int jumlahHadir = absensiList.Count(a => a.status == "Hadir");
+                    jumlahHadir = absensiList.Count(a => a.status == "Hadir");
                     double totalLemburHours = 0;
                     foreach (var abs in absensiList.Where(a => a.status == "Hadir"))
                     {

@@ -15,6 +15,7 @@ namespace SistemPenggajianKaryawan
         private bool isCariPlaceholder = true;
         private const string PlaceholderText = "🔍 Cari nama atau kode...";
         private Button btnCetakQR;
+        private int selectedKaryawanId = -1;
 
         public FormKaryawan()
         {
@@ -48,7 +49,7 @@ namespace SistemPenggajianKaryawan
             btnCetakQR = new Button();
             btnCetakQR.Name = "btn_cetak_qr";
             btnCetakQR.Text = "Preview & Cetak QR Code";
-            btnCetakQR.Location = new Point(23, 485);
+            btnCetakQR.Location = new Point(23, 555);
             btnCetakQR.Size = new Size(277, 35);
             btnCetakQR.FlatStyle = FlatStyle.Flat;
             btnCetakQR.FlatAppearance.BorderSize = 1;
@@ -60,6 +61,8 @@ namespace SistemPenggajianKaryawan
             btnCetakQR.Enabled = false; // default mati sampai pilih karyawan
             btnCetakQR.Click += btnCetakQR_Click;
             panel_left.Controls.Add(btnCetakQR);
+
+            nama_txt.TextChanged += nama_txt_TextChanged;
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -73,6 +76,15 @@ namespace SistemPenggajianKaryawan
             jabatan_txt.Clear();
             jenis_cmb.SelectedIndex = 0;
             gaji_txt.Text = "0";
+
+            selectedKaryawanId = -1;
+            user_chk.Checked = false;
+            user_chk.Text = "Buat Akun Login Karyawan";
+            user_uname_txt.Text = "";
+            user_uname_txt.ReadOnly = false;
+            user_pass_txt.Text = "karyawan123";
+            user_pass_txt.ReadOnly = false;
+            userPanel.Visible = false;
 
             karyawan_dgv.ClearSelection();
 
@@ -236,6 +248,32 @@ namespace SistemPenggajianKaryawan
                     : gajiDec.ToString("G");
             }
 
+            selectedKaryawanId = Convert.ToInt32(row.Cells["karyawan_id"].Value);
+
+            // Cek apakah karyawan ini sudah punya akun user
+            User_serv uServ = new User_serv();
+            DataRow userRow = uServ.GetByKaryawanId(selectedKaryawanId);
+            if (userRow != null)
+            {
+                user_chk.Checked = true;
+                user_chk.Text = "Akun Login Aktif";
+                user_uname_txt.Text = userRow["username"].ToString();
+                user_uname_txt.ReadOnly = true;
+
+                string encryptedPw = userRow["password"].ToString();
+                user_pass_txt.Text = uServ.decryptPassword(encryptedPw);
+                user_pass_txt.ReadOnly = false;
+            }
+            else
+            {
+                user_chk.Checked = false;
+                user_chk.Text = "Buat Akun Login Karyawan";
+                user_uname_txt.Text = "";
+                user_uname_txt.ReadOnly = false;
+                user_pass_txt.Text = "karyawan123";
+                user_pass_txt.ReadOnly = false;
+            }
+
             if (UserSession.role != "Admin")
             {
                 nama_txt.Focus();
@@ -362,6 +400,41 @@ namespace SistemPenggajianKaryawan
                 return;
             }
 
+            // Validasi Akun User jika checkbox dicentang
+            User_serv uServ = new User_serv();
+            int existingUserId = -1;
+            if (user_chk.Checked)
+            {
+                if (string.IsNullOrWhiteSpace(user_uname_txt.Text))
+                {
+                    MessageBox.Show("Username akun login tidak boleh kosong.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    user_uname_txt.Focus();
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(user_pass_txt.Text))
+                {
+                    MessageBox.Show("Password akun login tidak boleh kosong.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    user_pass_txt.Focus();
+                    return;
+                }
+
+                if (selectedKaryawanId != -1)
+                {
+                    DataRow userRow = uServ.GetByKaryawanId(selectedKaryawanId);
+                    if (userRow != null)
+                    {
+                        existingUserId = Convert.ToInt32(userRow["user_id"]);
+                    }
+                }
+
+                if (uServ.jikaAda(user_uname_txt.Text.Trim(), existingUserId))
+                {
+                    MessageBox.Show("Username sudah digunakan oleh user lain.", "Validasi Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    user_uname_txt.Focus();
+                    return;
+                }
+            }
+
             karyawan.kode_karyawan = kode_txt.Text.Trim();
             karyawan.nama_karyawan = nama_txt.Text.Trim();
             karyawan.jabatan       = jabatan_txt.Text.Trim();
@@ -373,6 +446,19 @@ namespace SistemPenggajianKaryawan
                 // INSERT baru
                 if (karyawan.Save() > 0)
                 {
+                    int newKaryawanId = karyawan.GetIdByKode(kode_txt.Text.Trim());
+                    if (newKaryawanId != -1 && user_chk.Checked)
+                    {
+                        User_serv u = new User_serv();
+                        u.nama = nama_txt.Text.Trim();
+                        u.username = user_uname_txt.Text.Trim();
+                        u.password = u.hashPassword(user_pass_txt.Text.Trim());
+                        u.role = "Karyawan";
+                        u.is_active = 1;
+                        u.karyawan_id = newKaryawanId;
+                        u.Save();
+                    }
+
                     MessageBox.Show("Data karyawan berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     bersihkan();
                     hitungStatistikFilter();
@@ -391,6 +477,57 @@ namespace SistemPenggajianKaryawan
                 {
                     if (karyawan.update(kode_txt.Text.Trim()) > 0)
                     {
+                        // Handle user account update/creation/deactivation
+                        DataRow userRow = uServ.GetByKaryawanId(selectedKaryawanId);
+                        if (user_chk.Checked)
+                        {
+                            if (userRow != null)
+                            {
+                                int userId = Convert.ToInt32(userRow["user_id"]);
+                                string oldEncryptedPw = userRow["password"].ToString();
+                                string decryptedPw = uServ.decryptPassword(oldEncryptedPw);
+                                
+                                User_serv u = new User_serv();
+                                u.nama = nama_txt.Text.Trim();
+                                u.username = user_uname_txt.Text.Trim();
+                                u.role = "Karyawan";
+                                u.is_active = 1;
+                                u.karyawan_id = selectedKaryawanId;
+                                
+                                bool pwChanged = user_pass_txt.Text.Trim() != decryptedPw;
+                                if (pwChanged)
+                                {
+                                    u.password = u.hashPassword(user_pass_txt.Text.Trim());
+                                }
+                                u.update(userId, pwChanged);
+                            }
+                            else
+                            {
+                                User_serv u = new User_serv();
+                                u.nama = nama_txt.Text.Trim();
+                                u.username = user_uname_txt.Text.Trim();
+                                u.password = u.hashPassword(user_pass_txt.Text.Trim());
+                                u.role = "Karyawan";
+                                u.is_active = 1;
+                                u.karyawan_id = selectedKaryawanId;
+                                u.Save();
+                            }
+                        }
+                        else
+                        {
+                            if (userRow != null)
+                            {
+                                int userId = Convert.ToInt32(userRow["user_id"]);
+                                User_serv u = new User_serv();
+                                u.nama = userRow["nama"].ToString();
+                                u.username = userRow["username"].ToString();
+                                u.role = userRow["role"].ToString();
+                                u.is_active = 0; // Deactivated
+                                u.karyawan_id = selectedKaryawanId;
+                                u.update(userId, false);
+                            }
+                        }
+
                         MessageBox.Show("Data karyawan berhasil diperbarui.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         bersihkan();
                         hitungStatistikFilter();
@@ -419,6 +556,24 @@ namespace SistemPenggajianKaryawan
             {
                 if (karyawan.delete(kode) > 0)
                 {
+                    // Deactivate linked user account if exists
+                    if (selectedKaryawanId != -1)
+                    {
+                        User_serv uServ = new User_serv();
+                        DataRow userRow = uServ.GetByKaryawanId(selectedKaryawanId);
+                        if (userRow != null)
+                        {
+                            int userId = Convert.ToInt32(userRow["user_id"]);
+                            User_serv u = new User_serv();
+                            u.nama = userRow["nama"].ToString();
+                            u.username = userRow["username"].ToString();
+                            u.role = userRow["role"].ToString();
+                            u.is_active = 0; // Deactivated
+                            u.karyawan_id = selectedKaryawanId;
+                            u.update(userId, false);
+                        }
+                    }
+
                     MessageBox.Show("Data karyawan berhasil dinonaktifkan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     bersihkan();
                     hitungStatistikFilter();
@@ -446,6 +601,37 @@ namespace SistemPenggajianKaryawan
                 {
                     qrForm.ShowDialog();
                 }
+            }
+        }
+
+        private void user_chk_CheckedChanged(object sender, EventArgs e)
+        {
+            userPanel.Visible = user_chk.Checked;
+            if (user_chk.Checked)
+            {
+                if (selectedKaryawanId == -1)
+                {
+                    if (string.IsNullOrEmpty(user_uname_txt.Text))
+                    {
+                        string nama = nama_txt.Text.Trim();
+                        string cleanUsername = System.Text.RegularExpressions.Regex.Replace(nama, @"[^a-zA-Z0-9]", "").ToLower();
+                        user_uname_txt.Text = cleanUsername;
+                    }
+                    if (string.IsNullOrEmpty(user_pass_txt.Text))
+                    {
+                        user_pass_txt.Text = "karyawan123";
+                    }
+                }
+            }
+        }
+
+        private void nama_txt_TextChanged(object sender, EventArgs e)
+        {
+            if (selectedKaryawanId == -1 && user_chk.Checked)
+            {
+                string nama = nama_txt.Text.Trim();
+                string cleanUsername = System.Text.RegularExpressions.Regex.Replace(nama, @"[^a-zA-Z0-9]", "").ToLower();
+                user_uname_txt.Text = cleanUsername;
             }
         }
 

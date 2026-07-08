@@ -377,14 +377,21 @@ namespace SistemPenggajianKaryawan
                 // Tambahkan Gaji Pokok
                 addRowToList(pnl_pendapatan_list, "Gaji Pokok", string.Format("Rp {0:N0}", gapok), Color.FromArgb(45, 55, 72));
 
+                // Tambahkan Tunjangan Makan otomatis (10k per hari hadir)
+                decimal nominalMakan = 10000m * hadir;
+                totalTunjangan += nominalMakan;
+                addRowToList(pnl_pendapatan_list, "Tunjangan Makan", string.Format("+ Rp {0:N0}", nominalMakan), Color.FromArgb(76, 175, 80));
+
                 // Tambahkan Tunjangan Terkait
                 foreach (DataRow r in dtComp.Rows)
                 {
+                    string compNama = r["nama_komponen"].ToString();
+                    if (compNama.ToLower().Contains("makan")) continue;
+
                     string tipe = r["tipe"].ToString();
                     string berlaku = r["berlaku_untuk"].ToString();
                     if (tipe == "Tambah" && (berlaku == "Semua" || berlaku == jenis))
                     {
-                        string compNama = r["nama_komponen"].ToString();
                         string jenisNilai = r["jenis_nilai"].ToString();
                         decimal nilai = Convert.ToDecimal(r["nilai"]);
                         decimal nominal = jenisNilai == "Persen" ? gapok * (nilai / 100) : nilai;
@@ -397,11 +404,13 @@ namespace SistemPenggajianKaryawan
                 // Tambahkan Potongan Terkait
                 foreach (DataRow r in dtComp.Rows)
                 {
+                    string compNama = r["nama_komponen"].ToString();
+                    if (compNama.ToLower().Contains("makan")) continue;
+
                     string tipe = r["tipe"].ToString();
                     string berlaku = r["berlaku_untuk"].ToString();
                     if (tipe == "Potong" && (berlaku == "Semua" || berlaku == jenis))
                     {
-                        string compNama = r["nama_komponen"].ToString();
                         string jenisNilai = r["jenis_nilai"].ToString();
                         decimal nilai = Convert.ToDecimal(r["nilai"]);
                         decimal nominal = jenisNilai == "Persen" ? gapok * (nilai / 100) : nilai;

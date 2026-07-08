@@ -95,6 +95,17 @@ namespace SistemPenggajianKaryawan.Service
             return server.eksekusiQueryParam(q, p).Rows.Count > 0;
         }
 
+        // Ambil data user berdasarkan karyawan_id
+        public DataRow GetByKaryawanId(int karyawanId)
+        {
+            string q = "SELECT user_id, nama, username, password, role, is_active FROM users WHERE karyawan_id = @karyawanId";
+            var p = new Dictionary<string, object> { { "@karyawanId", karyawanId } };
+            DataTable dt = server.eksekusiQueryParam(q, p);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0];
+            return null;
+        }
+
         public DataTable viewAll()
         {
             return server.eksekusiQuery(

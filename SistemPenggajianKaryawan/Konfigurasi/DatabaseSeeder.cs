@@ -255,7 +255,7 @@ namespace SistemPenggajianKaryawan.Konfigurasi
 
                 try
                 {
-                    DataTable dtAbsCount = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM absensi");
+                    DataTable dtAbsCount = server.eksekusiQuery("SELECT COUNT(*) AS jumlah FROM absensi WHERE MONTH(tanggal) = 5 AND YEAR(tanggal) = 2026");
                     if (dtAbsCount.Rows.Count > 0 && Convert.ToInt32(dtAbsCount.Rows[0]["jumlah"]) == 0)
                     {
                         string[] kodes = { "PNC.2026.0001", "PNC.2026.0002", "PNC.2026.0003", "PNC.2026.0004" };
@@ -269,22 +269,22 @@ namespace SistemPenggajianKaryawan.Konfigurasi
                                     TimeSpan masuk = new TimeSpan(8, 0, 0);
                                     TimeSpan keluar = new TimeSpan(17, 0, 0);
                                     string status = "Hadir";
-
-                                    if (kode == "K002" && day == 5)
+ 
+                                    if (kode == "PNC.2026.0002" && day == 5)
                                     {
                                         masuk = new TimeSpan(8, 20, 0); // Late 20 mins
                                     }
-                                    if (kode == "K003" && day == 10)
+                                    if (kode == "PNC.2026.0003" && day == 10)
                                     {
                                         keluar = new TimeSpan(19, 0, 0); // Lembur 2 hours
                                     }
-                                    if (kode == "K004" && day == 15)
+                                    if (kode == "PNC.2026.0004" && day == 15)
                                     {
                                         status = "Izin";
                                         masuk = TimeSpan.Zero;
                                         keluar = TimeSpan.Zero;
                                     }
-
+ 
                                     insertDailyAbsensiIfNotExist(kode, dt, masuk, keluar, status);
                                 }
                             }

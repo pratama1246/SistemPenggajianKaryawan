@@ -15,16 +15,20 @@ namespace SistemPenggajianKaryawan.Model
         {
             decimal upahPerJam = config.upahPerJam(gaji_pokok);
             decimal total      = gaji_pokok;
+            int jumlahHadir    = absensiList.Count(a => a.status == "Hadir");
+
+            // Tunjangan Makan Otomatis: 10k per hari masuk
+            total += 10000m * jumlahHadir;
 
             // Tambah tunjangan Tetap / Semua
             foreach (var k in komponen.Where(k => k.tipe == "Tambah" &&
                      (k.berlaku_untuk == "Semua" || k.berlaku_untuk == "Tetap")))
-                total += k.HitungNominal(gaji_pokok);
+                total += k.HitungNominal(gaji_pokok, jumlahHadir);
 
             // Kurangi potongan Tetap / Semua
             foreach (var k in komponen.Where(k => k.tipe == "Potong" &&
                      (k.berlaku_untuk == "Semua" || k.berlaku_untuk == "Tetap")))
-                total -= k.HitungNominal(gaji_pokok);
+                total -= k.HitungNominal(gaji_pokok, jumlahHadir);
 
             // Kalkulasi per hari
             foreach (var absensi in absensiList.Where(a => a.status == "Hadir"))

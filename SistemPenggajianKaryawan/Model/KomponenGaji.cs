@@ -26,9 +26,14 @@ namespace SistemPenggajianKaryawan.Model
             _berlaku_untuk = "";
         }
 
-        // Hitung nominal berdasarkan jenis: flat atau persen dari gaji pokok
-        public decimal HitungNominal(decimal gaji_pokok)
+        // Hitung nominal berdasarkan jenis: flat atau persen dari gaji pokok,
+        // serta dukung tunjangan makan yang dipengaruhi jumlah kehadiran.
+        public decimal HitungNominal(decimal gaji_pokok, int jumlahHadir = 0)
         {
+            if (_nama_komponen.ToLower().Contains("makan"))
+            {
+                return _nilai * jumlahHadir;
+            }
             if (_jenis_nilai == "Persen")
                 return gaji_pokok * (_nilai / 100);
             return _nilai;
